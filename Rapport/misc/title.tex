@@ -1,0 +1,54 @@
+\documentclass[pdftex,12pt,a4paper]{report}
+\usepackage[T1]{fontenc}		
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}	
+
+\usepackage[pdftex]{graphicx}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\begin{document}
+\begin{titlepage}
+\begin{center}
+
+% Upper part of the page. The '~' is needed because \\
+% only works if a paragraph has started.
+
+% Title
+\HRule \\[0.4cm]
+{ \huge \bfseries The .Beer Language for Arduino\\[0.4cm] }
+
+\HRule \\[1.5cm]
+
+\textsc{Group SW406F15}
+
+\begin{figure}[!h]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.5\textwidth]{BeerDuino.png}}
+\end{figure}
+
+\textsc{\Large }\\[0.5cm]
+% Author and supervisor
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+Christian Lundtofte\\
+Henrik Djernes Thomsen\\
+Jonathan Hastrup\\
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+Martin Viktor\\
+Morten Mandrup
+\end{flushright}
+\end{minipage}
+
+\vfill
+
+% Bottom of the page
+%{\large \today}
+
+
+\end{center}
+\end{titlepage}
+\end{document}

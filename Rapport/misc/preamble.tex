@@ -1,0 +1,68 @@
+\documentclass[svgnames,a4paper,11pt,fleqn,openright]{report}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{nameref}
+\usepackage{parskip}
+\definecolor{light-gray}{gray}{0.8}
+\usepackage{fourier}
+\usepackage{array}
+\usepackage[compact, explicit]{titlesec}
+\usepackage{pdfpages}
+\usepackage{colortbl}
+\usepackage{url}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{longtable} 
+\usepackage{pdflscape}
+
+\usepackage[backend=bibtex,sorting=none]{biblatex}
+\addbibresource{misc/litteratur.bib}
+
+\newcommand*\chapterlabel{}
+\titleformat{\chapter}
+  {\gdef\chapterlabel{}
+   \normalfont\sffamily\Huge\bfseries\scshape}
+  {\gdef\chapterlabel{\thechapter.\ }}{0pt}
+  {\begin{tikzpicture}[remember picture,overlay]
+    \node[yshift=-2cm] at (current page.north west)
+      {\begin{tikzpicture}[remember picture, overlay]
+        \draw[fill=light-gray] (0,0) rectangle
+          (\paperwidth,2cm);
+        \node[anchor=east,xshift=.9\paperwidth,rectangle,
+              rounded corners=20pt,inner sep=11pt,
+              fill=Gray]
+              {\color{white}\chapterlabel#1};
+       \end{tikzpicture}
+      };
+   \end{tikzpicture}
+  }
+\titlespacing*{\chapter}{0pt}{10pt}{-80pt}
+\titlespacing*{\section}{0px}{20pt}{-10px}
+\titlespacing*{\subsection}{0px}{20pt}{0px}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{#1\hrule}
+
+\input{misc/lstlisting.tex}
+
+%%%% CUSTOM COMMANDS %%%%
+
+\newcommand{\figref}[1]{Figure \ref{fig:#1}}% ~\figref{figurnavn} IKKE {fig:figurnavn}
+\newcommand{\tabref}[1]{Table \ref{tab:#1}}
+\newcommand{\chapref}[1]{Chapter \ref{cha:#1}}
+\newcommand{\charef}[1]{Chapter \ref{cha:#1}}
+
+% ¤¤ Visuelle referencer ¤¤ %
+\usepackage[colorlinks]{hyperref}			 	% Giver mulighed for at ens referencer bliver til klikbare hyperlinks. .. [colorlinks]{..}
+\hypersetup{pdfborder = 0}							% Fjerner ramme omkring links i fx indholsfotegnelsen og ved kildehenvisninger ¤¤
+\hypersetup{														%	Opsætning af hyperlinks
+    colorlinks = false,
+    linkcolor = black,
+    anchorcolor = black,
+    citecolor = black
+}
+\setcounter{tocdepth}{1}
+\makeatletter
+\renewcommand{\l@section}{\@dottedtocline{1}{1.5em}{3.0em}}
+\makeatother
