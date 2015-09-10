@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.12.3)  10 SEP 2015 11:03
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.12.3)  10 SEP 2015 11:06
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1745,7 +1745,7 @@ onts/type1/public/cm-super/sfcc1200.pfb></usr/local/texlive/2013/texmf-dist/fon
 ts/type1/public/cm-super/sfrm1440.pfb></usr/local/texlive/2013/texmf-dist/fonts
 /type1/public/cm-super/sfsx2488.pfb>
 Output written on /Users/Christian/Documents/sw513e15/Rapport/.texpadtmp/SW406F
-15.pdf (20 pages, 234960 bytes).
+15.pdf (20 pages, 485307 bytes).
 PDF statistics:
  267 PDF objects out of 1000 (max. 8388607)
  227 compressed objects within 3 object streams
