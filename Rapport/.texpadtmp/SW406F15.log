@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.12.3)  6 SEP 2015 16:05
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.12.3)  10 SEP 2015 11:03
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1397,7 +1397,7 @@ File: english.lbx 2013/11/25 v2.8a biblatex localization (PK/JW/AB)
 \@quotelevel=\count307
 \@quotereset=\count308
 
-(/Users/Christian/Desktop/Rapport/.texpadtmp/SW406F15.aux)
+(/Users/Christian/Documents/sw513e15/Rapport/.texpadtmp/SW406F15.aux)
 \openout1 = `SW406F15.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 2.
@@ -1490,7 +1490,7 @@ Package biblatex Warning: Data encoding is 'utf8'.
 
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'SW406F15.bbl' found.
-(/Users/Christian/Desktop/Rapport/.texpadtmp/SW406F15.bbl)
+(/Users/Christian/Documents/sw513e15/Rapport/.texpadtmp/SW406F15.bbl)
 Package biblatex Info: Reference section=0 on input line 2.
 Package biblatex Info: Reference segment=0 on input line 2.
 Package hyperref Info: Link coloring OFF on input line 2.
@@ -1498,13 +1498,13 @@ LaTeX Info: Redefining \ref on input line 2.
 LaTeX Info: Redefining \pageref on input line 2.
 LaTeX Info: Redefining \nameref on input line 2.
 
-(/Users/Christian/Desktop/Rapport/.texpadtmp/SW406F15.out)
-(/Users/Christian/Desktop/Rapport/.texpadtmp/SW406F15.out)
+(/Users/Christian/Documents/sw513e15/Rapport/.texpadtmp/SW406F15.out)
+(/Users/Christian/Documents/sw513e15/Rapport/.texpadtmp/SW406F15.out)
 \@outlinefile=\write5
 \openout5 = `SW406F15.out'.
 
 
-<misc/title.pdf, id=39, 597.50829pt x 845.0471pt>
+<misc/title.pdf, id=95, 597.50829pt x 845.0471pt>
 File: misc/title.pdf Graphic file (type pdf)
  <use misc/title.pdf>
 Package pdftex.def Info: misc/title.pdf used on input line 4.
@@ -1514,7 +1514,7 @@ File: misc/title.pdf Graphic file (type pdf)
 <use misc/title.pdf>
 Package pdftex.def Info: misc/title.pdf used on input line 4.
 (pdftex.def)             Requested size: 597.50682pt x 845.04504pt.
- <misc/title.pdf, id=42, page=1, 597.50829pt x 845.0471pt>
+ <misc/title.pdf, id=98, page=1, 597.50829pt x 845.0471pt>
 File: misc/title.pdf Graphic file (type pdf)
 
 <use misc/title.pdf, page 1>
@@ -1570,9 +1570,10 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 5.
 (/usr/local/texlive/2013/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-<misc/aauLogoEn.png, id=67, 230.8625pt x 151.56625pt>
+<misc/aauLogoEn.png, id=123, 230.8625pt x 151.56625pt>
 File: misc/aauLogoEn.png Graphic file (type png)
- <use misc/aauLogoEn.png>
+
+<use misc/aauLogoEn.png>
 Package pdftex.def Info: misc/aauLogoEn.png used on input line 12.
 (pdftex.def)             Requested size: 138.51855pt x 90.94044pt.
 LaTeX Font Info:    Font shape `T1/futs/bx/n' in size <10> not available
@@ -1639,9 +1640,9 @@ File: t1cmss.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 LaTeX Font Warning: Font shape `T1/cmss/bx/sc' undefined
 (Font)              using `T1/cmss/bx/n' instead on input line 7.
 
-(/Users/Christian/Desktop/Rapport/.texpadtmp/SW406F15.toc
+(/Users/Christian/Documents/sw513e15/Rapport/.texpadtmp/SW406F15.toc
 LaTeX Font Info:    Font shape `T1/futs/bx/n' in size <12> not available
-(Font)              Font shape `T1/futs/b/n' tried instead on input line 5.
+(Font)              Font shape `T1/futs/b/n' tried instead on input line 7.
 )
 \tf@toc=\write6
 \openout6 = `SW406F15.toc'.
@@ -1661,31 +1662,64 @@ LaTeX Font Info:    Font shape `T1/futs/bx/n' in size <24.88> not available
 (Font)              Font shape `T1/futs/b/n' tried instead on input line 12.
  [6
 
-] [7
+] (./chapters/analysis/analysis.tex) [7]
+Chapter 2.
+[8
 
-] [8
+]
+Chapter 3.
+(./chapters/analysis/technologies.tex) [9
 
-] [9
-
-] [10
+]
+Chapter 4.
+(./chapters/analysis/problem.tex) [10
 
 ] [11
 
 ]
-
-LaTeX Warning: Empty bibliography on input line 26.
-
+Chapter 5.
 [12
 
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 31.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 31.
- (/Users/Christian/Desktop/Rapport/.texpadtmp/SW406F15.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 31.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 31.
+Chapter 6.
+[13
+
+]
+Chapter 7.
+[14
+
+]
+Chapter 8.
+[15
+
+] [16
+
+]
+Chapter 9.
+(./chapters/conclusion/reflection.tex) [17
+
+]
+Chapter 10.
+(./chapters/conclusion/summary.tex) [18
+
+]
+Chapter 11.
+(./chapters/conclusion/future.tex)
+
+LaTeX Warning: Empty bibliography on input line 45.
+
+[19
+
+] [20
+
+]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 50.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 50.
+ (/Users/Christian/Documents/sw513e15/Rapport/.texpadtmp/SW406F15.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 50.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 50.
 Package rerunfilecheck Info: File `SW406F15.out' has not changed.
 (rerunfilecheck)             Checksum: <no file>.
-
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
@@ -1694,10 +1728,10 @@ Package logreq Info: Writing requests to 'SW406F15.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 22850 strings out of 493308
- 390771 string characters out of 6137816
+ 22932 strings out of 493308
+ 392439 string characters out of 6137816
  571952 words of memory out of 5000000
- 25810 multiletter control sequences out of 15000+600000
+ 25850 multiletter control sequences out of 15000+600000
  75230 words of font info for 71 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
  58i,22n,75p,860b,1061s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1710,11 +1744,11 @@ f-dist/fonts/type1/adobe/utopia/putri8a.pfb></usr/local/texlive/2013/texmf-dist
 onts/type1/public/cm-super/sfcc1200.pfb></usr/local/texlive/2013/texmf-dist/fon
 ts/type1/public/cm-super/sfrm1440.pfb></usr/local/texlive/2013/texmf-dist/fonts
 /type1/public/cm-super/sfsx2488.pfb>
-Output written on /Users/Christian/Desktop/Rapport/.texpadtmp/SW406F15.pdf (12 
-pages, 219760 bytes).
+Output written on /Users/Christian/Documents/sw513e15/Rapport/.texpadtmp/SW406F
+15.pdf (20 pages, 234960 bytes).
 PDF statistics:
- 156 PDF objects out of 1000 (max. 8388607)
- 125 compressed objects within 2 object streams
- 22 named destinations out of 1000 (max. 500000)
- 102 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 267 PDF objects out of 1000 (max. 8388607)
+ 227 compressed objects within 3 object streams
+ 44 named destinations out of 1000 (max. 500000)
+ 214 words of extra memory for PDF output out of 10000 (max. 10000000)
 
