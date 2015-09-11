@@ -2,3 +2,8 @@
 *.log
 Rapport/SW406F15.synctex.gz
 *.toc
+Rapport/misc/.texpadtmp/title.synctex.gz
+
+*.log
+
+*.gz
