@@ -1,6 +1,7 @@
 *.bib
 *.log
 Rapport/SW406F15.synctex.gz
+Rapport/SW406F15.pdf
 *.toc
 Rapport/misc/.texpadtmp/*
 Rapport/.textpadtmp/*
