@@ -1,0 +1,22 @@
+A mesh network use a wide variety of protocols, to manage the route data is transferred.
+In networking a protocol is a special set of rules and standards for how devices would interacts with each other.
+A well known protocols would be TCP/IP(Transmission Control Protocol/Internet Protocol), which today are used to communicate between anything with a internet connection.
+The mesh network we are looking at is a radio based network, and therefore some more relevant protocols will be examined. 
+Few excising protocols will be presented in this section.
+
+\subsection{Time division multiple access}
+
+\subsection{Ad hoc On-Demand Distance Vector Routing}
+
+\subsection{Radio Link Protocol}
+Radio Link protocol(RLP) is a automatic repeat request(ARQ)\footnote{an error-control method for data transmission that uses acknowledgements and timeouts} fragmentation protocol used over a wireless air interface.
+Most air interface protocols have a packet loss of up to 1\% which is intolerable when handling sensitive data.
+RLP detects losses in packets and with a retransmission tries to bring down the losses.
+The retransmission can bring the loss down to 0.1\% to 0.0001\%.
+This loss rate is more tolerable when handling sensitive and precise data.
+
+RPL cannot request a certain payload size from the air interface, the air interface scheduler instead determines the packet size, based on changing channel conditions constantly.
+Most of the other fragmentation protocols, such as 802.11b\footnote{An wireless networking specification that extends throughput up to 11 Mbit/s} and IP, determine a payload of a certain size by the upper layers, and call upon the MAC.
+These protocols are not as flexible as RLP, and sometime fail transition during small fades in a wireless environment. 
+
+https://en.wikipedia.org/wiki/Radio_Link_Protocol
