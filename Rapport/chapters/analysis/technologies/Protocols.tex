@@ -1,15 +1,26 @@
-A mesh network use a wide variety of protocols, to manage the route data is transferred.
+A mesh network can use a wide variety of protocols, to manage the route data is transferred.
 In networking a protocol is a special set of rules and standards for how devices would interacts with each other.
 A well known protocols would be TCP/IP(Transmission Control Protocol/Internet Protocol), which today are used to communicate between anything with a internet connection.
 The mesh network we are looking at is a radio based network, and therefore some more relevant protocols will be examined. 
 Few excising protocols will be presented in this section.
 
 \subsection{Time division multiple access}
+Time division multiple access(TDMA) is protocol that divides a single channel into smaller time slots. Each time slot transmits one byte or a segment of a signal, in a sequential serial data format.
+
+TDMA is as an example used in the T1 telecommunication transmission system.
+Each T1 channels carry up to 24 voice telephone connections.
+Where each connection covers 300 Hz to 3000Hz and is digitized at an 8-kHz rate, which is two times the highest frequency component needed to retain all the analog content.
+\begin{figure}[!h]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth]{TDMA.png}}
+\end{figure}
+
 
 \subsection{Ad hoc On-Demand Distance Vector Routing}
 
+
 \subsection{Radio Link Protocol}
-Radio Link protocol(RLP) is a automatic repeat request(ARQ)\footnote{an error-control method for data transmission that uses acknowledgements and timeouts} fragmentation protocol used over a wireless air interface.
+Radio Link protocol(RLP) is a automatic repeat request(ARQ)\footnote{An error-control method for data transmission that uses acknowledgments and timeouts} fragmentation protocol used over a wireless air interface.
 Most air interface protocols have a packet loss of up to 1\% which is intolerable when handling sensitive data.
 RLP detects losses in packets and with a retransmission tries to bring down the losses.
 The retransmission can bring the loss down to 0.1\% to 0.0001\%.
