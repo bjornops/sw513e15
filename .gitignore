@@ -1,6 +1,7 @@
 *.bib
 *.log
 Rapport/SW406F15.synctex.gz
+Rapport/SW513E15.pdf
 *.toc
 Rapport/misc/.texpadtmp/*
 Rapport/.textpadtmp/*
@@ -46,3 +47,4 @@ Rapport/.textpadtmp/*
 *.log
 
 *.gz
+Rapport/SW513E15.pdf
