@@ -10,21 +10,24 @@ Time division multiple access(TDMA) is protocol that divides a single channel in
 TDMA is as an example used in the T1 telecommunication transmission system.
 Each T1 channels carry up to 24 voice telephone connections.
 Where each connection covers 300 Hz to 3000Hz and is digitized at an 8-kHz rate, which is two times the highest frequency component needed to retain all the analog content.
-\begin{figure}[!h]\label{TDMAfigure}
+\begin{figure}[!h]
 	\centering
 	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth]{figures/TDMA.png}}
+	\caption{Illustration of the TDMA protocol}
+	\label{fig:TDMAfigure}
 \end{figure}
 
-On \ref{TDMAfigure} it is seen how the channel is split up into 24 smaller pieces.
+On \figref{TDMAfigure} it is seen how the channel is split up into 24 smaller pieces.
 Each time slot is accountant for (in this case) a user using a voice channel.
-Eash time slot is of the size 8-bit, the user is unaware of this small data size, because the shift between each time slot happens so fast.
-This gives the illusion of each user talking whith no interruptions, even though each is assigned 1/24 of the total brandwidth.
-A single bit is used to syncronization.
-The TDMA system can maximum achived a data rate of 1.544 Mbit/secound.
+Each time slot is of the size 8-bit, the user is unaware of this small data size, because the shift between each time slot happens so fast.
+This gives the illusion of each user talking with no interruptions, even though each is assigned 1/24 of the total bandwidth.
+A single bit is used to synchronization.
+The TDMA system can maximum achieved a data rate of 1.544 Mbit/second.\cite{TDMA}
 
-TDMA can be used for any system that require several devies to use the channal, whitout interfering with each other.
+TDMA can be used for any system that require several device to use the same channel, whiteout interfering with each other.
 
 \subsection{Ad hoc On-Demand Distance Vector Routing}
+
 
 
 \subsection{Radio Link Protocol}
