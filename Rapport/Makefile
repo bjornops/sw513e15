@@ -4,7 +4,7 @@
 # Use:
 # make
 # make clean
-# options for ps2pdf: http://pages.cs.wisc.edu/~ghost/doc/AFPL/6.50/Ps2pdf.htm
+# make fast
 
 TEX:=$(shell ls *.tex)
 OTHER = *~ *.aux *.dvi *.toc *.bbl *.blg *.gz *.out *.thm *.ps *.idx *.ilg *.ind *.tdo *.cb *.cb2 *.lot *.soc *
