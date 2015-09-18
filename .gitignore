@@ -6,23 +6,11 @@ Rapport/SW513E15.pdf
 Rapport/misc/.texpadtmp/*
 Rapport/.textpadtmp/*
 
-*.log
-
 *.gz
-
-*.log
-
-*.log
-
-*.gz
-
-*.aux
 
 *.log
 
 *.xml
-
-*.out
 
 *.blg
 
@@ -30,23 +18,16 @@ Rapport/.textpadtmp/*
 
 *.toc
 
-*.gz
-
-*.gz
-
 *.aux
-
-*.log
 
 *.out
 
-*.gz
-
 *.toc
 
-*.log
+*.txt
 
-*.gz
+*.pdf
+
 Rapport/SW513E15.pdf
 
 Rapport/System Report.txt
