@@ -1,0 +1,76 @@
+A mesh network can use a wide variety of protocols, to manage the route data is transferred.
+In networking, a protocol is a special set of rules and standards for how nodes would interacts with each other.
+A well known protocols could be TCP/IP(Transmission Control Protocol/Internet Protocol), which today are used to communicate between almost anything with a internet connection.
+The mesh network we are looking at is a radio based network, and therefore some more relevant protocols will be examined. 
+A few excising protocols will be presented in this section.
+
+\subsection{Time division multiple access}
+Time division multiple access(TDMA) is protocol that divides a single channel into smaller time slots.
+Each time slot transmits one byte or a segment of a signal, in a sequential serial data format.
+Each slot is active of a small amount of time, before the next slot in the queue get time to transmit.
+
+TDMA is as an example used in the T1 telecommunication transmission system.
+Each T1 channels carry up to 24 voice telephone connections.
+Where each connection covers 300 Hz to 3000Hz and is digitized at an 8-kHz rate, which is two times the highest frequency component needed to retain all the analog content.
+\begin{figure}[!h]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth]{figures/TDMA.png}}
+	\caption{Illustration of the TDMA protocol}
+	\label{fig:TDMAfigure}
+\end{figure}
+
+On \figref{TDMAfigure} it is seen how the channel, for T1, is split up into 24 smaller pieces.
+Each time slot is accountant for a user using a voice channel, to talk to some other user.
+Each time slot is of the size 8-bit, the user is unaware of this small data size, and that other are using the same channel, because the shift between each time slot happens so fast.
+This gives the illusion of each user talking with no interruptions, even though each user only is assigned 1/24 of the total bandwidth.
+A single bit is used to synchronization.
+The TDMA system can maximum achieved a data rate of 1.544 Mbit/second.\cite{TDMA}
+
+TDMA can be used for any system that require several device to use the same channel, without interfering with each other.
+
+\subsection{Ad hoc On-Demand Distance Vector Routing}
+Ad hoc On Demand Distance Vector(AODV) routing algorithm is a routing protocol designed for ad hoc networks. 
+It is an on demand algorithm, meaning that it builds routes between nodes only as desired by source nodes.\cite{AOVD1}
+
+AODV is a network where only the local nodes around a newly added node, is affected by the addition.
+If a link between nodes is broken, and it does not affect an ongoing transmission, no global notification occurs.
+This leads to a network where new nodes easily can be added and removed without overhead on the entire network.
+The transmission  route in AODV is managed so, that only nodes in the direct route is active, which reduce the need for route maintenance and reduce idle nodes.
+The protocol can determine multiple routes between a source and a destination, but only a single one is implemented.
+The route is not necessarily the shortest.
+
+A downside to AODV is that if a single route breaks, due to a defect node, it is not possible to know whether other routes exists.
+But if a route breaks, the protocol discovers a new route, if possible, as and when necessary.
+
+When a node is ordered to send a packet to a specified destination, it checks its routing table to determine if it has a current route to the destination.
+If there already exist a node, the packet will be delivered to the next node in the route, repeating until it arrives at the correct location.
+If there does not exist a route, the node will initiates a route discovery process.
+
+A route discovery process begins with the source creating a Route Request (RREQ) packet.
+The packet contains the sources node's unique ID and IP, and the destination node's unique ID and IP.
+The packet is then transmitted out from the source to it's neighbours.
+The unique ID of each node is then stored in the packet, to ensure the same node is not transmitting more than once.
+The destination ID is to ensure it knows when the destination node is reached.
+A simple AODV network can be seen on \figref{AODVfigure}, where S and D represent the source and destination. It is visualized how the route discovery is invoked using the RREQ packet.\cite{AOVD2}
+
+\begin{figure}[!h]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.4\textwidth]{figures/AODV.png}}
+	\caption{Illustration of the AODV route discovery}
+	\label{fig:AODVfigure}
+\end{figure}
+
+
+\subsection{Radio Link Protocol}
+Radio Link protocol(RLP) is a automatic repeat request(ARQ)\footnote{An error-control method for data transmission that uses acknowledgements and timeouts} fragmentation protocol used over a wireless air interface.
+Most air interface protocols have a packet loss of up to 1\% which is intolerable when handling sensitive data.
+RLP detects losses in packets and with a retransmission tries to bring down the losses.
+The retransmission can bring the loss down to 0.1\% to 0.0001\%.
+This loss rate is more tolerable when handling sensitive and precise data.
+
+RPL cannot request a certain payload size from the air interface, the air interface scheduler instead determines the packet size, based on changing channel conditions constantly.
+Most of the other fragmentation protocols, such as 802.11b\footnote{An wireless networking specification} and IP, determine a payload of a certain size by the upper layers, and call upon the MAC.
+These protocols are not as flexible as RLP, and sometime fail transition during small fades in a wireless environment.\cite{MobileComm}
+
+RLP is used to make a more fail-safe environment for the transmitted data, and to ensure nothing is lost on the way.
+The Radio Link Protocol is typically used in cellular transmission.
