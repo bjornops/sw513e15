@@ -1,38 +1,3 @@
-<<<<<<< HEAD
-*.bib
-*.log
-Rapport/SW406F15.synctex.gz
-Rapport/SW513E15.pdf
-*.toc
-Rapport/misc/.texpadtmp/*
-Rapport/.textpadtmp/*
-
-*.gz
-
-*.log
-
-*.xml
-
-*.blg
-
-*.bbl
-
-*.toc
-
-*.gz
-
-*.aux
-
-*.out
-
-*.toc
-
-*.txt
-
-*.pdf
-
-Rapport/SW513E15.pdf
-=======
 *.bib
 *.log
 Rapport/SW406F15.synctex.gz
@@ -85,4 +50,3 @@ Rapport/.textpadtmp/*
 Rapport/SW513E15.pdf
 
 Rapport/System Report.txt
->>>>>>> master
