@@ -1,12 +1,12 @@
 \chapter{Arduino}
 \label{sec:arduino}
-Arduino is an open source platform, which makes the designing of an interactive or general electronics system easier. This is also why the Arduino platform is often used at school for learning about electronics.
+Arduino is an open source platform, which makes the designing of an interactive or general electronics system easier. This is also why the Arduino platform is used at school for learning about electronics. It is developed by the students David Cuartielles, Gianluca Martino, Tom Igoe, David Mellis, and Massimo Banzi at the Interaction Design Institute Ivrea in Italy\cite{makingofarduino}.
 
-Arduino boards have a setup of input and output ports enabling it to read from a sensor, or a button and then maybe activate a motor or an LED light. How the Arduino handles or reacts to input is up to the designer which can program the Arduino board using the Arduino IDE.
+Arduino boards have a set op input and output ports enabling it to read from a sensor, or a button and then maybe activate a motor or an LED light. How the arduino handles or reacts to input is up to the designer which can program the Arduino board using the Arduino IDE.
 
-"Arduino" covers a range of platforms with a lot of different boards varying in size, from Arduino Nano up to Arduino Mega. One of the more popular Arduino boards is the Arduino Uno which is somewhere in the middle of boards, considering size and power.
+"Arduino" covers a huge platform with a lot of different boards greatly varying in size, from Arduino Nano up to Arduino Mega. One of the more popular Arduino boards is the Arduino Uno which is somewhere in the middle of boards, considering size and power.
 
-In the following sections, the Uno and Mega, which will be used in this project, will be described.
+In the following subsections, the Uno and Mega, which will be used in this project, will be described.
 
 \section{Arduino Uno}
 One of the most common boards is the Arduino Uno \ref{fig:arduinouno}, which is based on the ATmega328 microcontroller. It has 14 digital input/output pins, and 6 analog inputs for connecting the different components. Considering specifications, which is shown on \ref{tab:unospec}, the Uno is limited on its resources. Therefore it is needed to limit both program- and datasize, and also the amount of complex tasks.
@@ -34,16 +34,15 @@ EEPROM & 1 KB (ATmega328)\\
 Clock Speed & 16 MHz\\
 \hline
 \end{tabular}
-\caption{Specifications for Arduino Uno}
 \end{table}
 \label{tab:unospec}
 \section{Arduino Mega}
-The Arduino Mega is a larger version of the Uno. The Mega has more memory and pins, which makes it better for handling larger programs or amounts of data. This also allows more components can be connected to the board. Since the clock speed is the same as the Uno, the Mega will not process data faster.
+The Arduino Mega is a larger version of the Uno for some specifications. The Mega is larger on its memory and Pins, which makes it better for handling larger programs or amounts of data. Also a lot more components can be connected to the board. Since the clock speed is the same as the Uno, the Mega will not process data faster.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.6\textwidth]{chapters/analysis/figs/ArduinoMega.jpg}
-\caption{Arduino Mega board\cite{arduinomegaimg}.}
+\includegraphics[width=0.5\textwidth]{chapters/analysis/figs/ArduinoMega.jpg}
+\caption{Arduino Mega board\cite{arduinomega}.}
 \label{fig:arduinomega}
 \end{figure}
 
@@ -64,6 +63,5 @@ EEPROM & 4 KB\\
 Clock Speed & 16 MHz\\
 \hline
 \end{tabular}
-\caption{Specifications for Arduino Mega}
 \end{table}
 \label{tab:megaspec}
