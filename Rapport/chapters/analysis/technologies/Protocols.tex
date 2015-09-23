@@ -28,6 +28,21 @@ The TDMA system can maximum achieved a data rate of 1.544 Mbit/second.\cite{TDMA
 
 TDMA can be used for any system that require several device to use the same channel, without interfering with each other.
 
+
+\subsection{Radio Link Protocol}
+Radio Link protocol(RLP) is a automatic repeat request(ARQ)\footnote{An error-control method for data transmission that uses acknowledgements and timeouts} fragmentation protocol used over a wireless air interface.
+Most air interface protocols have a packet loss of up to 1\% which is intolerable when handling sensitive data.
+RLP detects losses in packets and with a retransmission tries to bring down the losses.
+The retransmission can bring the loss down to 0.1\% to 0.0001\%.
+This loss rate is more tolerable when handling sensitive and precise data.
+
+RPL cannot request a certain payload size from the air interface, the air interface scheduler instead determines the packet size, based on changing channel conditions constantly.
+Most of the other fragmentation protocols, such as 802.11b\footnote{An wireless networking specification} and IP, determine a payload of a certain size by the upper layers, and call upon the MAC.
+These protocols are not as flexible as RLP, and sometime fail transition during small fades in a wireless environment.\cite{MobileComm}
+
+RLP is used to make a more fail-safe environment for the transmitted data, and to ensure nothing is lost on the way.
+The Radio Link Protocol is typically used in cellular transmission.
+
 \subsection{Ad hoc On-Demand Distance Vector Routing}
 Ad hoc On Demand Distance Vector(AODV) routing algorithm is a routing protocol designed for ad hoc networks. 
 It is an on demand algorithm, meaning that it builds routes between nodes only as desired by source nodes.\cite{AOVD1}
@@ -60,17 +75,13 @@ A simple AODV network can be seen on \figref{AODVfigure}, where S and D represen
 	\label{fig:AODVfigure}
 \end{figure}
 
+\subsection{Better approach to mobile ad-hoc networking}
+Better approach to mobile ad-hoc networking (B.A.T.M.A.N) is a routing protocol for multi-hop ad-hoc mesh networks. 
+B.A.T.M.A.N is said to solve some of the more typical problems with the classical routing protocols, which is not well suited for wireless ad-hoc networks.
+Some of the problems is, such networks  are unstructured, are based on an inherently unreliable medium and dynamically change their topology.
 
-\subsection{Radio Link Protocol}
-Radio Link protocol(RLP) is a automatic repeat request(ARQ)\footnote{An error-control method for data transmission that uses acknowledgements and timeouts} fragmentation protocol used over a wireless air interface.
-Most air interface protocols have a packet loss of up to 1\% which is intolerable when handling sensitive data.
-RLP detects losses in packets and with a retransmission tries to bring down the losses.
-The retransmission can bring the loss down to 0.1\% to 0.0001\%.
-This loss rate is more tolerable when handling sensitive and precise data.
-
-RPL cannot request a certain payload size from the air interface, the air interface scheduler instead determines the packet size, based on changing channel conditions constantly.
-Most of the other fragmentation protocols, such as 802.11b\footnote{An wireless networking specification} and IP, determine a payload of a certain size by the upper layers, and call upon the MAC.
-These protocols are not as flexible as RLP, and sometime fail transition during small fades in a wireless environment.\cite{MobileComm}
-
-RLP is used to make a more fail-safe environment for the transmitted data, and to ensure nothing is lost on the way.
-The Radio Link Protocol is typically used in cellular transmission.
+When using the B.A.T.M.A.N algorithm, the approach is to divide the knowledge about the most reasonable path between nodes in a network to all of the participating nodes.
+Each node in the network only account for the best path to all other nodes in the system.
+This result in the need for a global knowledge about local topology changes becomes unnecessary
+In addition, does B.A.T.M.A.N have an event-based, but timeless, flooding mechanism that prevents the occurrence of loops and limits the amount of topology messages flooding the network.
+The network is designed to handle network where links are not always reliable.
