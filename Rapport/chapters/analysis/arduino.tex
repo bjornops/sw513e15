@@ -1,4 +1,4 @@
-\chapter{Arduino}
+%\chapter{Arduino}
 \label{sec:arduino}
 Arduino is an open source platform, which makes the designing of an interactive or general electronics system easier. This is also why the Arduino platform is often used at school for learning about electronics.
 
@@ -8,7 +8,7 @@ Arduino boards have a setup of input and output ports enabling it to read from a
 
 In the following sections, the Uno and Mega, which will be used in this project, will be described.
 
-\section{Arduino Uno}
+\subsection{Arduino Uno}
 One of the most common boards is the Arduino Uno \ref{fig:arduinouno}, which is based on the ATmega328 microcontroller. It has 14 digital input/output pins, and 6 analog inputs for connecting the different components. Considering specifications, which is shown on \ref{tab:unospec}, the Uno is limited on its resources. Therefore it is needed to limit both program- and datasize, and also the amount of complex tasks.
 \begin{figure}[h!]
 \centering
@@ -37,7 +37,9 @@ Clock Speed & 16 MHz\\
 \caption{Specifications for Arduino Uno}
 \end{table}
 \label{tab:unospec}
-\section{Arduino Mega}
+
+
+\subsection{Arduino Mega}
 The Arduino Mega is a larger version of the Uno. The Mega has more memory and pins, which makes it better for handling larger programs or amounts of data. This also allows more components can be connected to the board. Since the clock speed is the same as the Uno, the Mega will not process data faster.
 
 \begin{figure}[h!]
@@ -67,3 +69,5 @@ Clock Speed & 16 MHz\\
 \caption{Specifications for Arduino Mega}
 \end{table}
 \label{tab:megaspec}
+
+\subsection{XBee}
