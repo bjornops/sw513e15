@@ -1,29 +1,27 @@
 \section{Communication devices}
-In the following section, different types of communication devices usable in the project is examined. The goal is to determine which communication type and device is best suited for the product.
+In the following section, different types of communication devices usable in the project is examined. The goal is to determine which communication type and device is best suited for the solution.
 
 \subsection{Bluetooth}
-Bluetooth is a wireless technology standard for transfering data over short distances. Bluetooth is often used in phones and computers, and can be used for connecting devices such as the product in this report.
+Bluetooth is a wireless technology standard designed to transfer data over short distances. Bluetooth is often used in phones and computers, and can be used for connecting devices as the ones to be designed as the solution. \todo{fix den her linje, er clueless.}
 
-The number of devices that can be on a Bluetooth network is almost unlimited, and the the built-in interference reduction makes the technology usable for the product.
-Bluetooth devices have to be paired in order to exchange data, which makes it hard to create a hot pluggable network of devices. This, and the short range of (at most) 100m\cite{bluetoothbasics}. makes it not viable for this project, as golf courses are large and these devices will have to cover great distances.
+The number of devices that can be on a Bluetooth network is almost unlimited, and the the built-in interference reduction makes the technology usable for the product. \todo{der bliver snakket om noget indbygget? er det også nævnt i senere kilde eller?}
+Bluetooth devices have to be paired in order to exchange data, which makes it hard to create a hot pluggable network of devices. This, and the short range of (at most) 100m\cite{bluetoothbasics}. makes it less viable for this project, as golf courses are large and these devices will have to cover great distances.
 
 \subsection{XBee}
 XBee is a radio module by Digi. Multiple versions of the XBee modules exists, with differences in power usage, range, built-in/external antenna, and some with processors\cite{sparkfunXbeeGuide}.
-XBees often use the ZigBee protocol. The ZigBee standard is made for low-power devices, such as the product described in this report\cite{zigbee}.
+XBees often use the ZigBee protocol. The ZigBee standard\todo{standard or protocol?}  is made for low-power devices, such as the product described in this report\cite{zigbee}.
 
 XBees are fast and predictable, making them a good choice for a project such as this. They are easy to work with on the Arduino platform, using the Serial pins. There even exists XBee shields made for Arduino.
 
-XBees unfortunately are also quite expensive, which makes them unfit for this project. In later iterations of the product they could be used if longer ranges became a requirement or it had to interface with other devices using the ZigBee protocol or XBee modules.
-
+XBees unfortunately are also quite expensive, which makes them unfit for this project. In later iterations of the product/unsure{vi bør diskuterre om det er produkt eller løsning?}  they could be used if longer ranges became a requirement or it had to interface with other devices using the ZigBee protocol or XBee modules.
 
 \subsection{RF24 Transceiver}
 The RF24 transceiver module is a radio module used for exchanging data between modules of the same type. As with most of the XBee modules, the RF24 uses the 2.4GHz band, which is license-free in the whole world. It is well documented, and multiple libraries exists for using the device with Arduino.
 
 The RF24 is cheaper than the XBees, although it has shorter range and, depending on the chosen protocol, is potentially slower.
 
-
 The device chosen for this project is the RF24 because of the price. The shorter range is not a problem, as the project is more of a proof-of-concept. The speed is also good enough for the requirements, which makes this module good for the product described in the report.
 
-The full RF24 specifications can be seen in chapter \#\#
+The full RF24 specifications can be seen in appendix \todo{add this.}
 
 % The RF24 allows packets of up to 32 bytes, and is fast enough 
