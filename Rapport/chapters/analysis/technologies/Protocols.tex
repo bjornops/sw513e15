@@ -29,19 +29,44 @@ The TDMA system can maximum achieved a data rate of 1.544 Mbit/second.\cite{TDMA
 TDMA can be used for any system that require several device to use the same channel, without interfering with each other.
 
 
-\subsection{Radio Link Protocol}
-Radio Link protocol(RLP) is a automatic repeat request(ARQ)\footnote{An error-control method for data transmission that uses acknowledgements and timeouts} fragmentation protocol used over a wireless air interface.
-Most air interface protocols have a packet loss of up to 1\% which is intolerable when handling sensitive data.
-RLP detects losses in packets and with a retransmission tries to bring down the losses.
-The retransmission can bring the loss down to 0.1\% to 0.0001\%.
-This loss rate is more tolerable when handling sensitive and precise data.
+%\subsection{Radio Link Protocol}
+%Radio Link protocol(RLP) is a automatic repeat request(ARQ)\footnote{An error-control method for data transmission that uses acknowledgements and timeouts} fragmentation protocol used over a wireless air interface.
+%Most air interface protocols have a packet loss of up to 1\% which is intolerable when handling sensitive data.
+%RLP detects losses in packets and with a retransmission tries to bring down the losses.
+%The retransmission can bring the loss down to 0.1\% to 0.0001\%.
+%This loss rate is more tolerable when handling sensitive and precise data.
 
-RPL cannot request a certain payload size from the air interface, the air interface scheduler instead determines the packet size, based on changing channel conditions constantly.
-Most of the other fragmentation protocols, such as 802.11b\footnote{An wireless networking specification} and IP, determine a payload of a certain size by the upper layers, and call upon the MAC.
-These protocols are not as flexible as RLP, and sometime fail transition during small fades in a wireless environment.\cite{MobileComm}
+%RPL cannot request a certain payload size from the air interface, the air interface scheduler instead determines the packet size, based on changing channel conditions constantly.
+%Most of the other fragmentation protocols, such as 802.11b\footnote{An wireless networking specification} and IP, determine a payload of a certain size by the upper layers, and call upon the MAC.
+%These protocols are not as flexible as RLP, and sometime fail transition during small fades in a wireless environment.\cite{MobileComm}
 
-RLP is used to make a more fail-safe environment for the transmitted data, and to ensure nothing is lost on the way.
-The Radio Link Protocol is typically used in cellular transmission.
+%RLP is used to make a more fail-safe environment for the transmitted data, and to ensure nothing is lost on the way.
+%The Radio Link Protocol is typically used in cellular transmission.
+
+\subsection{Dynamic Source Routing protocol}
+The Dynamic Source Routing protocol (DSR) is a simple routing protocol designed specifically for use in multi-hop wireless ad hoc networks.
+With DSR the network is completely self-organizing and self-configuring, requiring no administration or existing network structure.
+The nodes in the network work together to forward packets to desternations that can be outside of the senders transmission range.
+As nodes can be added and removed ad hoc, the protocol automatically determine and maintain the routing of the packets though out the network.
+Since the number or sequence of nodes needed to reach any destination may change at any time, the resulting network topology may be quite rapidly changing.
+DSR is created to create a very low overhead yet being able to react quickly to change in the network environment.
+The protocol provides a highly reactive service to ensure successful delivery of data packets where node may be moving around, or other changes in the network occur. 
+
+The DSR protocol is composed of two main mechanisms that allow the discovery and maintenance of the routes in the network.
+
+- Route Discovery is the mechanism by which a node S wishing to send a packet to a destination node D obtains a source route to D.
+Route Discovery is used only when S attempts to send a packet to D and does not already know a route to D.
+
+- Route Maintenance is the mechanism by which node S is able to detect, while using a source route to D, if the network topology has changed such that it can no longer use its route to D 
+because a link along the route no longer works.
+When Route Maintenance indicates a source route is broken, S can attempt to use any other route it happens to know to D, or it can invoke Route Discovery again to find a new route for subsequent packets to D.
+Route Maintenance for this route is used only when S is actually sending packets to D.
+
+DSR is a source routing protocol where packets carries a header, a ordered list of nodes to determine the route.
+This explicit use of routing allows the sender to select and control the route for the packets it sends.
+Source routing allow for load balancing, since the sender can create different routes out though the network, avoiding "heavy traffic".
+It is also guarantee that the routes used are loop-free, since a generated route never use the same node twice.
+By including this source route in the header of each packet, other nodes forwarding or overhearing any of these packets can easily cache this information for future use.\cite{DSR}
 
 \subsection{Ad hoc On-Demand Distance Vector Routing}
 Ad hoc On Demand Distance Vector(AODV) routing algorithm is a routing protocol designed for ad hoc networks. 
@@ -84,10 +109,10 @@ When using the B.A.T.M.A.N algorithm, the approach is to divide the knowledge ab
 Each node in the network only account for the best path to all other nodes in the system.
 This results in, the need for a global knowledge about local topology changes becomes unnecessary.
 In addition, does B.A.T.M.A.N have an event-based, but timeless, flooding mechanism that prevents the occurrence of loops and limits the amount of topology messages flooding the network.
-The network is designed to handle network where links between nodes are not always reliable.cite{BATMAN}
+The protocol is designed to handle network where links between nodes are not always reliable.\cite{BATMAN}
 
 \subsection{Protocol comparison}
-Below is a comparison table with the protocol discuses in this chapter.
+Below is a comparison table with the protocol discuses in this chapter. Her skal skrives et eller andet.
 
 \begin{table}[C]
 \centering
@@ -97,10 +122,10 @@ Below is a comparison table with the protocol discuses in this chapter.
 \hline
             & Ad hoc & Rute metrics                                                                     & \begin{tabular}[c]{@{}c@{}}Loop \\ Free\end{tabular} & \begin{tabular}[c]{@{}c@{}}Load \\ balancing\end{tabular} & Reliability & Thoughput                                                                    \\ \cline{1-1}
 \rowcolor[HTML]{EFEFEF} 
-TDMA        & Yes    & \begin{tabular}[c]{@{}c@{}}Routes ensuring\\  guaranteed bandwidths\end{tabular} & Yes                                                  & Yes                                                       & High        & \begin{tabular}[c]{@{}c@{}}Decreases as more \\ nodes are added\end{tabular} \\
-DSR         & Yes    & Shortest path                                                                    & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Decreases as more\\  nodes are added\end{tabular} \\
+TDMA        & Yes    & \begin{tabular}[c]{@{}c@{}}Routes ensuring\\  guaranteed bandwidth\end{tabular} & Yes                                                  & Yes                                                       & High        & \begin{tabular}[c]{@{}c@{}}Decreases as more \\ nodes are added\end{tabular} \\
+DSR         & Yes    & Source routing                                                                   & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Decreases as more\\  nodes are added\end{tabular} \\
 \rowcolor[HTML]{EFEFEF} 
 AOVD        & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shortest path\end{tabular}               & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Poor for more\\  than 20 nodes\end{tabular}       \\
-B.A.T.M.A.N & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shortest path\end{tabular}               & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}High - scales\\ well with more nodes\end{tabular} \\ \hline
+B.A.T.M.A.N & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shortest path\end{tabular}               & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Good - scales\\ well with more nodes\end{tabular} \\ \hline
 \end{tabular}
-\end{table}\cite{TDMATable}\cite{ProtocolTable}\cite{ProtocolTable}\cite{BATMAN}
+\end{table}\cite{TDMATable}\cite{ProtocolTable}\cite{DSR}\cite{BATMAN}
