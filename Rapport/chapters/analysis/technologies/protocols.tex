@@ -115,18 +115,18 @@ The protocol is designed to handle network where links between nodes are not alw
 \subsection{Protocol comparison}
 Below is a comparison table with the protocol discuses in this chapter. Her skal skrives et eller andet.
 
-\begin{table}[h]
-\centering
+\begin{table}[!ht]
 \caption{Protocol comparison}
 \label{my-label}
+\makebox[\linewidth]{
 \begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
-            & Ad hoc & Rute metrics                                                                     & \begin{tabular}[c]{@{}c@{}}Loop \\ Free\end{tabular} & \begin{tabular}[c]{@{}c@{}}Load \\ balancing\end{tabular} & Reliability & Thoughput                                                                    \\ \cline{1-1}
+            & Ad hoc & Rute metrics                                                                     & \begin{tabular}[c]{@{}c@{}}Loop \\ Free\end{tabular} & \begin{tabular}[c]{@{}c@{}}Load \\ balancing\end{tabular} & Reliability & Thoughput                                                                    \\ \hline%cline{1-1}
 \rowcolor[HTML]{EFEFEF} 
 TDMA        & Yes    & \begin{tabular}[c]{@{}c@{}}Routes ensuring\\  guaranteed bandwidth\end{tabular} & Yes                                                  & Yes                                                       & High        & \begin{tabular}[c]{@{}c@{}}Decreases as more \\ nodes are added\end{tabular} \\
 DSR         & Yes    & Source routing                                                                   & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Decreases as more\\  nodes are added\end{tabular} \\
 \rowcolor[HTML]{EFEFEF} 
 AOVD        & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shortest path\end{tabular}               & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Poor for more\\  than 20 nodes\end{tabular}       \\
 B.A.T.M.A.N & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shortest path\end{tabular}               & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Good - scales\\ well with more nodes\end{tabular} \\ \hline
-\end{tabular}
+\end{tabular}}
 \end{table}\cite{TDMATable}\cite{ProtocolTable}\cite{DSR}\cite{BATMAN}
