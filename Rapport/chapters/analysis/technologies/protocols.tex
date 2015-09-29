@@ -8,7 +8,7 @@ A few excising protocols will be presented in this section.
 \subsection{Time division multiple access}
 Time division multiple access(TDMA) is protocol that divides a single channel into smaller time slots.
 Each time slot transmits one byte or a segment of a signal, in a sequential serial data format.
-Each slot is active of a small amount of time, before the next slot in the queue get time to transmit.
+Each slot is active of a small amount of time, before the next slot in the queue get time to transmit\cite{TDMA}.
 
 TDMA is as an example used in the T1 telecommunication transmission system.
 Each T1 channels carry up to 24 voice telephone connections.
@@ -25,7 +25,7 @@ Each time slot is accountant for a user using a voice channel, to talk to some o
 Each time slot is of the size 8-bit, the user is unaware of this small data size, and that other are using the same channel, because the shift between each time slot happens so fast.
 This gives the illusion of each user talking with no interruptions, even though each user only is assigned 1/24 of the total bandwidth.
 A single bit is used to synchronization.
-The TDMA system can maximum achieved a data rate of 1.544 Mbit/second.\cite{TDMA}
+The TDMA system can maximum achieved a data rate of 1.544 Mbit/second\cite{TDMA}.
 
 TDMA can be used for any system that require several device to use the same channel, without interfering with each other.
 
@@ -51,7 +51,7 @@ The nodes in the network work together to forward packets to desternations that 
 As nodes can be added and removed ad hoc, the protocol automatically determine and maintain the routing of the packets though out the network.
 Since the number or sequence of nodes needed to reach any destination may change at any time, the resulting network topology may be quite rapidly changing.
 DSR is created to create a very low overhead yet being able to react quickly to change in the network environment.
-The protocol provides a highly reactive service to ensure successful delivery of data packets where node may be moving around, or other changes in the network occur. 
+The protocol provides a highly reactive service to ensure successful delivery of data packets where node may be moving around, or other changes in the network occur\cite{DSR}. 
 
 The DSR protocol is composed of two main mechanisms that allow the discovery and maintenance of the routes in the network.
 
@@ -67,25 +67,25 @@ DSR is a source routing protocol where packets carries a header, a ordered list 
 This explicit use of routing allows the sender to select and control the route for the packets it sends.
 Source routing allow for load balancing, since the sender can create different routes out though the network, avoiding "heavy traffic".
 It is also guarantee that the routes used are loop-free, since a generated route never use the same node twice.
-By including this source route in the header of each packet, other nodes forwarding or overhearing any of these packets can easily cache this information for future use.\cite{DSR}
+By including this source route in the header of each packet, other nodes forwarding or overhearing any of these packets can easily cache this information for future use\cite{DSR}.
 
 \subsection{Ad hoc On-Demand Distance Vector Routing}
 Ad hoc On Demand Distance Vector(AODV) routing algorithm is a routing protocol designed for ad hoc networks. 
-It is an on demand algorithm, meaning that it builds routes between nodes only as desired by source nodes.\cite{AOVD1}
+It is an on demand algorithm, meaning that it builds routes between nodes only as desired by source nodes\cite{AOVD1}.
 
 AODV is a network where only the local nodes around a newly added node, is affected by the addition.
 If a link between nodes is broken, and it does not affect an ongoing transmission, no global notification occurs.
 This leads to a network where new nodes easily can be added and removed without overhead on the entire network.
 The transmission  route in AODV is managed so, that only nodes in the direct route is active, which reduce the need for route maintenance and reduce idle nodes.
 The protocol can determine multiple routes between a source and a destination, but only a single one is implemented.
-The route is not necessarily the shortest.
+The route is not necessarily the shortest\cite{AOVD1}.
 
 A downside to AODV is that if a single route breaks, due to a defect node, it is not possible to know whether other routes exists.
 But if a route breaks, the protocol discovers a new route, if possible, as and when necessary.
 
 When a node is ordered to send a packet to a specified destination, it checks its routing table to determine if it has a current route to the destination.
 If there already exist a node, the packet will be delivered to the next node in the route, repeating until it arrives at the correct location.
-If there does not exist a route, the node will initiates a route discovery process.
+If there does not exist a route, the node will initiates a route discovery process\cite{AOVD1}.
 
 A route discovery process begins with the source creating a Route Request (RREQ) packet.
 The packet contains the sources node's unique ID and IP, and the destination node's unique ID and IP.
@@ -110,7 +110,7 @@ When using the B.A.T.M.A.N algorithm, the approach is to divide the knowledge ab
 Each node in the network only account for the best path to all other nodes in the system.
 This results in, the need for a global knowledge about local topology changes becomes unnecessary.
 In addition, does B.A.T.M.A.N have an event-based, but timeless, flooding mechanism that prevents the occurrence of loops and limits the amount of topology messages flooding the network.
-The protocol is designed to handle network where links between nodes are not always reliable.\cite{BATMAN}
+The protocol is designed to handle network where links between nodes are not always reliable\cite{BATMAN}.
 
 \subsection{Protocol comparison}
 Below is a comparison table with the protocol discuses in this chapter. Her skal skrives et eller andet.
