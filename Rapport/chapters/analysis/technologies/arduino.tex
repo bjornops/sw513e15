@@ -1,4 +1,4 @@
-\section{Controller units}
+\section{Arduino}
 \label{sec:arduino}
 Arduino is an open source platform, which makes the designing of an interactive or general electronics system easier. This is also why the Arduino platform is often used at school for learning about electronics.
 
@@ -69,3 +69,37 @@ Clock Speed & 16 MHz\\
 \caption{Specifications for Arduino Mega}
 \end{table}
 \label{tab:megaspec}
+
+\section{Raspberry Pi}
+Raspberry Pi is a series of single board computers. The Raspberry Pi is developed by the Raspberry Pi Foundation seated in the UK. The Raspberry Pi series contains some rather powerful controllers compared to their credit card sized boards, which makes them great as small processing units.
+
+Something about those stupid pins....
+
+Because of the power and memory of a Raspberry pi, a Linux OS is usually installed on a SD card and then plugged into the Pi for executing. A Raspberry Pi also contains a GPU and a video output, and finally a USB input. Because of this a Linux OS is easily supported.
+
+In the following subsection a Raspberry Pi B+ will be described. The different models usually differs on cpu speed and memory, but a main difference from the early models is network connectivity.
+
+\subsection{Raspberry Pi B+}
+The Raspberry Pi B+ contains the specifications shown on \ref{tab:pibplusspec} along with HDMI video output and Ethernet connectivity. As main storage a micro sd card must be installed, which also contains the OS.
+
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.6\textwidth]{chapters/analysis/figs/raspberry-pi-model-b-plus.png}
+\caption{Raspberry Pi B+\cite{pibplus}.}
+\label{fig:pibplus}
+\end{figure}
+
+\begin{table}[h!]
+\begin{tabular}{| l | l |}
+\hline
+Microcontroller & Broadcom BCM2835\\
+RAM & 512MB\\
+Extended GPIO Pins & 40\\
+USB Ports & 4\\
+Clock Speed & 700 MHz\\
+\hline
+\end{tabular}
+\caption{Specifications for Raspberry Pi B+}
+\end{table}
+\label{tab:pibplusspec}
