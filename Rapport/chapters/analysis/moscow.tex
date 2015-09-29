@@ -1,27 +1,73 @@
 \chapter{MoSCoW}
-This chapter aims to map the requirements of the project and sort them based on different priorities.
+This chapter aims to map the requirements of the project and sort them based on different priorities. First a listing with the requirements and their priorities, followed by a description for contents of each category.
+
+Requirements are an essential part of developing a system that fits its purpose. All requirements can be considered important, but that they are all required for the systems purpose might not be case. By categorizing the requirements it becomes possible to identify and differentiate the important criteria from the lesser ones. 
+
+The MoSCoW (Must have, Should have, Cant have and Wont have) analysis method have been used to sort the requirements. The requirements have are the result of the this reports analysis chapter.
+
 
 Must have:
 \begin{itemize}
-\item[Communication]
-\item[wireless functionality]
+\item[Transfer data from all sensor nodes to a destination/main node wirelessly]
+\item[Implement a network with a communication protocol]
+\item[Continue working if some node loses connectivity]
+\item[Support the use case by applying moisture sensors to the nodes]
+\item[•]
 \end{itemize}
 
 Should have:
 \begin{itemize}
-\item[•]
+\item[Be easy to install and add new sensors to an existing network (Hot-pluggable)]
 \item[•]
 \end{itemize}
 
 Could have:
 \begin{itemize}
-\item[•]
+\item[Be scale-able to other appliances]
+\item[Separate system installations, so nodes do not connect to another installation nearby]
+\item[]
 \end{itemize}
 
 Wont have:
 \begin{itemize}
-\item[Stuff we wont have goes here lol]
+\item[Smartphone connectivity and UI]
+\item[•]
 \end{itemize}
+
+%In-depth description goes below:
+
+Must have:
+%Transfer data from all sensor nodes to a destination/main node wirelessly
+Being able to transfer data between the nodes is the core functionality for the system.
+
+%Implement a network with a communication protocol
+
+
+%Continue working if some node loses connectivity
+
+
+%Support the use case by applying moisture sensors to the nodes
+
+
+
+Should have:
+%Be easy to install and add new sensors to an existing network (Hot-pluggable)
+
+
+
+Could have:
+\item Be scale-able to other appliances
+
+
+\item Separate system installations, so nodes do not connect to another installation nearby
+If the final system includes the hot-pluggable functionality, the individual nodes should stay connected to a particular installation and not be confused by another nearby installation of the system. This requirement could potentially become very complex, and the problem with two installations that interfere with each other might not be relevant if a single installation cover the entire golf course.
+
+
+Wont have:
+\item Smartphone connectivity and UI
+Kim Jensen, the interviewee of chapter [CHAPTER REF], mentioned how it could be handy to get the moisture readings directly to his smartphone. This functionality will not be implemented during this iteration of the project. The most important aspect of this project is the core communication system, and smartphone connectivity does not add to that.
+
+
 
 
 
