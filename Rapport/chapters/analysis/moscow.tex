@@ -1,1 +1,83 @@
-\section{Requirements (MoSCoW?)}
+\chapter{MoSCoW}
+This is a roundup of the analysis chapter, and will be the transition into the technology chapter. This chapter aims to map the requirements of the project and sort them based on different priorities. First a full listing with the requirements and their priorities, followed by a description for the contents of each category.
+
+Requirements are an essential part of developing a system that fulfill its purpose. All requirements can be considered important, but some might be more beneficial for systems core purpose than others. By categorizing the requirements it becomes possible to identify and separate the important criteria from the lesser ones. 
+
+The MoSCoW (Must-have, Should-have, Cant-have and Wont-have) analysis method have been used to sort the requirements. The requirements have are the result of the this reports analysis chapter. The Wont-have category have not been used. All the requirements are summarized below:
+
+
+Must have:
+\begin{itemize}
+\item Transfer data from all sensor nodes to a destination/main node wirelessly.
+\item Implement a network with a communication protocol.
+\item The system should respond appropriately to a disconnecting node.
+\item Nodes equipped with a sensor.
+\end{itemize}
+
+Should have:
+\begin{itemize}
+\item Be able to seamlessly add and remove sensors to an existing system (Hot-pluggging).
+\item Be modular build, so parts of a node can be replaced if destroyed.
+\end{itemize}
+
+Could have:
+\begin{itemize}
+\item Separate system installations, so nodes do not connect to another installation on a nearby golf course.
+\item Have a graphical user interface for presentation of data.
+\end{itemize}
+
+\pagebreak
+
+%In-depth description goes below:
+
+Each category have been expanded and further explained below:
+
+\textbf{Must have:}
+\begin{itemize}
+\item Transfer data from all sensor nodes to a destination/main node wirelessly.
+\end{itemize}
+The core purpose of the system is to transfer data between nodes. Without this the system would not be able to fulfill its purpose and this requirement have therefore been categorized as a must have.
+
+
+\begin{itemize}
+\item Implement a network with a communication protocol.
+\end{itemize}
+The system will transfer data between nodes wirelessly and it is therefore required of each node that they can send and receive readable data. A communication protocol is needed to ensure that the data is treated correctly.
+
+
+\begin{itemize}
+\item The system should respond appropriately to a disconnecting node.
+\end{itemize}
+When multiple nodes have been spread around the golf course, they will communicate wirelessly, and since each node are dependent on each other to reach the main/end node, it becomes necessary to ensure that the entire system does not break down if one node were to disconnect from the rest. How would the system administrators find the disconnected node? This is why the system needs some sort of fail-safe or a mechanism to remain functional if a node were to disconnect.
+
+
+\begin{itemize}
+\item Nodes equipped with a sensor.
+\end{itemize}
+The nodes scattered around the golf course need to collect some data to transfer back to the main node/unit. To show a proof of concept, the only thing the system need is some arbitrary data about the golf course to transmit between the nodes. Based on the interview, there are three types sensors that collect relevant data for the system. The analysis of the sensors can be found in the technology chapter of this report.
+
+
+\textbf{Should have:}
+\begin{itemize}
+\item Be able to seamlessly add and remove sensors to an existing system (Hot-pluggging).
+\end{itemize}
+The requirement aims to add flexibility both during the installation of the system, and for further configuration thereafter. This would enable the addition, removal, and re-positioning of nodes without requiring a restart or re-configuration of the entire system. The must-have requirement, concerning a fail-safe in case of a disconnecting note, would in addition be met if a hot-plugging system were to be implemented.
+
+
+\begin{itemize}
+\item Be modular built, so parts of a node can be replaced if destroyed.
+\end{itemize}
+This requirement is referring to the node/embedded system unit itself. The embedded system will consist of multiple parts, such as a micro controller, a sensor, and a transmitter. These parts should be put together in such a way that if a part breaks down, it would be an easy task to replace it. Since the devices will be placed outside on an actual golf course, the devices will exposed to weather and golf balls and is therefore prone to taking damage, it makes this requirement important an important one but not a must.
+
+
+\textbf{Could have:}
+\begin{itemize}
+\item Separate system installations, so nodes do not connect to another installation on a nearby golf course.
+\end{itemize}
+If the final system includes the hot-pluggable functionality, the individual nodes should stay connected to a particular installation and not be confused by another nearby installation of the system. This requirement could potentially become very complex, and the problem with two installations that interfere with each other might not be relevant since a single installation should cover the entire golf course.
+
+\begin{itemize}
+\item Have a graphical user interface for presentation of data.
+\end{itemize}
+The data collected by the system should be processed by the central node/unit and presented for the system administrators through a graphical user interface. This could be done with a monitor connected to the central node/unit or through a smartphone application. The graphical user interface should also allow the system administrators to change the settings of the system, e.g. change the interval between sensor readings.
+
