@@ -1,5 +1,14 @@
 \section{Other issues(?)}
 
 \subsection{Security}
+In most softwaresystems it is important to evaluate the security, to avoid unauthorized access or data loss/theft. This project is not excluded from such evaluation, and in this section the greatest security issues will be considered.
+
+The main functions of this project is to exchange data throughout a network wirelessly in a clever way. Since the data is sent wirelessly, it can easily be manipulated or interfered resulting in incorrect data.
+
+Another view is the process of connecting a new device to the network. If a device is connected too easy, it could become a problem if a neighbouring network is using the same protocol which would result in the two networks exchanging data without intention. Another point is that a malicious device could easily inject wrong data into the system.
+
+Considering the hardwaredesign of a measuring device it would also be relevant to analyze if a device can be physically reconstructed to intentionally transmit wrong data to the network. Though being more a question of physical security it could be an aspect in the design phase.
+
+There could potentially be a lot of minor security issues, but the major issue in this project is that data is exchanged wirelessly and therefore is very adaptive to malicious input. This must be taken into account in the design of a final solution.
 
 \subsection{User interface}
