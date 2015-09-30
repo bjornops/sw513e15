@@ -1,19 +1,19 @@
-\section{Arduino}
-\label{sec:arduino}
-Arduino is an open source platform, which makes the designing of an interactive or general electronics system easier. This is also why the Arduino platform is often used at school for learning about electronics.
+\section{Arduino}\label{sec:arduino}
+Arduino is an open source platform, which makes the software and hardware documentation available to the public. This is also why the Arduino platform is often used at school for learning about electronics.\todo{relevant?}
 
-Arduino boards have a setup of input and output ports enabling it to read from a sensor, or a button and then maybe activate a motor or an LED light. How the Arduino handles or reacts to input is up to the designer which can program the Arduino board using the Arduino IDE.
+The name "Arduino" covers both the software platform and the range of hardware platforms with boards of different sizes, from the smaller Arduino Nano up to the Arduino Mega. One of the more popular Arduino boards is the Arduino Uno which is a medium board, considering it's size and power relative to the currently available boards.
 
-"Arduino" covers a range of platforms with a lot of different boards varying in size, from Arduino Nano up to Arduino Mega. One of the more popular Arduino boards is the Arduino Uno which is somewhere in the middle of boards, considering size and power.
+Arduino boards have a setup \todo{what?} of input and output ports enabling it to read from a sensor, or a button and then maybe\todo{maybe, my ass} activate a motor or an LED light\todo{source}. How the Arduino handles or reacts to input is up to the designer which can program the Arduino board using the Arduino IDE.
 
-In the following sections, the Uno and Mega, which will be used in this project, will be described.
+In the following sections, the Uno and Mega, which will be used in this project\todo{spoiler?}, will be described.
 
 \subsection{Arduino Uno}
-One of the most common boards is the Arduino Uno \ref{fig:arduinouno}, which is based on the ATmega328 microcontroller. It has 14 digital input/output pins, and 6 analog inputs for connecting the different components. Considering specifications, which is shown on \ref{tab:unospec}, the Uno is limited on its resources. Therefore it is needed to limit both program- and datasize, and also the amount of complex tasks.
+One of the most common boards is the Arduino Uno \ref{fig:arduinouno}, which is based on the ATmega328 microcontroller\todo{source}. It has 14 digital input/output pins, and 6 analog inputs for connecting the different components. Considering specifications, which is shown in table \ref{tab:unospec}, the Uno is limited on its resources. Therefore it is needed to limit both program- and datasize, and also the amount of complex tasks.
+
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.5\textwidth]{chapters/analysis/figs/ArduinoUno.jpg}
-\caption{Arduino Uno board\cite{arduinointroduction}.}
+\caption{The Arduino Uno board\cite{arduinointroduction}.}
 \label{fig:arduinouno}
 \end{figure}
 
@@ -34,10 +34,10 @@ EEPROM & 1 KB (ATmega328)\\
 Clock Speed & 16 MHz\\
 \hline
 \end{tabular}
-\caption{Specifications for Arduino Uno}
+\caption{Specifications for the Arduino Uno.}
 \end{table}
 \label{tab:unospec}
-
+\todo{source}
 
 \subsection{Arduino Mega}
 The Arduino Mega is a larger version of the Uno. The Mega has more memory and pins, which makes it better for handling larger programs or amounts of data. This also allows more components can be connected to the board. Since the clock speed is the same as the Uno, the Mega will not process data faster.
@@ -45,7 +45,7 @@ The Arduino Mega is a larger version of the Uno. The Mega has more memory and pi
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.6\textwidth]{chapters/analysis/figs/ArduinoMega.jpg}
-\caption{Arduino Mega board\cite{arduinomegaimg}.}
+\caption{The Arduino Mega board\cite{arduinomegaimg}.}
 \label{fig:arduinomega}
 \end{figure}
 
@@ -66,9 +66,10 @@ EEPROM & 4 KB\\
 Clock Speed & 16 MHz\\
 \hline
 \end{tabular}
-\caption{Specifications for Arduino Mega}
-\end{table}
+\caption{Specifications for the Arduino Mega.}
+\end{table}\todo{source}
 \label{tab:megaspec}
+
 
 \section{Raspberry Pi}
 Raspberry Pi is a series of single board computers. The Raspberry Pi is developed by the Raspberry Pi Foundation seated in the UK. The Raspberry Pi series contains some rather powerful controllers compared to their credit card sized boards, which makes them great as small processing units.
