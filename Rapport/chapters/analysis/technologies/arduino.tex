@@ -1,14 +1,13 @@
 \section{Arduino}\label{sec:arduino}
-Arduino is an open source platform, which makes the software and hardware documentation available to the public. This is also why the Arduino platform is often used at school for learning about electronics.\todo{relevant?}
-
+Arduino is an open source platform, which makes the software and hardware documentation available to the public.
 The name "Arduino" covers both the software platform and the range of hardware platforms with boards of different sizes, from the smaller Arduino Nano up to the Arduino Mega. One of the more popular Arduino boards is the Arduino Uno which is a medium board, considering it's size and power relative to the currently available boards.
 
-Arduino boards have a setup \todo{what?} of input and output ports enabling it to read from a sensor, or a button and then maybe\todo{maybe, my ass} activate a motor or an LED light\todo{source}. How the Arduino handles or reacts to input is up to the designer which can program the Arduino board using the Arduino IDE.
+Arduino boards have input and output ports, enabling it to read and write to sensors, actuators and other electrical components. How the Arduino handles or reacts to input is up to the designer which can program the Arduino board using the Arduino IDE.
 
-In the following sections, the Uno and Mega, which will be used in this project\todo{spoiler?}, will be described.
+In the following sections, the Uno and Mega will be described.
 
 \subsection{Arduino Uno}
-One of the most common boards is the Arduino Uno \ref{fig:arduinouno}, which is based on the ATmega328 microcontroller\todo{source}. It has 14 digital input/output pins, and 6 analog inputs for connecting the different components. Considering specifications, which is shown in table \ref{tab:unospec}, the Uno is limited on its resources. Therefore it is needed to limit both program- and datasize, and also the amount of complex tasks.
+One of the most common boards is the Arduino Uno \ref{fig:arduinouno}, which is based on the ATmega328 microcontroller\cite{arduinouno}. It has 14 digital input/output pins, and 6 analog inputs for connecting the different components. Considering specifications, which is shown in table \ref{tab:unospec}, the Uno is limited on its resources. Therefore it is needed to limit both program- and datasize, and also the amount of complex tasks.
 
 \begin{figure}[h!]
 \centering
@@ -34,10 +33,9 @@ EEPROM & 1 KB (ATmega328)\\
 Clock Speed & 16 MHz\\
 \hline
 \end{tabular}
-\caption{Specifications for the Arduino Uno.}
+\caption{Specifications for the Arduino Uno\cite{arduinouno}.}
 \end{table}
 \label{tab:unospec}
-\todo{source}
 
 \subsection{Arduino Mega}
 The Arduino Mega is a larger version of the Uno. The Mega has more memory and pins, which makes it better for handling larger programs or amounts of data. This also allows more components can be connected to the board. Since the clock speed is the same as the Uno, the Mega will not process data faster.
@@ -66,23 +64,26 @@ EEPROM & 4 KB\\
 Clock Speed & 16 MHz\\
 \hline
 \end{tabular}
-\caption{Specifications for the Arduino Mega.}
-\end{table}\todo{source}
+\caption{Specifications for the Arduino Mega\cite{arduinomega}.}
+\end{table}
 \label{tab:megaspec}
 
+
+Both Arduino Uno and Mega are used in this project. This is due to these devices being available, and having specifications good enough for the project. The Mega boards are not faster, but can contain more program code and allows for more components. This is not necessary, but the devices are used as they were available.
 
 \section{Raspberry Pi}
 Raspberry Pi is a series of single board computers. The Raspberry Pi is developed by the Raspberry Pi Foundation seated in the UK. The Raspberry Pi series contains some rather powerful controllers compared to their credit card sized boards, which makes them great as small processing units.
 
 Something about those stupid pins....
 
-Because of the power and memory of a Raspberry pi, a Linux OS is usually installed on a SD card and then plugged into the Pi for executing. A Raspberry Pi also contains a GPU and a video output, and finally a USB input. Because of this a Linux OS is easily supported.
+Because of the power and memory of a Raspberry pi, a Linux OS is usually installed on a SD card and then plugged into the Pi for executing. A Raspberry Pi also contains a GPU, video output, and USB input. Because of this a Linux based OS is easily supported.\todo{Wat?}
 
-In the following subsection a Raspberry Pi B+ will be described. The different models usually differs on cpu speed and memory, but a main difference from the early models is network connectivity.
+In the following subsection a Raspberry Pi B+ will be described. The different models usually differs on CPU speed and memory, but a main difference from the early models is network connectivity.
 
 \subsection{Raspberry Pi B+}
-The Raspberry Pi B+ contains the specifications shown on \ref{tab:pibplusspec} along with HDMI video output and Ethernet connectivity. As main storage a micro sd card must be installed, which also contains the OS.
+The Raspberry Pi B+ contains the specifications shown on \ref{tab:pibplusspec} along with HDMI video output and Ethernet connectivity. As main storage a micro SD card must be installed, which also contains the OS.
 
+The Raspberry Pi B+ model is used in this project as the receiver and handler of data. This device has the capability to create user interfaces and show the data received from the sensors. The B+ model is used as it was available.
 
 \begin{figure}[h!]
 \centering
@@ -92,6 +93,7 @@ The Raspberry Pi B+ contains the specifications shown on \ref{tab:pibplusspec} a
 \end{figure}
 
 \begin{table}[h!]
+\centering
 \begin{tabular}{| l | l |}
 \hline
 Microcontroller & Broadcom BCM2835\\
@@ -101,6 +103,6 @@ USB Ports & 4\\
 Clock Speed & 700 MHz\\
 \hline
 \end{tabular}
-\caption{Specifications for Raspberry Pi B+}
+\caption{Specifications for Raspberry Pi B+\cite{pispecs}.}
 \end{table}
 \label{tab:pibplusspec}
