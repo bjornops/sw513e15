@@ -47,7 +47,7 @@ TDMA can be used for any system that require several device to use the same chan
 \subsection{Dynamic Source Routing protocol}
 The Dynamic Source Routing protocol (DSR) is a simple routing protocol designed specifically for use in multi-hop wireless ad hoc networks.
 With DSR the network is completely self-organizing and self-configuring, requiring no administration or existing network structure.
-The nodes in the network work together to forward packets to desternations that can be outside of the senders transmission range.
+The nodes in the network work together to forward packets to destinations that can be outside of the senders transmission range.
 As nodes can be added and removed ad hoc, the protocol automatically determine and maintain the routing of the packets though out the network.
 Since the number or sequence of nodes needed to reach any destination may change at any time, the resulting network topology may be quite rapidly changing.
 DSR is created to create a very low overhead yet being able to react quickly to change in the network environment.
@@ -89,7 +89,7 @@ If there does not exist a route, the node will initiates a route discovery proce
 
 A route discovery process begins with the source creating a Route Request (RREQ) packet.
 The packet contains the sources node's unique ID and IP, and the destination node's unique ID and IP.
-The packet is then transmitted out from the source to it's neighbours.
+The packet is then transmitted out from the source to it's neighbors.
 The unique ID of each node is then stored in the packet, to ensure the same node is not transmitting more than once.
 The destination ID is to ensure it knows when the destination node is reached.
 A simple AODV network can be seen on \figref{AODVfigure}, where S and D represent the source and destination. It is visualized how the route discovery is invoked using the RREQ packet.\cite{AOVD2}
@@ -114,7 +114,7 @@ The protocol is designed to handle network where links between nodes are not alw
 
 \subsection{Protocol comparison}
 Below is a comparison table with the protocol discuses in this chapter.
-The four different protocols is compared in what rute metric they are using, if they are loop free, support of load balancing, how reliable they are, and the estimated throughput.
+The four different protocols is compared in what route metric they are using, if they are loop free, support of load balancing, how reliable they are, and the estimated throughput.
 This table is to later help choose which protocol we decide to implement.\todo{Er usikker på hvorvidt der skal skrives om vores valg her}
 
 \begin{table}[!ht]
@@ -123,7 +123,7 @@ This table is to later help choose which protocol we decide to implement.\todo{E
 \makebox[\linewidth]{
 \begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
-            & Ad hoc & Rute metrics                                                                     & \begin{tabular}[c]{@{}c@{}}Loop \\ Free\end{tabular} & \begin{tabular}[c]{@{}c@{}}Load \\ balancing\end{tabular} & Reliability & Thoughput                                                                    \\ \hline%cline{1-1}
+            & Ad hoc & Route metrics                                                                     & \begin{tabular}[c]{@{}c@{}}Loop \\ Free\end{tabular} & \begin{tabular}[c]{@{}c@{}}Load \\ balancing\end{tabular} & Reliability & Throughput                                                                    \\ \hline%cline{1-1}
 \rowcolor[HTML]{EFEFEF} 
 TDMA\cite{TDMATable}        & Yes    & \begin{tabular}[c]{@{}c@{}}Routes ensuring\\  guaranteed bandwidth\end{tabular} & Yes                                                  & Yes                                                       & High        & \begin{tabular}[c]{@{}c@{}}Decreases as more \\ nodes are added\end{tabular} \\
 DSR\cite{ProtocolTable}\cite{DSR}         & Yes    & Source routing                                                                   & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Decreases as more\\  nodes are added\end{tabular} \\
