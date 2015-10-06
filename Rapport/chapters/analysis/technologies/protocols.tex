@@ -6,7 +6,7 @@ The mesh network we are looking at is a radio based network, and therefore some 
 A few excising protocols will be presented in this section.
 
 \subsection{Time division multiple access}
-Time division multiple access(TDMA) is protocol that divides a single channel into smaller time slots.
+Time division multiple access(TDMA) is access method that divides a single channel into smaller time slots.
 Each time slot transmits one byte or a segment of a signal, in a sequential serial data format.
 Each slot is active of a small amount of time, before the next slot in the queue get time to transmit\cite{TDMA}.
 
@@ -16,7 +16,7 @@ Where each connection covers 300 Hz to 3000Hz and is digitized at an 8-kHz rate,
 \begin{figure}[!h]
 	\centering
 	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth]{figures/TDMA.png}}
-	\caption{Illustration of the TDMA protocol}
+	\caption{Illustration of the TDMA access method}
 	\label{fig:TDMAfigure}
 \end{figure}
 
@@ -84,7 +84,7 @@ A downside to AODV is that if a single route breaks, due to a defect node, it is
 But if a route breaks, the protocol discovers a new route, if possible, as and when necessary.
 
 When a node is ordered to send a packet to a specified destination, it checks its routing table to determine if it has a current route to the destination.
-If there already exist a node, the packet will be delivered to the next node in the route, repeating until it arrives at the correct location.
+If there already exist a route, the packet will be delivered to the next node in the route, repeating until it arrives at the correct location.
 If there does not exist a route, the node will initiates a route discovery process\cite{AOVD1}.
 
 A route discovery process begins with the source creating a Route Request (RREQ) packet.
@@ -102,7 +102,7 @@ A simple AODV network can be seen on \figref{AODVfigure}, where S and D represen
 \end{figure}
 
 \subsection{Better approach to mobile ad-hoc networking}
-Better approach to mobile ad-hoc networking (B.A.T.M.A.N) is a routing protocol for multi-hop ad-hoc mesh networks. 
+Better approach to mobile ad-hoc networking (B.A.T.M.A.N) is a routing protocol for multi-hop ad-hoc mesh networks based on AODV. 
 B.A.T.M.A.N is said to solve some of the more typical problems with the classical routing protocols, which is not well suited for wireless ad-hoc networks.
 Some of the problems is, such networks  are unstructured, are based on an inherently unreliable medium and dynamically change their topology.
 
@@ -110,7 +110,22 @@ When using the B.A.T.M.A.N algorithm, the approach is to divide the knowledge ab
 Each node in the network only account for the best path to all other nodes in the system.
 This results in, the need for a global knowledge about local topology changes becomes unnecessary.
 In addition, does B.A.T.M.A.N have an event-based, but timeless, flooding mechanism that prevents the occurrence of loops and limits the amount of topology messages flooding the network.
-The protocol is designed to handle network where links between nodes are not always reliable\cite{BATMAN}.
+
+Each node in the network transmits a broadcast message(OGMs) to inform every node within range about its existence.
+The nodes within range, then re-broadcast the OGMs, to node within their range, about the existence of the original initiator of this message and so on and so forth.
+Thus the network is flooded with originator messages. OGMs are small, the typical raw packet size is 52 byte including IP and UDP overhead.
+OGMs contain at least the address of the originator, the address of the node transmitting the packet, and a sequence number.
+
+OGMs that follow a path where the quality of wireless links is poor will suffer from packet loss or delay on their way through the network.
+Therefore OGMs that travel on good routes will propagate faster and more reliable.
+
+In order to tell if a OGM has been received once or more than once it contains a sequence number, given by the originator of the OGM.
+Each node re-broadcasts each received OGM at most once and only those received from the neighbor which has been identified as the currently best next hop (best ranking neighbor) towards the original initiator of the OGM.
+
+This way the OGMs are flooded selectively through the mesh and inform the receiving nodes about other node's existence. 
+A node X will learn about the existence of a node Y in the distance by receiving it's OGMs, when OGMs of node Y are rebroadcasted by its neighbors.
+
+The algorithm then selects this neighbor as the currently best next hop to the originator of the message and configures its routing table respectively\cite{BATMAN}.
 
 \subsection{Protocol comparison}
 Below is a comparison table with the protocol discuses in this chapter.
