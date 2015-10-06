@@ -1,11 +1,14 @@
-\section{Arduino}\label{sec:arduino}
+\section{Platforms}
+
+
+\subsection{Arduino}\label{sec:arduino}
 Arduino is an open source platform, which makes the software and hardware documentation available to the public. The name "Arduino" covers both the software platform and the range of hardware platforms with boards of different sizes, from the smaller Arduino Nano up to the Arduino Mega. One of the more popular Arduino boards is the Arduino Uno which is a medium board, considering it's size and power relative to the currently available boards\todo{source?}.
 
 Arduino boards have input and output ports, enabling them to read and write to sensors, actuators and other electrical components. How the Arduino handles or reacts to input is up to the developer who can program the Arduino board using the Arduino IDE.
 
 In the following sections, the Uno and Mega will be described.
 
-\subsection{Arduino Uno}
+\textbf{Arduino Uno}\\
 One of the most common boards is the Arduino Uno \ref{fig:arduinouno}, which is based on the ATmega328 microcontroller \cite{arduinouno}. It has 14 digital input/output pins, and 6 analog inputs for connecting the different components. Considering specifications, which is shown in table \ref{tab:unospec}, the Uno is limited on its resources. Therefore it is needed to limit both program- and data size, and also the amount of complex tasks.
 
 \begin{figure}[h!]
@@ -36,7 +39,7 @@ Clock Speed & 16 MHz\\
 \end{table}
 \label{tab:unospec}
 
-\subsection{Arduino Mega}
+\textbf{Arduino Mega}\\
 The Arduino Mega is a larger version of the Uno. The Mega has more memory and pins, which makes it better for handling larger programs or amounts of data. This also allows more components can be connected to the board. Since the clock speed is the same as the Uno, the Mega will not process data faster.
 
 \begin{figure}[h!]
@@ -70,7 +73,7 @@ Clock Speed & 16 MHz\\
 
 Both Arduino Uno and Mega are used in this project, because having specifications good enough for the project and their availability to the project group. The Mega boards are not faster, but can contain more program code and allows for more components. This is not necessary\todo{how do you know this?}, but the devices are used as they were available.
 
-\section{Raspberry Pi}
+\subsection{Raspberry Pi}
 Raspberry Pi is a series of single board computers. The Raspberry Pi is developed by the Raspberry Pi Foundation seated in the UK. The Raspberry Pi series contains some rather powerful controllers compared to their credit card sized boards, which makes them great as small processing units.
 
 Something about those stupid pins....
@@ -79,7 +82,7 @@ Because of the power and memory of a Raspberry pi, a Linux OS is usually install
 
 In the following subsection a Raspberry Pi B+ will be described. The different models usually differs on CPU speed and memory, but a main difference from the early models is network connectivity.
 
-\subsection{Raspberry Pi B+}
+\textbf{Raspberry Pi B+}\\
 The Raspberry Pi B+ contains the specifications shown on \ref{tab:pibplusspec} along with HDMI video output and Ethernet connectivity. As main storage a micro SD card must be installed, which also contains the OS.
 
 The Raspberry Pi B+ model is used in this project as the receiver and handler of data. This device has the capability to create user interfaces and show the data received from the sensors. The B+ model is used as it was available.
