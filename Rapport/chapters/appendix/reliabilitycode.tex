@@ -1,0 +1,10 @@
+\chapter{RF24 Reliability testing}\label{cha:reliabilityCode}
+This is the code used for the reliability test.
+
+\section{Sender}
+The delay and \verb!maxPackets! can be changed, depending on the speed and number of packets wanted to run.
+\lstinputlisting[language=C]{chapters/test/rf24code/ConnectivityTest/Sender/Sender.ino}
+
+\section{Receiver}
+The output should be monitored all throughout the test, or the Arduino IDE might reset the Arduino or console.
+\lstinputlisting[language=C]{chapters/test/rf24code/ConnectivityTest/Receiver/Receiver.ino}
