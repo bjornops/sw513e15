@@ -17,8 +17,8 @@ Multiple delay values were tested, including no delay used. During these tests, 
 The conclusion to the reliability test is that the RF24 is more than reliable enough for the requirements of this project.
 
 
-\subsection{RF24 transreciever analysis}
-To confirm the usability of the RF24 transreciever, labeled as RF24 from this point, a short analysis with tests will be performed.
+%\subsection{RF24 transreciever analysis}
+%To confirm the usability of the RF24 transreciever, labeled as RF24 from this point, a short analysis with tests will be performed.
 
 \subsection{Range}
 A basic test to test the range is useful to ensure that RF24 is usable in a practical application with a wide distance between units.
@@ -26,19 +26,20 @@ A basic test to test the range is useful to ensure that RF24 is usable in a prac
 %\subsection{Testing method:}
 Testing is done by having two units set as transmitter and reciever units respectively, having the transmitter transmit a single signal repeatedly while increasing the distance between the units. When the reciever no longer recieves the signal, the distance can then be measured.
 
-CODE GOES HERE!
+CODE GOES HERE! \todo{set some code in here}
 
 %\subsection{Results:}
 \begin{table}[!h]
 \begin{tabular}{|l|l|l|l|} \hline
 	\diaghead{\theadfont Diag ColumnmnHead II} {Reciever}{Transmitter}
-			 	& Unit 1 	& Unit 2 	& Unit 3 	\\\hline
+			& Unit 1 	& Unit 2 	& Unit 3 	\\\hline
 	Unit 1  	& - 		& ? 		& ? 		\\\hline
 	Unit 2  	& ? 		& - 		& ? 		\\\hline
 	Unit 3  	& ? 		& ? 		& - 		\\\hline
 \end{tabular}
 \end{table}
 
+\iffalse %Kommmentarblok
 \subsection{Bit error rate:}
 what is?
 
@@ -52,8 +53,9 @@ how? code, setup etc.
 	0,0\% 		& ? 		& ? 		& ? 		\\\hline
 \end{tabular}
 \end{table}
+\fi %Afslutted kommentarblok
 
-\subsection{BER}
+\subsection{Bit Error Rate}
 When transmitting data from one unit to another, knowing that the data is correct can be important. To get an idea of how much error is introduced in the communication, a bit error test can be performed, known as BERT from this point.
 
 \textbf{About BERT}
