@@ -2,14 +2,14 @@
 The suitable platforms for this project is examined in the following section. These platforms are capable of running application code and reading or writing to pins. These pins can contains components such as sensors, actuators and so on.
 
 \subsection{Arduino}\label{sec:arduino}
-Arduino is an open source platform, which makes the software and hardware documentation available to the public. The name "Arduino" covers both the software platform and the range of hardware platforms with boards of different sizes, from the smaller Arduino Nano up to the Arduino Mega. One of the more popular Arduino boards is the Arduino Uno which is a medium board, often used for starters\cite{arduinouno}.
+Arduino is an open source platform, which makes the software and hardware documentation available to the public. The name "Arduino" covers both the software platform and the range of hardware platforms with boards of different sizes, from the smaller Arduino Nano up to the Arduino Mega. One of the more popular Arduino boards is the Arduino Uno which is a medium board, often used for starters \cite{arduinouno}.
 
 Arduino boards have input and output ports, enabling them to read and write to sensors, actuators and other electrical components. How the Arduino handles or reacts to input is up to the developer who can program the Arduino board using the Arduino IDE.
 
 In the following sections, the Uno and Mega will be described.
 
 \textbf{Arduino Uno}\\
-One of the most common boards is the Arduino Uno \ref{fig:arduinouno}, which is based on the ATmega328 microcontroller \cite{arduinouno}. It has 14 digital input/output pins, and 6 analog inputs for connecting the different components. Considering specifications, which is shown in table \ref{tab:unospec}, the Uno is limited on its resources. Therefore it is needed to limit both program- and data size, and also the amount of complex tasks.
+One of the most common boards is the Arduino Uno \ref{fig:arduinouno}, which is based on the ATmega328 microcontroller \cite{arduinouno}. It has 14 digital input/output pins, and 6 analog inputs for connecting the different components. Considering specifications, which is shown in table \ref{tab:arduspecs}, the Uno is limited on its resources. Therefore it is needed to limit both program- and data size, and also the amount of complex tasks.
 
 \begin{figure}[h!]
 \centering
@@ -35,14 +35,15 @@ One of the most common boards is the Arduino Uno \ref{fig:arduinouno}, which is 
 		DC Current per I/O Pin      & \multicolumn{2}{c|}{40 mA}                                           \\
 		DC Current for 3.3V Pin     & \multicolumn{2}{c|}{50 mA}                                           \\
 		Flash Memory                & 32 KB (0.5 KB used by bootloader) & 128 KB (4 KB used by bootloader) \\
-		SRAM                        & 2 KB                              & 8                                \\
-		EEPROM                      & 1 KB                              & 4                                \\
+		SRAM                        & 2 KB                              & 8 KB                                \\
+		EEPROM                      & 1 KB                              & 4 KB                               \\
 		Clock Speed                 & \multicolumn{2}{c|}{16 MHz}                                          \\ \hline
 	\end{tabular}
 	\caption{Arduino Uno and Mega specifications \cite{arduinouno}\cite{arduinomega}.}
 \end{table}\label{tab:arduspecs}
 \end{center}
 
+\iffalse%udkommenteret
 \begin{table}
 \begin{tabular}{| l | l |}
 \hline
@@ -63,6 +64,7 @@ Clock Speed & 16 MHz\\
 \caption{Specifications for the Arduino Uno\cite{arduinouno}.}
 \end{table}
 \label{tab:unospec}
+\fi
 
 \textbf{Arduino Mega}\\
 The Arduino Mega is a larger version of the Uno. The Mega has more memory and pins, which makes it better for handling larger programs or amounts of data. This also allows more components can be connected to the board. Since the clock speed is the same as the Uno, the Mega will not process data faster.
@@ -74,6 +76,7 @@ The Arduino Mega is a larger version of the Uno. The Mega has more memory and pi
 \label{fig:arduinomega}
 \end{figure}
 
+\iffalse%udkommenteret
 \begin{table}[h!]
 \begin{tabular}{| l | l |}
 \hline
@@ -94,7 +97,7 @@ Clock Speed & 16 MHz\\
 \caption{Specifications for the Arduino Mega\cite{arduinomega}.}
 \end{table}
 \label{tab:megaspec}
-
+\fi
 
 Both Arduino Uno and Mega are used in this project, because having specifications good enough for the project and their availability to the project group. The Mega boards are not faster, but can contain more program code and allows for more components. This is not necessary\todo{how do you know this?}, but the devices are used as they were available\todo{FLYT TIL DESIGN}.
 
