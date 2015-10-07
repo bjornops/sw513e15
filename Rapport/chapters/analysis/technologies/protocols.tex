@@ -147,3 +147,21 @@ AOVD\cite{ProtocolTable}        & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&
 B.A.T.M.A.N\cite{BATMAN} & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shortest path\end{tabular}               & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Good - scales\\ well with more nodes\end{tabular} \\ \hline
 \end{tabular}}
 \end{table}
+
+\subsection{Flooding as a routing algorithm}
+Flooding in the Ad Hoc area, is a routing algorithm used to deliver data out though a system.
+There exists two kind of flooding, uncontrolled flooding and controlled flooding.
+Uncontrolled flooding is a kind of "brute force", where every node, in a network, keeps sending packets indefinitely out to all its neighbors within range, creating what is known as a broadcast storm.
+
+Controlled flooding has its own algorithms to make it reliable, these algorithms are knows as Sequence Number Controlled Flooding(SNCF) and Reverse Path Flooding(RPF).
+With SNCF each node have its own address that is delivered with each data packet it transmits.
+If a node receive a packet twice or more with the same address, the packet i discarded, so only one instants of the packet is working its way though the system.
+In RPF, the node will forward a copy of a received packet.
+RPF except that the original transmitted packet will be copied by the right nodes node at end at the destination.
+
+Advantaged of flooding, is that if there exists a route from the source to the destination, a packet will be delivered, and possible multiple times.
+Since some flooding algorithms utilized every route in the network, i will also transfer packets though the shortest.
+
+Disadvantages can be that the bandwidth is wasted, since flooding is a very costly since it utilize every route.
+Packets can easily be duplicated in the network, future increasing bandwidth load.
+Duplicate packet may loop in the system forever, is no prevention is made.
