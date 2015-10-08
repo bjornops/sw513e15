@@ -45,10 +45,10 @@ TDMA can be used for any system that require several device to use the same chan
 %The Radio Link Protocol is typically used in cellular transmission.
 
 \subsection{Dynamic Source Routing protocol}
-The Dynamic Source Routing protocol (DSR) is a simple routing protocol designed specifically for use in multi-hop wireless ad hoc networks.
+The Dynamic Source Routing protocol (DSR) is a simple routing protocol designed specifically for use in multi-hop wireless ad-hoc networks.
 With DSR the network is completely self-organizing and self-configuring, requiring no administration or existing network structure.
 The nodes in the network work together to forward packets to destinations that can be outside of the senders transmission range.
-As nodes can be added and removed ad hoc, the protocol automatically determine and maintain the routing of the packets though out the network.
+As nodes can be added and removed ad-hoc, the protocol automatically determine and maintain the routing of the packets though out the network.
 Since the number or sequence of nodes needed to reach any destination may change at any time, the resulting network topology may be quite rapidly changing.
 DSR is created to create a very low overhead yet being able to react quickly to change in the network environment.
 The protocol provides a highly reactive service to ensure successful delivery of data packets where node may be moving around, or other changes in the network occur\cite{DSR}. 
@@ -70,7 +70,7 @@ It is also guarantee that the routes used are loop-free, since a generated route
 By including this source route in the header of each packet, other nodes forwarding or overhearing any of these packets can easily cache this information for future use\cite{DSR}.
 
 \subsection{Ad hoc On-Demand Distance Vector Routing}
-Ad hoc On Demand Distance Vector(AODV) routing algorithm is a routing protocol designed for ad hoc networks. 
+Ad hoc On Demand Distance Vector(AODV) routing algorithm is a routing protocol designed for ad-hoc networks. 
 It is an on demand algorithm, meaning that it builds routes between nodes only as desired by source nodes\cite{AOVD1}.
 
 AODV is a network where only the local nodes around a newly added node, is affected by the addition.
@@ -89,7 +89,7 @@ If there does not exist a route, the node will initiates a route discovery proce
 
 A route discovery process begins with the source creating a Route Request (RREQ) packet.
 The packet contains the sources node's unique ID and IP, and the destination node's unique ID and IP.
-The packet is then transmitted out from the source to it's neighbors.
+The packet is then transmitted out from the source to it's neighbours.
 The unique ID of each node is then stored in the packet, to ensure the same node is not transmitting more than once.
 The destination ID is to ensure it knows when the destination node is reached.
 A simple AODV network can be seen on \figref{AODVfigure}, where S and D represent the source and destination. It is visualized how the route discovery is invoked using the RREQ packet.\cite{AOVD2}
@@ -120,12 +120,12 @@ OGMs that follow a path where the quality of wireless links is poor will suffer 
 Therefore OGMs that travel on good routes will propagate faster and more reliable.
 
 In order to tell if a OGM has been received once or more than once it contains a sequence number, given by the originator of the OGM.
-Each node re-broadcasts each received OGM at most once and only those received from the neighbor which has been identified as the currently best next hop (best ranking neighbor) towards the original initiator of the OGM.
+Each node re-broadcasts each received OGM at most once and only those received from the neighbour which has been identified as the currently best next hop (best ranking neighbour) towards the original initiator of the OGM.
 
 This way the OGMs are flooded selectively through the mesh and inform the receiving nodes about other node's existence. 
-A node X will learn about the existence of a node Y in the distance by receiving it's OGMs, when OGMs of node Y are rebroadcasted by its neighbors.
+A node X will learn about the existence of a node Y in the distance by receiving it's OGMs, when OGMs of node Y are rebroadcasted by its neighbours.
 
-The algorithm then selects this neighbor as the currently best next hop to the originator of the message and configures its routing table respectively\cite{BATMAN}.
+The algorithm then selects this neighbour as the currently best next hop to the originator of the message and configures its routing table respectively\cite{BATMAN}.
 
 \subsection{Protocol comparison}
 Below is a comparison table with the protocol discuses in this chapter.
@@ -149,19 +149,20 @@ B.A.T.M.A.N\cite{BATMAN} & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shor
 \end{table}
 
 \subsection{Flooding as a routing algorithm}
-Flooding in the Ad Hoc area, is a routing algorithm used to deliver data out though a system.
+Flooding in networks, is a routing algorithm used to deliver data out though a system.
 There exists two kind of flooding, uncontrolled flooding and controlled flooding.
-Uncontrolled flooding is a kind of "brute force", where every node, in a network, keeps sending packets indefinitely out to all its neighbors within range, creating what is known as a broadcast storm.
+Uncontrolled flooding is a kind of "brute force", where every node, in a network, keeps sending the same packets indefinitely out to all its neighbours within range, creating what is known as a broadcast storm.
+The packet will eventually the packet will reach its destination, without knowing when\cite{flooding}.
 
-Controlled flooding has its own algorithms to make it reliable, these algorithms are knows as Sequence Number Controlled Flooding(SNCF) and Reverse Path Flooding(RPF).
+Controlled flooding is modified algorithms to make it reliable, some of algorithms are knows as Sequence Number Controlled Flooding(SNCF) and Reverse Path Flooding(RPF).
 With SNCF each node have its own address that is delivered with each data packet it transmits.
-If a node receive a packet twice or more with the same address, the packet i discarded, so only one instants of the packet is working its way though the system.
-In RPF, the node will forward a copy of a received packet.
-RPF except that the original transmitted packet will be copied by the right nodes node at end at the destination.
+If a node receive a packet twice or more with the same address, the packet is discarded, so only one instants of the packet is working its way though the network.
+In RPF, the node will forward a copy of a received packet, no matter the origin.
+RPF except that the original transmitted packet will be copied by the right nodes and eventually end at the destination\cite{RPF}.
 
 Advantaged of flooding, is that if there exists a route from the source to the destination, a packet will be delivered, and possible multiple times.
-Since some flooding algorithms utilized every route in the network, i will also transfer packets though the shortest.
+Since some flooding algorithms utilized every route in the network, it will also transfer packets though the shortest path\cite{flooding}.
 
-Disadvantages can be that the bandwidth is wasted, since flooding is a very costly since it utilize every route.
+Disadvantages can be that the bandwidth is wasted, since flooding is a very costly algorithm since it utilize every route.
 Packets can easily be duplicated in the network, future increasing bandwidth load.
-Duplicate packet may loop in the system forever, is no prevention is made.
+Duplicate packet may loop in the system forever, if no prevention is made\cite{flooding}.
