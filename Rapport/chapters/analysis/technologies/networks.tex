@@ -47,6 +47,24 @@ The ring topology, seen in figure \ref{fig:topologies}, connects all nodes in a 
 % It is a type of mobile ad hoc network.
 Another topology is the mesh, also in figure \ref{fig:topologies}. There are two kinds of mesh networks: The full-mesh and the partial-mesh networks. A full-mesh describes a network where all the nodes are interconnected, similar to a fully connected graph. In this topology, there will be no redirecting or relaying, but just a direct connection to the destination node, regardless which destination. A partial mesh is also a mesh network, but does not require all nodes to be connected, so that it's similar to a tree topology, but with cycles. The partial-mesh must then support relaying of data, to transfer data from any node to the destination node.
 
+
+A summary of the network topology strength and weaknesses is show in table \ref{tab:topologies}.
+\bgroup
+\def\arraystretch{1.1}
+\begin{table}[!ht]
+	\centering
+	\begin{tabular}{lll}
+		Topology & Pros                                                                                                                     & Cons                                                                                                                                     \\ \hline
+		Ring     & Limited to two directions of communication                                                                               & \begin{tabular}[t]{@{}l@{}}Requires some ring formation of the nodes in the network\\ Information delay through the network\end{tabular} \\
+		Bus      & Communication over one bus to all nodes                                                                                  & Not suitable for wireless networks                                                                                                       \\
+		Tree     & Reach through internode commnication from leaves to root                                                                 & Cannot contain loops                                                                                                                     \\
+		Star     & Fast, direct communication to main node                                                                                  & All nodes must have transmit reach covering the main node                                                                                \\
+		Mesh     & \begin{tabular}[t]{@{}l@{}}Reach through internode communication\\ Not critically sensitive to node failure\end{tabular} & Information delay through the network                                                                                                   
+	\end{tabular}
+	\caption{Topology pros and cons.}
+\end{table}\label{tab:topologies}
+\egroup
+
 %The mesh networks have the same limitation as a tree network, regarding the information transmission delay because the information transmits through up to several nodes. \cite{g2wmn}
 
 %The best fitting network topology for the use case is a mesh network. It can transmit information through the network without limiting the connected devices to a certain distance from a main device, as with a star topology. It is also capable of multiple methods of distributing information. It does not rely on all nodes working at all times, as the network can reconfigure and find another path of information. This applies as long as there somehow exists another node that can relay the information towards the main node.
