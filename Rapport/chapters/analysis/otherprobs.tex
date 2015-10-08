@@ -1,18 +1,18 @@
 \section{Other issues}
 This section contains information about other potential issues that have not been directly encountered through the analysis, but still could be relevant for the final system.
 
-\subsection{Security}\todo{Move to technology?}
+\subsection{Security}\todo{Move section to technology??}
 In most software systems it is important to evaluate the security to avoid unauthorized access or data loss or theft \todo{source}. This project is not excluded from such evaluation, and in this section the relevant security issues will be considered.
 
 The main functions of the system is to transmit data wirelessly through a network. Since the data is sent wirelessly, it can easily be manipulated or interfered resulting in incorrect data.
 
 Another view is the process of connecting a new device to the network. If a device is connected too easy, it could become a problem if a neighbouring network is using the same protocol which could result in the two networks exchanging data unintentionally. Another point is that a malicious device could easily inject data into the system.
 
-Considering the hardware design of a measuring device, it would also be relevant to analyze if a device can be physically reconstructed to intentionally transmit malicious data to the network. Though being more a question of physical security\todo{what is this?} it could be an aspect in the design phase.
+Considering the hardware design of a measuring device, it would also be relevant to analyze if a device can be physically reconstructed to intentionally transmit malicious data to the network. Though being more a question of physical security, by preventing access to the device, this could still be relevant.
 
 There could potentially be a lot of minor security issues, but the major issue in the system is that data is transmitted wirelessly and it is therefore exposed to malicious input. This must be taken into account in the design of a final solution.
 
 \subsection{User interface}
-As the main problem is to transfer data from sensors to some arbitrary point\todo{No?} where a user can read and react appropriately, it would be necessary to present this data for the user. Since the typical\todo{what is typical? Aren't greenkeepers educated?} human being is unable to decipher bytestreams, a user interface with a more informal way\todo{is a bitstream formal?} of presenting the data would be practical.
+As the main problem is to transfer data from sensors to an end node, where a user can read and react appropriately, it would be necessary to present this data for the user. Since it would require much training to be able to decipher bytestreams or simple datalists, a user interface with a more simple way of presenting the data would be practical, by giving a better overview of the data.
 
-An excessive amount of interaction with the user interface would be unnecessary, as the system would only serve as a way to feed the user with the collected data, a simple interface for one-way communicating the data to the user could be enough\todo{rephrase}.
+An excessive amount of interactions with the user interface would be unnecessary, as the system would only serve as a way for reading and understanding the collected data. Therefore a simple interface for one-way communicating the data to the user would be sufficient.
