@@ -1,10 +1,10 @@
 \section{Platforms}
-The suitable platforms for this project are examined in the following section. These platforms are capable of running application code and reading or writing to ports available on the board. These ports can connect to components such as sensors or actuators.
+The suitable platforms for this project are examined in the following section. These platforms are capable of running application code and reading or writing to ports available on the board. These ports can connect to components such as sensors and actuators.
 
 \subsection{Arduino}\label{sec:arduino}
 Arduino is an open source platform, which makes the software and hardware documentation available to the public. The name "Arduino" covers both the software platform and the range of hardware platforms with boards of different sizes, from the smaller Arduino Nano up to the Arduino Mega. One of the more popular Arduino boards is the Arduino Uno which is a medium sized board, often used by starters \cite{arduinouno}.
 
-Arduino boards have input and output ports, enabling them to read and write to sensors, actuators and other electrical components\todo{repetition of section metatext}. How the Arduino handles or reacts to input is implemented in the developed code uploaded to the Arduino board by using the Arduino IDE.
+How the Arduino handles or reacts to input is implemented in the developed code uploaded to the Arduino board by using the Arduino IDE.
 
 In the following sections, the Uno and Mega will be described.
 
@@ -65,7 +65,7 @@ Clock Speed & 16 MHz\\
 \fi
 
 \textbf{Arduino Mega}\\
-The Arduino Mega is a larger version of the Uno. The Mega has more memory and pins, which makes it better for handling larger programs or amounts of data, and also allows more components to be connected to the board. Since the clock speed is the same as the Uno, the Mega will not process data faster\todo{clock speed is not the only factor conserning throughput. The same architecture? Source, plz}.
+The Arduino Mega is a larger version of the Uno. The Mega has more memory and pins, which makes it better for handling larger programs or amounts of data, and also allows more components to be connected to the board. Since the clock speed is the same as the Uno, the Mega will not process data faster\cite{ardcomp}.
 
 \begin{figure}[h!]
 \centering
@@ -99,16 +99,16 @@ Clock Speed & 16 MHz\\
 
 
 \subsection{Raspberry Pi}
-Raspberry Pi is a series of single board computers. The Raspberry Pi is developed by the Raspberry Pi Foundation seated in the UK\todo{relevance?}. The Raspberry Pi series contains some rather powerful controllers compared to their credit card sized boards, which makes them great as small processing units.
+Raspberry Pi is a series of single board computers. The Raspberry Pi series contains some rather powerful controllers compared to their credit card sized boards, which makes them great as small processing units.
 
 Something about those stupid pins....\todo{yup}
 
-Because of the power\todo{computing or electrical?} and memory of a Raspberry pi, a Linux OS is usually installed on a SD card and then plugged into the Pi for executing. A Raspberry Pi also has a GPU, video output, and USB port.
+Because of the computing power and memory of a Raspberry pi, a Linux OS is usually installed on a SD card and then plugged into the Pi for executing. A Raspberry Pi also has a GPU, video output, and USB port.
 
-In the following subsection a Raspberry Pi B+ will be described\todo{why? motivation}. The different models usually differs on CPU speed and memory, but a main difference from the early models is network connectivity.\todo{very unscientific and unspecific. What is the purpose?}
+In the following subsection a Raspberry Pi B+ will be described as these were available to use in the project. The different models usually differs on CPU speed and memory.
 
 \textbf{Raspberry Pi B+}\\
-The Raspberry Pi B+ specifications' are shown in table \ref{tab:pibplusspec}. along with HDMI video output and Ethernet connectivity\todo{move to table??}. As main storage a micro SD card must be installed, which also contains the OS\todo{inglish, modderføkker, du ju spiik it?}.
+The Raspberry Pi B+ specifications' are shown in table \ref{tab:pibplusspec}. Along with HDMI video output and Ethernet connectivity. As main storage a micro SD card must be installed, which contains the OS.
 
 
 \begin{figure}[h!]
