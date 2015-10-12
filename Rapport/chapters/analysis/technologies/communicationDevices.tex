@@ -16,8 +16,8 @@ XBees are fast and predictable, making them a good choice for a project such as 
 
 XBees are quite expensive, which makes them unfit for this project. If the solution had to interface with other devices using the ZigBee protocol or XBee modules they could be implemented.
 
-\subsection{RF24 Transceiver}\todo{aren't there several RF24s? we got the nRF24L01-something?}
-The RF24 transceiver module is a radio module used for exchanging data between modules of the same type\todo{is this necessarily true? Can also communicate with other units using the same frequency?}. As with most of the XBee modules, the RF24 uses the 2.4GHz band, which is license-free in the whole world\todo{source}. It is well documented, and multiple libraries exists for using the device with Arduino\todo{well-documented: still no source?}.
+\subsection{NRF24L01 Transceiver}
+The NRF24L01 transceiver module is a radio module used for exchanging data between modules of the same frequency. As with most of the XBee modules, the RF24 uses the 2.4GHz band, which is license-free in the whole world\cite{itubands}. It is well documented, and multiple libraries exists for using the device with Arduino\todo{well-documented: still no source? GTFO Bjørn}.
 
 The RF24 is cheaper than the XBees, and has shorter range and is potentially slower, depending on the communication protocol.
 
