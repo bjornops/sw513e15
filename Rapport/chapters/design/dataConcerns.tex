@@ -1,12 +1,15 @@
 \section{Concerns}
-Some concerns about collected data storage and power consumption for the final solution is laid out through the following sections.
+Some concerns about collected data storage and power consumption for the final solution is elaborated in the following sections.
 
 \subsection{Data concerns - We do not know version}
-The final solution will collect data about the golf course. The question is where this data be stored, and how should the data be treated?
+The final solution will monitor the status of the determined properties of the golf course. The question is where this data should be stored and treated.
 
-The solution are supposed to assist the greenkeepers in their daily work. The final solution should have an end or main node to present the data for the greenkeeper, otherwise he would have to visit each node in the network, and then he might as well do it manually. This is why the data collected from the golf course should reach an end or central node.
+The solution is supposed to assist the greenkeepers in their daily work. To actually reduce the greenkeepers workload, the final solution should have a main node that gather and presents the data, so that measures can be made to maintain the golf course.
 
-This also makes it unnecessary to keep long term data on the non-main nodes nodes. Each node should only have the responsibility of reading data from its sensor, transmit the its data to another node, as well as forwarding data from other nodes. Treatment and storage of the data should only be handled by the end/central node. This way, each node in the system will require less processing power and will also be replaceable, except for the end/central node.
+%det ser skidt ud at dele linjer sådan, men det hjælper på commit fuck-ups :)
+This also makes it unnecessary to keep long term data on the non-main nodes nodes.\todo{what, why?} 
+Each node should only have the responsibility of acquiring data from its sensor, transmit the data to the main node. 
+Storage and processing of the data should only be handled by the main node. This way, each node in the system will require less processing power and will also be replaceable, except for the main node.
 
 
 
