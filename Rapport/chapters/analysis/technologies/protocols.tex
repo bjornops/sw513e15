@@ -1,13 +1,11 @@
 \section{Communication protocols}
 \todo{missing "abstract" metatext}
-\todo{define source node, used much, but not clear what it is}
-\todo{define packet}
-A few existing, relevant protocols will be presented in this section.
-\todo{we haven't settled on mesh so far}
-A mesh network can use a wide variety of protocols, to manage the route data is transferred.
-In networking, a protocol is a special set of rules and standards for how nodes would interacts with each other\todo{source}.
-Well known protocols could be TCP/IP(Transmission Control Protocol/Internet Protocol), which today is used to communicate between almost anything with a internet connection\todo{fix english and correctness}.
-The mesh network we are looking at is a radio based network, and therefore some more relevant\todo{more relevant than what?} protocols will be examined. 
+A few existing protocols will be presented in this section.
+In networking, a protocol is a special set of rules and standards for how nodes(devices) would interacts with each other\cite{Protocol_difinition}.
+Well known protocols could be TCP/IP(Transmission Control Protocol/Internet Protocol), which affects every device connected to the internet.
+
+Main node in this section is defined as the computer that handles that requests or sends the initial packet.
+Packets are data sent though out the network. A packet can contain contain data to be delivered, and data to keep track of the packet, such as the sender ID of the packet.
 
 \subsection{Time division multiple access}
 Time division multiple access(TDMA) is an access method that divides a single channel into smaller time slots.
@@ -48,54 +46,53 @@ TDMA can be used for any system that require several device to use the same chan
 %The Radio Link Protocol is typically used in cellular transmission.
 
 \subsection{Dynamic Source Routing protocol}
-The Dynamic Source Routing protocol (DSR) is a simple routing protocol designed specifically for use in multi-hop\todo{is multi-hop defined?} wireless ad-hoc networks.\todo{source}
-With DSR the network is completely self-organizing and self-configuring, requiring no administration or existing network structure.\todo{source and motivation}
-The nodes in the network work together to forward packets to destinations that can be outside of the senders transmission range.\todo{definition of mesh/tree network? already done}
-As nodes can be added and removed ad-hoc\todo{added and removed ad-hoc, means what?}, the protocol automatically determine and maintain the routing of the packets through the network.
-Since the number or sequence of nodes needed to reach any destination may change at any time, the resulting network topology may be quite rapidly changing.\todo{what? no comprehende}
-DSR is created to create a very low overhead\todo{define overhead} yet being able to react quickly to change in the network environment.
-The protocol provides a highly reactive\todo{highly reactive sounds like rubidium} service to ensure successful delivery of data packets where node may be moving around, or other changes in the network occur\cite{DSR}. 
+The Dynamic Source Routing protocol (DSR) is a simple routing protocol designed specifically for use in wireless ad-hoc networks.
+With DSR the network is completely self-organizing and self-configuring, requiring no administration or existing network structure\cite{DSR}.\todo{motivation}
+As nodes can be added and removed as desired, the protocol automatically determine and maintain the routing of the packets through the network.
+Since the number or sequence of nodes in a network, may change at any time, the topology may be quite rapidly changing.
+DSR works on demand, allowing the routing of DSR to scales automatically affecting only nodes that is needed.
+The protocol provides a highly responsive service to ensure successful delivery of data packets where node may be moving around, or other changes in the network occur\cite{DSR}. 
 
 The DSR protocol is composed of two main mechanisms that allow the discovery and maintenance of the routes in the network.
 
-- Route Discovery\todo{any reason for Capital Letter} is the mechanism by which a node S wishing to send a packet to a destination node D obtains a source route\todo{source route or just route, or what?} to D.
+- Route discovery is the mechanism by which a node S wishing to send a packet to a destination node D, obtains a route to D.
 Route Discovery is used only when S attempts to send a packet to D and does not already know a route to D.
 
-- Route Maintenance is the mechanism by which node S is able to detect, while using a source route to D, if the network topology has changed such that it can no longer use its route to D because a link along the route no longer works.\todo{rephrase}
-When Route Maintenance indicates a source route is broken\todo{define broken. route not exist?}, S can attempt to use any other route it happens to know to D, or it can invoke Route Discovery again to find a new route for subsequent packets to D.
+- Route maintenance is the mechanism by which node S is able to detect, while using a route to D, if the network topology has changed such that it can no longer use its route to D, which is known as a broken route.
+When Route Maintenance indicates a route is broken, S can attempt to use any other route it happens to know to D, or it can invoke Route Discovery again to find a new route for subsequent packets to D.
 Route Maintenance for this route is used only when S is actually sending packets to D.
 
-DSR is a source routing protocol where packets carries a header, an ordered list of nodes which is the route.
+DSR is a routing protocol where packets carries a header, an ordered list of nodes which is the route.
 This explicit use of routing allows the sender to select and control the route for the packets it sends.
-Source routing allow for load balancing, since the sender can create different routes out though the network, avoiding "heavy traffic".\todo{high throughput for one special node?}
+Routing allow for load balancing, since the sender can create different routes out though the network, avoiding high throughput through few nodes.
 It is also a guarantee that the routes used are loop-free, since a generated route never use the same node twice.
-By including this source route in the header of each packet, other nodes forwarding or overhearing any of these packets can easily\todo{fix} cache this information for future use\cite{DSR}.
-\todo{requirement that all nodes know the whole network topology? Puts high strain on node compiling the route for each packet?}
+By including this route in the header of each packet, other nodes forwarding or overhearing any of these packets can use this information for future use\cite{DSR}.
+When a node overhear a packet with a route, the route is stored locally on the node.
+The node can then use the route to forward messages, if its old route is unavailable.
 
 \subsection{Ad-hoc On-Demand Distance Vector Routing}
 Ad-hoc On-Demand Distance Vector(AODV) routing algorithm is a routing protocol designed for ad-hoc networks. 
-It is an on-demand algorithm, meaning that it builds routes between nodes only as necessary by source nodes \cite{AOVD1}.
+It is an on-demand algorithm, meaning that it builds routes between nodes only as necessary by main nodes \cite{AOVD1}.
 
 AODV is a network where only the nodes within reach of a newly added node is affected by the addition.
-If a link between nodes is broken, and it does not affect an ongoing transmission, no global notification occurs.\todo{comes suddenly. motivate or move. What global notification}
-This leads to a network where new nodes easily\todo{fix} can be added and removed without overhead on the entire network.
-The transmission route in AODV is managed so that only nodes in the direct route are active, which reduce the need for route maintenance and idle nodes\todo{why and how does it reduce maintenance and idle nodes?}.
-The protocol can determine multiple routes between a source and a destination, but only a single one is implemented.
-The route is not necessarily the shortest \cite{AOVD1}.\todo{which route?}
+The transmission route in AODV is managed so that only nodes in the direct route are active.
+The protocol can determine multiple routes between a main node and a destination, but only a single one is implemented, the route is not necessarily the shortest \cite{AOVD1}.
 
-A disadvantage to AODV is that if a single route breaks, for example due to a defect node, it is not possible to know whether other routes exists.\todo{how come we don't know?}
-But if a route breaks, the protocol discovers a new route, if possible, as and when necessary.\todo{rephrase. What is actually described here?}
+A disadvantage to AODV is that if a single route breaks, for example due to a defect node, it is not possible to know whether other routes exists.
+A new route discovery in AODV is to be carried out before knowing if there exist a route.
+If a link between nodes is broken, and it does not affect an ongoing transmission, no notification back to the main node occurs.
 
-When a node is ordered\todo{who's ordering? is that a part of the protocol?} to send a packet to a specified destination, it checks its routing table\todo{define routing table. Not mentioned before?} to determine if there currently exists a route to the destination.
+When a node is to forward a packet to a specified destination, it checks its routing table to determine if there currently exists a route to the destination.
+The routing table is a table over every route though the node to any other, already discovered, destination.
 If there already exist a route, the packet will be delivered to the next node in the route, repeating until it arrives at the correct location.
 If there does not exist a route, the node will initiate a route discovery process \cite{AOVD1}.
 
-A\todo{"A" or "The": all or just this protocol?} route discovery process begins with the source creating a Route Request (RREQ) packet.
-The packet contains the sources node's unique ID and IP\todo{what's IP?}, and the destination node's unique ID and IP.\todo{how does it know the destination node?}
-The packet is then transmitted from the source to it's neighbours.
+A route discovery process in AODV begins with the main node creating a Route Request (RREQ) packet.
+The packet contains the main node's unique ID and the destination node's unique ID.
+The packet is then transmitted from the main node to it's neighbours.
 The unique ID of each node is then appended to the packet, to ensure the same node is not transmitting more than once.
-The destination ID is to ensure it knows\todo{it knows? What knows what?} when the destination node is reached.
-A simple AODV network can be seen on \figref{AODVfigure}, where S and D represent the source and destination. It is visualized how the route discovery is invoked using the RREQ packet.\cite{AOVD2}
+The destination ID is to ensure the nodes in the route knows when the destination node is reached.
+A simple AODV network can be seen on \figref{AODVfigure}, where S and D represent the main node and destination. It is visualized how the route discovery is invoked using the RREQ packet.\cite{AOVD2}
 
 \begin{figure}[!h]
 	\centering
@@ -105,22 +102,23 @@ A simple AODV network can be seen on \figref{AODVfigure}, where S and D represen
 \end{figure}
 
 \subsection{Better Approach To Mobile Ad-hoc Networking}
-Better approach to mobile ad-hoc networking (B.A.T.M.A.N) is a routing protocol for multi-hop, ad-hoc mesh networks based on AODV. 
-B.A.T.M.A.N is said to solve some of the more typical problems with the classical routing protocols, which is not well suited for wireless ad-hoc networks.
-Some of the problems are, such networks are unstructured, are based on an inherently unreliable medium and dynamically change their topology.\todo{rephrase. meaning lost :(}
+Better approach to mobile ad-hoc networking (B.A.T.M.A.N) is a routing protocol for ad-hoc mesh networks, based on AODV. 
+B.A.T.M.A.N is said to solve some of the more typical problems with the classical routing protocols.
+Some of the problems are, some networks are unstructured, can be based on an inherently unreliable medium and dynamically change their topology\cite{BATMAN}.
 
-When using the B.A.T.M.A.N algorithm, the approach is to divide\todo{share?} the knowledge about the most reasonable path between nodes in a network to all of the participating nodes.
+When using the B.A.T.M.A.N algorithm, the approach is to share the knowledge about the most reasonable path between nodes in a network to all of the participating nodes.
 Each node in the network only account for the best path to all other nodes in the system.
 This results in the need for a global knowledge about local topology changes becomes unnecessary.
-In addition, B.A.T.M.A.N has an event-based, but timeless\todo{what does timeless mean?}, flooding mechanism that prevents the occurrence of loops and limits the amount of topology messages flooding\todo{flooding prevents flooding? Unclear to me} the network.
+In addition, B.A.T.M.A.N has an event-based, but timeless, flooding mechanism that prevents the occurrence of loops in the network.
 
-Each node in the network transmits a broadcast message(OGMs)\todo{what's OGM an abbreviation for?} to inform every node within range about its existence.
+Each node in the network transmits a broadcast message(called OGMs or originator messages in B.A.T.M.A.N) to inform every node within range about its existence.
 The nodes within range, then re-broadcast the OGMs, to nodes within their range, about the existence of the original initiator of this message and so on.
-Thus the network is flooded with originator\todo{que? Isn't originator and inventor/discoverer?} messages. OGMs are small, the typical raw packet size is 52 byte including IP and UDP overhead\todo{source}.
+This can result in the network being flooded with OGMs.
+OGMs are small, the typical raw packet size is 52 byte including IP and UDP overhead\cite{BATMAN}.
 OGMs contain at least the address of the originator, the address of the node transmitting the packet, and a sequence number.
 
 OGMs that follow a path where the quality of wireless connection is poor will suffer from packet loss or delay on their way through the network.
-Therefore OGMs that travel on good routes will propagate faster and be more reliable.\todo{source}
+Therefore OGMs that travel on good routes will propagate faster and be more reliable\cite{BATMAN}.
 
 In order to tell if a OGM has been received once or more than once it contains a sequence number, given by the originator of the OGM.
 Each node re-broadcasts each received OGM at most once and only those received from the neighbour which has been identified as the currently best next hop (best ranking neighbour) towards the original initiator of the OGM.
@@ -163,7 +161,7 @@ If a node receive a packet twice or more with the same address, the packet is di
 In RPF, the node will forward a copy of a received packet, no matter the origin.
 RPF except that the original transmitted packet will be copied by the right nodes and eventually end at the destination\cite{RPF}.
 
-Advantaged of flooding, is that if there exists a route from the source to the destination, a packet will be delivered, and possible multiple times.
+Advantaged of flooding, is that if there exists a route from the main node to the destination, a packet will be delivered, and possible multiple times.
 Since some flooding algorithms utilized every route in the network, it will also transfer packets though the shortest path\cite{flooding}.
 
 Disadvantages can be that the bandwidth is wasted, since flooding is a very costly algorithm since it utilize every route.
@@ -188,5 +186,5 @@ Advantages of flooding, is that if there exists a route from the source to the d
 Since some flooding algorithms utilizes every route in the network, it will also transfer packets through the shortest path\cite{flooding}.
 
 Disadvantages can be that the bandwidth is wasted, since flooding is a very costly algorithm since it utilize every route.\todo{Is bandwidth a problem? Isn't the problem battery life regarding to number of messages transmitted?}
-Packets can easily\todo{fix} be duplicated in the network, further increasing bandwidth load.
+Packets can be duplicated in the network, further increasing bandwidth load.
 Duplicate packet may loop in the system forever, if no prevention is made \cite{flooding}.
