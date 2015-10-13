@@ -2,16 +2,12 @@
 This section contains information about other potential issues that have not been directly encountered through the analysis, but still could be relevant for the final system.
 
 \subsection{Power consumption and antenna considerations}
-Før dette er der argumenteret for at lave trådløst system, da der ikke må nedgraves ledninger.
+To transmit data wirelessly from a far corner of a golf course to a main node, there has to be considerations about the antennas. 
 
-- Hvorfor kan vi ikke bruge store antenner? (Bruger meget batteri, og går i stykker)
-
-- Derfor er små antenner nødvendige, hvilket giver mindre range
-
-- Mindre range gør det nødvendigt at lave mesh, så de kan hjælpe hinanden
+Bigger antennas mean more powerconsumption on usage, and an increased chance of being hit, and destroyed, by stray golfballs. Instead of this approach small antennas can be considered, making up for their lower range by being able to have them communicate to a main node through other sensors. This allows them to get the low power consumption advantage of small atennas, while also making them less vulnerable to get destroyed by stray golfballs and maintainence machines.
 
 \subsection{Security}
-In most software systems it is important to evaluate the security to avoid unauthorized access or data loss or theft \todo{source}. This project is not excluded from such evaluation, and in this section the relevant security issues will be considered.
+In software systems it can be important to evaluate the security to avoid unauthorized access or data loss or theft \todo{source}. This project is not excluded from such evaluation, and in this section the relevant security issues will be considered.
 
 The main functions of the system is to transmit data wirelessly through a network. Since the data is sent wirelessly, it can easily be manipulated or interfered resulting in incorrect data.
 
