@@ -1,15 +1,17 @@
-\section{Concerns}
-Some concerns about collected data storage and power consumption for the final solution is elaborated in the following sections.
+\section{Considerations}
+Considerations about collected data storage and power consumption for the final solution is elaborated in this section.
 
-\subsection{Data concerns - We do not know version}
-The final solution will monitor the status of the determined properties of the golf course. The question is where this data should be stored and treated.
+\subsection{Data concerns - We do not know version}\todo{purpose of this section?}
+The final solution will monitor the status of the determined properties of the golf course. The data observed should be stored and treated somehow.\todo{rephrase/elaborate}
 
 The solution is supposed to assist the greenkeepers in their daily work. To actually reduce the greenkeepers workload, the final solution should have a main node that gather and presents the data, so that measures can be made to maintain the golf course.
 
 %det ser skidt ud at dele linjer sådan, men det hjælper på commit fuck-ups :)
-This also makes it unnecessary to keep long term data on the non-main nodes nodes.\todo{what, why?} 
-Each node should only have the responsibility of acquiring data from its sensor, transmit the data to the main node. 
-Storage and processing of the data should only be handled by the main node. This way, each node in the system will require less processing power and will also be replaceable, except for the main node.
+
+This\todo{what is "this"} also makes it unnecessary to keep long term data on the non-main nodes nodes.\todo{why?} 
+Each node should only have the responsibility\todo{synonym} of acquiring data from its sensor, transmit the data to the main node. 
+Storage and processing of the data should only be handled by the main node. 
+This way, each node\todo{Suggestion: "device in system" or "node in network"} in the system will require less processing power and will also be replaceable\todo{why is it replaceable?}, except for the main node.
 
 
 
