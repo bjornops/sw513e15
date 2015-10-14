@@ -6,7 +6,7 @@ With the requirements formally structured, the actual solution to the problem be
 
 The final solution must collect information from the golf course, and transmit it to a central device. This results in the final problem statement:
 
-\textit{How can a sensor network and a protocol be designed, so that data can be relayed throughout the network, enabling an endpoint device to receive the information without being within range of all sensors in the network?}\todo{In range of all devices now known yet.}
+\textit{How can a sensor network and a protocol be designed, so that data can be relayed throughout the network, enabling an endpoint device to receive the information without being within range of all sensors in the network?}
 
 The following technology chapter will discuss which technologies that can be used in a system to solve the final problem statement.
 
@@ -30,27 +30,27 @@ Finally the Won't-have category are requirements left out, by being unrealistic 
 
 \textbf{Must have:}\todo{boundary of number of nodes/devices?}
 \begin{itemize}
-\item Transfer data from all sensor nodes to a destination/main node wirelessly.
+\item Transfer of data wirelessly, from all nodes to a main node.
 \end{itemize}
-The core purpose of the system is to transfer data to the main node. Without this, the system would not be able to fulfill its purpose, and this requirement have therefore been categorized as a must have.
+The core purpose of the system is to transfer data to the main node. Without this, the system would not be able to fulfill its purpose.
 
 
 \begin{itemize}
-\item Implement a network with a communication protocol.
+\item Communication protocol.
 \end{itemize}
 The system will transfer data wirelessly, and it is therefore required of each node that it can atleast send data. A communication protocol is needed to ensure that the data is treated correctly.
 
 
 \begin{itemize}
-\item The system should respond appropriately to a disconnecting node.
+\item Appropriate handle of a disconnecting node.
 \end{itemize}
-When multiple nodes have been spread around the golf course, they will communicate wirelessly, and since each node are dependent on each other\todo{are they completely dependent?} to reach the main/end node, it becomes necessary to ensure that the entire system does not break down if one node were to disconnect from the rest. How would the system administrators find the disconnected node?\todo{questions are bad. don't do questions.} This is why the system needs some sort of fail-safe or a mechanism to remain functional if a node were to disconnect.
+Since nodes are to be dug down at different places on a golf course, it becomes necessary to ensure that the entire system does not break down if one node were to disconnect. If each node were to be dug up and reset if one node in the whole system got disconnected, the maintenance cost could quickly become too great.
 
 
 \begin{itemize}
-\item Nodes equipped with a sensor.
+\item Sensors.
 \end{itemize}
-The nodes scattered around the golf course need to collect some data to transfer back to the main node/unit. To show a proof of concept\todo{are we developing just a PoC? Where does that come from?}, the only thing the system need is some arbitrary data about the golf course to transmit between the nodes. Based on the interview, there are three types sensors that collect relevant data for the system. The analysis of the sensors can be found in the technology chapter of this report.
+The nodes on the golf course must collect some data to transfer back to the main node. Based on the interview, there are three types of properties that are relevant to monitor.
 
 
 \textbf{Should have:}
