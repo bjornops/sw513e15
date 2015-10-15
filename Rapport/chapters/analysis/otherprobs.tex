@@ -1,10 +1,12 @@
 \section{Other issues}
 This section contains information about other potential issues that have not been directly encountered through the analysis, but still could be relevant for the final system.
 
-\subsection{Power consumption and antenna considerations} 
-To transmit data wirelessly from a far corner of a golf course to a main node, there has to be considerations about the antennas. 
+\subsection{Power consumption contra range consideration} 
+To be able to transmit data wirelessly, even from a far corner of a golf course to a main node, there has to be considerations about the wireless range of the devices. 
 
-Bigger antennas mean more power consumption on usage, and an increased chance of being hit, and destroyed, by stray golfballs. Instead of this approach small antennas can be considered, making up for their lower range by being able to have them communicate to a main node through other sensors. This allows them to get the low power consumption advantage of small atennas, while also making them less vulnerable to get destroyed by stray golfballs and maintainence machines.
+Bigger antennas and radio modules mean more power consumption on usage\todo{Kilde}. Furthermore the modules would physically become larger, because of a bigger antenna, which would increase the amount of work in burying the devices in the ground. Because of the risk of being hit, and destroyed, by either a stray golfball, or a lawn mower, it is not an option to place the whole- or parts of the device above ground. It would though, if designed correctly, guarantee a direct wireless connection to the main node which would be optimal.\todo{'dis ok?}
+
+Instead another approach with small antennas can be considered. Smaller radio modules with smaller antennas require less power\todo{kilde} thereby lowering the requirements of a power supply. It would also require less work to bury a small device compared to a device with a big antenna. The only problem in such a solution is the radio module range. If some devices were to be placed on a far corner of a golf course, the device might not be able to transmit its data to the main node. 
 
 \subsection{Security}
 In software systems it can be important to evaluate the security to avoid unauthorized access or data loss or theft \todo{source}. This project is not excluded from such evaluation, and in this section the relevant security issues will be considered.

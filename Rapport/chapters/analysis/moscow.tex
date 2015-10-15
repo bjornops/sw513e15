@@ -55,27 +55,27 @@ The nodes on the golf course must collect some data to transfer back to the main
 
 \textbf{Should have:}
 \begin{itemize}
-\item Be able to seamlessly add and remove nodes to an existing system (Hot-pluggging).
+\item A simple process of adding nodes.
 \end{itemize}
-The requirement aims to add flexibility both during the installation of the system, and for further configuration thereafter. This would enable the addition, removal, and re-positioning of nodes without requiring a restart or re-configuration of the entire system. The must-have requirement, concerning a fail-safe in case of a disconnecting note, would additionally be met if a hot-plugging system was to be implemented.
+The requirement aims to add flexibility both during the installation of the system, and for further configuration thereafter. This would enable the addition and re-positioning of nodes without requiring a restart or re-configuration of the entire system. As the system \textbf{must have} an appropriate handle of a disconnecting node, this can be seen as an extension which the system \textbf{should have}, which together would give hot-plugging functionality.
 
 
 \begin{itemize}
-\item Be modular built, so that parts of a node can be replaced if damaged.
+\item Modular build.
 \end{itemize}
-This requirement is referring to the node/embedded system unit itself\todo{need an explanation/definition somewhere!}. The embedded system will consist of multiple parts, such as a micro controller, a sensor, and a transmitter. These parts should be put together in such a way that if a part breaks down, it would be an easy task to replace it. Since the devices will be placed outside on an actual golf course, the devices will exposed to weather and golf balls and is therefore prone to taking damage, it makes this requirement important an important\todo{derp:P} one but not a must.
+The embedded system will consist of multiple parts, for the different purposes. Something for wireless connectivity, something to sensor the ground parameters, a power supply, and finally something to do the computation. These parts should be put together in such a way that if a part breaks down, it would be a simple task to replace it. 
 
 
 \textbf{Could have:}
 \begin{itemize}
-\item Separate system installations, so nodes do not connect to another installation nearby.
+\item Separate networks.
 \end{itemize}
-If the final system includes the hot-pluggable functionality, the individual nodes should stay connected to a particular installation and not be confused\todo{people get confused. Devices get nondeterministic? Synonym, please} by another nearby installation of the system. This requirement could potentially become very complex, and the problem with two installations that interfere with each other might not be relevant since a single installation should cover the entire golf course.\todo{at least what the user requires?}
+If the final system includes the hot-plugging functionality, the individual nodes should stay connected to a particular network and not accidentally interfere another nearby network, by being added to that. This requirement could potentially become very complex, as this is a question of security, which is not the goal of this project. 
 
 \begin{itemize}
-\item Have a graphical user interface for presentation of data.
+\item Graphical user interface.
 \end{itemize}
-The data collected by the system should be processed by the central node/unit and presented to the system administrators\todo{users?} through a graphical user interface. This could be done with a monitor connected to the central node/unit or through a smartphone application. The graphical user interface should also allow the system administrators to change the settings of the system, e.g. change the interval between sensor readings.
+The data collected by the system could be processed by the main node and presented through a graphical user interface to give a better overview of all the data collected. This could be done with a monitor connected to the main node or through a smartphone application.
 
 
 
