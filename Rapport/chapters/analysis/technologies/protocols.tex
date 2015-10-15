@@ -1,14 +1,41 @@
-\section{Communication protocols} \label{cha:comprot}
-\todo{missing "abstract" metatext}
-A few existing protocols will be presented in this section.
-In networking, a protocol is a special set of rules and standards for how nodes(devices) would interacts with each other\cite{Protocol_difinition}.
-Well known protocols could be TCP/IP(Transmission Control Protocol/Internet Protocol), which affects every device connected to the internet.
+\section{Communication protocols} \label{cha:comprot}\todo{straighten metatext}
+There are multiple methods for communicating in a network, and such a procedure is called a protocol \cite{protocol}. A protocol is a set of rules regarding for example the information format, procedures for sending and receiving, error discovery and handling, and it can be implemented in both hardware and software.
+In this section, some wireless network communication protocols are presented. 
+First flooding protocols, followed by routing protocols.
+
+There are many protocols and multiple groups of protocols, therein routing and flooding. 
+Routing will transfer the information to the destination node through a determined route, whereas the flooding method will notify all nodes within reach to distribute the information forward, and this will repeat until all nodes has transmitted the information, and hence the destination node also has received the information.
+
+%In networking, a protocol is a special set of rules and standards for how nodes(devices) would interacts with each other\cite{Protocol_difinition}.
+%Well known protocols could be TCP/IP(Transmission Control Protocol/Internet Protocol), which affects every device connected to the internet.
 
 Main node in this section is defined as the computer that handles that requests or sends the initial packet.
-Packets are data sent though out the network. A packet can contain contain data to be delivered, and data to keep track of the packet, such as the sender ID of the packet.
+Packets are data sent though out the network. A packet can contain data to be delivered, or metadata to keep track of the packet, such as the sender ID of the packet.
+
+
+\subsection{Flooding protocols}
+Flooding in networks is a protocol used to deliver data throughout a network.
+There are two kind of flooding: uncontrolled flooding and controlled flooding\cite{controlled_flooding}.
+
+Uncontrolled flooding is the broadcasting of a packet, with a particular recipient, but without a particular route to reach the destination. Each node receiving the packet will repeat it to all of its neighbors, and they will repeat it again to theirs. This causes the packet to reach all nodes in the network, but it can cause communication loops. \cite{flooding}.
+
+Controlled flooding is flooding protocols with filters or other measures to make it more reliable or efficient than the uncontrolled, hence avoiding cycles and broadcast \cite{controlled_flooding}.
+Examples of such algorithms are Sequence Number Controlled Flooding (SNCF) and Reverse Path Flooding (RPF).
+With SNCF, each node have its own address that is delivered with each data packet it transmits.
+If a node receive a packet multiple times with the same unique id, the packet is discarded, so only one instance of the packet is transmitted.
+In RPF, a node will forward a copy of a received packet, no matter the origin.
+RPF expects that the original transmitted packet will be copied by the nodes in a path to the destination and eventual delivered\cite{RPF}.
+
+Advantages of flooding, is that if there exists a route from the source to the destination, a packet will be delivered, and up to multiple times, depending on the implemented protocol.
+Since some flooding algorithms utilizes every route in the network, it will also transfer packets through the shortest path\cite{flooding}.
+
+Disadvantages can be that the bandwidth is wasted, since flooding is a very costly algorithm since it utilize every route.
+Packets can be duplicated in the network, further increasing bandwidth load.
+Duplicate packet may loop in the system forever, if no prevention is made \cite{flooding}.
+
 
 \subsection{Time division multiple access}
-Time division multiple access(TDMA) is an access method that divides a single channel into smaller time slots.
+Time division multiple access(TDMA) is an access method\todo{aren't we studying protocols?} that divides a single channel into smaller time slots.
 Each time slot is assigned to a single node, while every timeslot, are on the same channel.
 Each timeslot is active a short period of time, allowing the assigned node to transmit, before the next node in the queue get time to transmit\cite{TDMA}.
 
@@ -47,7 +74,7 @@ For example is radio transmitters a great fondness for causing interference, and
 
 \subsection{Dynamic Source Routing protocol}
 The Dynamic Source Routing protocol (DSR) is a simple routing protocol designed specifically for use in wireless ad-hoc networks.
-With DSR the network is completely self-organizing and self-configuring, requiring no administration or existing network structure\cite{DSR}.\todo{motivation - wut?}
+With DSR, the network is completely self-organizing and self-configuring, requiring no administration or existing network structure \cite{DSR}. 
 As nodes can be added and removed as desired, the protocol automatically determine and maintain the routing of the packets through the network.
 Since the number or sequence of nodes in a network, may change at any time, the topology may be quite rapidly changing.
 DSR works on demand, allowing the routing of DSR to scales automatically affecting only nodes that is needed.
@@ -149,6 +176,7 @@ B.A.T.M.A.N\cite{BATMAN} & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shor
 \end{tabular}}
 \end{table}
 
+\iffalse %temporary removed
 \subsection{Flooding as a routing algorithm}\label{cha:floodingSec}
 Flooding in networks, is a routing algorithm used to deliver data out though a system.
 There exists two kind of flooding, uncontrolled flooding and controlled flooding.
@@ -169,22 +197,4 @@ Packets can be duplicated in the network, future increasing bandwidth load.
 Duplicate packet may loop in the system forever, if no prevention is made\cite{flooding}.
 
 \todo{flooding: take 2}
-\subsection{Flooding protocols}
-Flooding in networks is a protocol used to deliver data throughout a network.
-There are two kind of flooding: uncontrolled flooding and controlled flooding\cite{controlled_flooding}.
-
-Uncontrolled flooding is the broadcasting of a packet, with a particular recipient, but without a particular route to reach the destination. Each node receiving the packet will repeat it to all of its neighbours, and they will repeat it again to theirs. This causes the packet to reach all nodes in the network, but it can cause communication loops. \cite{flooding}.
-
-Controlled flooding is flooding protocols with filters or other measures to make it more reliable or efficient than the uncontrolled, hence avoiding cycles and broadcast\cite{controlled_flooding}.
-Examples of such algorithms are Sequence Number Controlled Flooding (SNCF) and Reverse Path Flooding (RPF).
-With SNCF, each node have its own address that is delivered with each data packet it transmits.
-If a node receive a packet multiple times with the same unique id, the packet is discarded, so only one instance of the packet is transmitted.
-In RPF, a node will forward a copy of a received packet, no matter the origin.
-RPF expects that the original transmitted packet will be copied by the nodes in a path to the destination and eventual delivered\cite{RPF}.
-
-Advantages of flooding, is that if there exists a route from the source to the destination, a packet will be delivered, and up to multiple times, depending on the implemented protocol.
-Since some flooding algorithms utilizes every route in the network, it will also transfer packets through the shortest path\cite{flooding}.
-
-Disadvantages can be that the bandwidth is wasted, since flooding is a very costly algorithm since it utilize every route.
-Packets can be duplicated in the network, further increasing bandwidth load.
-Duplicate packet may loop in the system forever, if no prevention is made \cite{flooding}.
+\fi
