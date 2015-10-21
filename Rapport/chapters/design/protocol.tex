@@ -1,11 +1,30 @@
 \section{Protocol design}
-The protocol designed for the system described in this report is based on the examination of networks in Chapter \ref{fig:topologies}, and on the protocols described in Chapter \ref{cha:comprot}.
+\todo{be more humble, analytic and include possibilities or explain why omitted}
+The protocol designed for the system described in this report is based on the examination of networks in section \ref{fig:topologies}, and on the protocols described in section \ref{cha:comprot}.
 
-The network type chosen for the system uses the tree topology, which utilizes a main node, called the root, and multiple branches and leaves. The nodes in the tree does not necessarily connect to the main node, but relays information between the nodes, which is necessary due to the small range of the radio modules used in the solution.
+To transmit the data from the nodes to the main node, there has to some sort of protocol. The protocol must support the hardware components and be designed to work with their limitations. While the individual nodes by themselves have a relatively short range of communication, a network of these devices can have a longer reach if they can relay the data. Therefore, relaying must be supported by the protocol. 
 
-The protocol uses flooding to relay data. When data is requested from the main node, the main node sends a packet requesting sensor readings. The nodes that receive this packet is the first level nodes in the tree. These nodes then read the moisture values from the sensors attached to the nodes, and transmit these back to the main node. 
+The tree topology is chosen for the network because of several reasons. According to the requirements\todo{give requirements individual names like M1, M2... S1, S2.. C1 for each category in mscw?}, the solution must respond appropriately to a disconnecting node as well as having a simple process for adding nodes. This could be handled by a mesh network, by bypassing or finding another route to the main node, but a mesh network \todo{uses more energy? more data? Argue why bad.} is badder. 
 
-The first level nodes then request data from the nodes in their vicinity. The nodes receiving this request now has a parent, which is the node that requested data. These nodes are now second level nodes. The second level nodes read from the sensors, and sends data back to their parents. The parents then relay the data to the main node. This continues until all reachable sensors have relayed data back to the main node.
+Instead of having a static tree, where the nodes have permanent parents and children, the tree is decided to restructure for each new data request from the main node. This is done by flooding the network from the main node and then create a temporary spanning tree, where each node remembers its parent. This solves the issues of a defective node, while it will not be part of the tree.
+
+\begin{enumerate}
+	\item Receive data request (Wireless request for nodes, user input at the main node)
+		\subitem Ignore if (already received or not recipient of package)
+	\item Remember parent (MN skip)
+	\item Acquire sensor data
+	\item Send sensor data to parent (if silence?)
+	\item Receive acknowledgment of sent package
+	\item Send data request to all
+	\item Receive data from children
+	\item If no response or acknowledgment within 10 min: (deep) sleep?
+\end{enumerate}
+
+%which has a main node, called the root, and multiple branches and leaves. \todo{why?} The nodes in the tree does not necessarily connect directly to the main node, but relay information through nodes, which is necessary due to the short range of the radio modules used in the solution.
+
+The protocol uses flooding to broadcast the data request. When data is requested by the user, the main node sends a packet requesting sensor readings. The nodes that receive this packet directly from the main node is the first level of nodes in the tree. These nodes then read the moisture values from their sensors and transmit these back to the main node. 
+
+The first level nodes then request data from the nodes within their range. The nodes receiving this request now has a parent, which is the node that requested data. These nodes are now second level nodes. The second level nodes read from the sensors, and sends data back to their parents. The parents then relay the data to the main node. This continues until all reachable sensors have relayed data back to the main node.
 An illustration showing an example of a tree is seen on Figure \ref{fig:prottree1}.
 
 Every time data is request from the main node, the levels of the nodes are determined again as they might have changed, due to new nodes or disconnected nodes.
