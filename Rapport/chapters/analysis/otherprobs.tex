@@ -2,14 +2,14 @@
 This section contains information about other potential issues that have not been directly encountered through the analysis, but still could be relevant for the final system.
 
 \subsection{Power consumption contra range consideration} 
-To be able to transmit data wirelessly, even from a far corner of a golf course to a main node, there has to be considerations about the wireless range of the devices. 
+To be able to transmit data wirelessly, from a far corner of a golf course to a main node, there has to be considerations about the wireless range of the devices.
 
-Bigger antennas and radio modules mean more power consumption on usage\todo{Kilde}. Furthermore the modules would physically become larger, because of a bigger antenna, which would increase the amount of work in burying the devices in the ground. Because of the risk of being hit, and destroyed, by either a stray golfball, or a lawn mower, it is not an option to place the whole- or parts of the device above ground. It would though, if designed correctly, guarantee a direct wireless connection to the main node which would be optimal.\todo{'dis ok?}
+Bigger antennas and radio modules mean more power consumption on usage\todo{Kilde}. Furthermore the modules would physically become larger, because of a bigger antenna, which would increase the amount of work in burying the devices in the ground. Because of the risk of being hit, and destroyed, by either a stray golfball, or a lawn mower, it is not an option to place the entire the device above ground. Using big antennas would make it easier to etablish a direct wireless connection to the main node which would be optimal communication wise.
 
 Instead another approach with small antennas can be considered. Smaller radio modules with smaller antennas require less power\todo{kilde} thereby lowering the requirements of a power supply. It would also require less work to bury a small device compared to a device with a big antenna. The only problem in such a solution is the radio module range. If some devices were to be placed on a far corner of a golf course, the device might not be able to transmit its data to the main node. 
 
 \subsection{Security}
-In software systems it can be important to evaluate the security to avoid unauthorized access or data loss or theft \todo{source}. This project is not excluded from such evaluation, and in this section the relevant security issues will be considered.
+In software systems it can be important to evaluate the security to avoid unauthorized access or data loss or theft. This project is not excluded from such evaluation, and in this section the relevant security issues will be considered.
 
 The main functions of the system is to transmit data wirelessly through a network. Since the data is sent wirelessly, it can easily be manipulated or interfered resulting in incorrect data.
 
@@ -17,9 +17,9 @@ Another view is the process of connecting a new device to the network. If a devi
 
 Considering the hardware design of a measuring device, it would also be relevant to analyze if a device can be physically reconstructed to intentionally transmit malicious data to the network. Though being more a question of physical security, by preventing access to the device, this could still be relevant.
 
-There could potentially be a lot of minor security issues, but the major issue in the system is that data is transmitted wirelessly and it is therefore exposed to malicious input. This must be taken into account in the design of a final solution.
+There could potentially be a lot of minor security issues, but the major issue in the system is that data is transmitted wirelessly and it is therefore exposed to malicious input. This could be taken into account in the design of a final solution.
 
 \subsection{User interface}
-As the main problem is to transfer data from sensors to an end node, where a user can read and react appropriately, it would be necessary to present this data for the user. Since it would require much training to be able to decipher bytestreams or simple datalists, a user interface with a more simple way of presenting the data would be practical, by giving a better overview of the data.
+As the main problem is to transfer data from sensors to an end node, where a user can read and react appropriately, it would be necessary to present this data for the user. Since it is practically impossible for humans to decipher bytestreams, a user interface with a more simple way of presenting the data would be practical, by giving a better overview of the data.
 
 An excessive amount of interactions with the user interface would be unnecessary, as the system would only serve as a way for reading and understanding the collected data. Therefore a simple interface for one-way communicating the data to the user would be sufficient.
