@@ -2,8 +2,8 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 
-//RF24 radio(53,48); // Mega
-RF24 radio(7, 8);
+RF24 radio(53,48); // Mega
+//RF24 radio(7, 8); // Uno
 const byte rxAddr[6] = "00001";
 
 void setup()
@@ -22,7 +22,7 @@ void setup()
 
 void loop()
 {
-  const char text[] = "01010101010101010101010101010101";
+  const char text[] = "10101010101010101010101010101010"; //"01010101010101010101010101010101";
   radio.write(&text, sizeof(text));
-  delay(2);
+  delay(4); // 2 default
 }
