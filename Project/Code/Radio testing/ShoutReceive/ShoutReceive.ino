@@ -2,27 +2,33 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 
-//RF24 radio(53,48); // Mega
 RF24 radio(7, 8);
 const byte rxAddr[6] = "00001";
 
 void setup()
 {
+  while (!Serial);
   Serial.begin(9600);
+  
   radio.begin();
   radio.setAutoAck(false);
   radio.setDataRate(RF24_250KBPS);  
   radio.setPALevel(RF24_PA_MIN);
-  radio.setCRCLength(RF24_CRC_DISABLED);
+  radio.setCRCLength(RF24_CRC_DISABLED);  
   radio.setChannel(114);
-  radio.openWritingPipe(rxAddr);
+  radio.openReadingPipe(0, rxAddr);
   
-  radio.stopListening();
+  radio.startListening();
 }
 
 void loop()
 {
-  const char text[] = "01010101010101010101010101010101";
-  radio.write(&text, sizeof(text));
-  delay(2);
+  if (radio.available())
+  {
+    char text[32] = {0};
+    radio.read(&text, sizeof(text));
+    
+    String packetString = String(text);
+    Serial.println(packetString);
+  }
 }
