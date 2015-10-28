@@ -1,20 +1,27 @@
 \section{Protocol design}
 \todo{be more humble, analytic and include possibilities or explain why omitted}
-The protocol designed for the system described in this report is based on the examination of networks in section \ref{fig:topologies}, and on the protocols described in section \ref{cha:comprot}.
+The protocol to be developed for the solution is based on the examination of networks in section \ref{fig:topologies} and the protocols described in section \ref{cha:comprot}. There are a number of considerations to be made to develop a protocol that complies to the requirements. Because the sensor nodes are battery driven, most of the choices are done with power consumption as a priority.
 
-%Protocol considerations and arguments to elaborate:
-% Power consumption
-% Data amount
-% Sequence of data requests, sensor readings, acknowledgments,
-% Transfer speeds? -elaborate in HW?
-% Removed/faulty nodes causing branch loss
-% Reduce overloaded nodes?
+Considerations to be made:
+\begin{itemize}
+	\item (\_)Power consumption
+	\item (\_)Data amount
+	\item (\_)Sequence of requests, sensor readings, acknowledgements, etc.
+	\item (\_)Interference handling (exp. backoff)
+	\item (\_)Transfer speed (high power+short time vs low power+long time) - Discuss in analysis?
+	\item (\_)Branch loss caused by nodes
+	\item (\_)Reduce overloading on low level nodes
+\end{itemize}
 
-To transmit the data from the nodes to the main node, there has to some sort of protocol. The protocol must support the hardware components and be designed to work with their limitations. While the individual nodes by themselves have a relatively short range of communication, a network of these devices can have a longer reach if the nodes can relay the data. Therefore, relaying must be supported by the protocol. 
+To transmit the data from the nodes to the main node, there has to some sort of protocol. The protocol must support the hardware components and be designed to work with their limitations. While the individual nodes have a relatively short range of communication, a network of these devices can have a longer reach if the nodes can relay the data. Therefore, relaying must be supported by the protocol. 
 
-The tree topology is chosen for the network because of several reasons. According to the requirements\todo{give requirements individual names like M1, M2... S1, S2.. C1 for each category in mscw?}, the solution must respond appropriately to a disconnecting node as well as having a simple process for adding nodes. This could be handled by a mesh network, by bypassing or finding another route to the main node, but a mesh network \todo{uses more energy? more data? Argue why bad.} is badder. 
+The tree topology is chosen for the network because of several reasons. 
+According to the requirements\todo{give requirements individual names like M1, M2... S1, S2.. C1 for each category in mscw?}, the solution must respond appropriately to a disconnecting node as well as having a simple process for adding nodes. 
+This could be handled by a mesh network, by bypassing or finding another route to the main node, but a mesh network \todo{uses more energy? more data? Argue why bad.} is badder. 
 
-Instead of having a static tree, where the nodes have permanent parents and children, the tree is restructured for each new data request from the main node. This is done by flooding the network from the main node and then create a temporary spanning tree, where each node remembers its parent for the current data gathering\todo{find name for an instance of data gather/request}. This solves the issues of a defective node, since it will not be part of the tree. 
+Instead of having a static tree, where the nodes have permanent parents and children, the tree is restructured for each new data request from the main node. 
+This is done by flooding the network from the main node to create a temporary spanning tree, where each node remembers its parent for the current data request\todo{find name for an instance of data gather/request}. 
+This solves the issues of a defective node, since it will not be part of the tree. 
 
 \begin{enumerate}
 	\item Receive data request (Wireless request for nodes, user input at the main node)
@@ -30,12 +37,20 @@ Instead of having a static tree, where the nodes have permanent parents and chil
 
 %which has a main node, called the root, and multiple branches and leaves. \todo{why?} The nodes in the tree does not necessarily connect directly to the main node, but relay information through nodes, which is necessary due to the short range of the radio modules used in the solution.
 
-The protocol uses flooding to deliver the data request through the network. When data is requested by the user, the main node sends a packet containing a sensor reading request. The nodes that receive this packet directly from the main node is the first level of nodes in the tree, as seen in figure \ref{fig:prottree1}. These nodes then read the moisture values from their sensors and transmit these back to the main node. 
 
-The first level nodes then request data from the nodes within their range. The nodes receiving this request registers the node that requested data as its parent. These nodes are second level nodes. The second level nodes read from the sensors, and sends data back to their parents. The parents then relay the data to the main node. This continues until all reachable sensors have relayed data back to the main node.
+\subsection*{Example}
+The protocol uses flooding to distribute the data request through the network. 
+When data is requested by the user, the main node sends a packet containing a sensor reading request. 
+The nodes that receive this packet directly from the main node is the first level of nodes in the tree, as seen in figure \ref{fig:prottree1}. 
+These nodes then read the moisture values from their sensors and transmit these back to the main node. 
+
+The first level nodes then request data from the nodes within their range. 
+The nodes receiving this request firstly verifies that it is a new request, then registers the node that requested data as its parent. 
+These nodes are second level nodes. The second level nodes read from the sensors, and sends data back to their parents. The parents then relay the data to the main node. 
+This procedure continues until all reachable sensors have relayed data back to the main node.
 An illustration showing an example of a tree is seen on Figure \ref{fig:prottree1}.
 
-Every time data is requested from the main node the tree structure and node levels are assessed again as they might have changed, due to new or disconnected nodes.
+For each new data request from the main node the tree structure and node levels are assessed again as they might have changed, due to new or disconnected nodes.
 
 \begin{figure}[!h]
 	\centering
@@ -51,7 +66,7 @@ The identifier is provided by the main node by pairing the device with the main 
 
 The identifier is additionally used to address parent nodes to relay the packets when transmitting sensor data. In figure \ref{fig:prottree1}, the nodes 5, 6, and 7 would send and address packets to the parent by the identifier 3. This means that other nodes in the vicinity would ignore these packets, and only node 3 reacts on the packets. Node 3 would then relay the data to node 2, as 2 is 3's parent, and finally 2 would relay to MN.
 
-Should a node somehow disconnect from the network, the nodes connected to this node will receive the packets from another node, and from that point on use that as the parent. This is \todo{DROP OF COURSE!!} if there is any nodes in range of the disconnected nodes' subnodes. 
+Should a node somehow disconnect from the network, the nodes connected to this node will receive the packets from another node, and from that point on use that as the parent. This is \todo{DROP OF COURSE!!} if there are any nodes in range of the disconnected nodes' subnodes. 
 
 \begin{figure}[!h]
 	\centering
@@ -64,7 +79,7 @@ An example of this can be seen on Figure \ref{fig:prottree2}. This figure shows 
 This means that the next time data is requested, node 7 will be the parent for node 5 and 6, and they will now be a level higher than before.
 
 \subsection*{Interference}
-When using a flooding protocol, interference can become a problem, as explained in Chapter \ref{cha:floodingSec}. This occurs even when using controlled flooding, but using a protocol can help reduce problems with interference.
+When using a flooding protocol, interference can become a problem, as explained in section \ref{cha:floodingSec}. This occurs even when using controlled flooding, but using a protocol can help reduce problems with interference.
 
 Interferences might cause packets to get mixed up, which makes it impossible to use the data received. Figure \ref{fig:prottree1} shows an example of possible interference. Nodes 5, 6, and 7 could send packets at the same time, causing node 3 to get scrambled data.
 
