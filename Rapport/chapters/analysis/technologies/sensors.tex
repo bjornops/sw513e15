@@ -1,19 +1,34 @@
 \section{Sensors}
-To acquire relevant data from the golf course, and to enable processing of this data in a digital domain, there has to be sensors. The sensors must be capable of gathering data, and returning a value, either as a digital or analog signal than can be processed by a computation unit. As multiple sensors are needed, the price point is considered relevant, as it will cause the overall cost of the solution to grow.
+To acquire relevant data from the golf course, and to enable processing of this data in a digital domain, there has to be sensors.
+The sensors must be capable of gathering data, and returning a value, either as a digital or analog signal than can be processed by a computation unit.
+As multiple sensors are needed, the price point is considered relevant, as it will cause the overall cost of the solution to grow.
 
-Prices mentioned in this section is based on results of online searches, and might be different at the time of reading this. They don't serve to make accurate calculations, but rather to get a general idea of the expenses required to include them in a solution.
+Prices mentioned in this section is based on results of online searches, and might be different at the time of reading this.
+They don't serve to make accurate calculations, but rather to get a general idea of the expenses required to include them in a solution.
 
 \subsection{Moisture Sensor}
-To obtain information about the moisture of soil on the gold course, a moisture sensor is needed. The moisture can change relatively quickly depending on rain and and type of soil. Sensors for monitoring moisture can be acquired for prices at about 1\$.%Simple moisture sensors are build as a pair of spikes inserted in the ground\todo{MAJOR generalization without source}. Between them a current is being sent, and the resistance of the ground is measured. Based on this value the moisture can be calculated. %INSERTNAMEHERE\todo{find navnet -.-, og find documentation, er ebays beskrivelse gyldig?} .
+To obtain information about the moisture of soil on the golf course, a moisture sensor is needed.
+The moisture can change relatively quickly depending on rain and and type of soil.
+Sensors for monitoring moisture can be acquired for prices at about 1\$.
+The moisture sensor used in this project is a Arduino Soil Hygrometer Detection Module Soil Moisture Sensor.
+The sensor is a sensor with a operating voltage of 3.3V to 5V.
+It have dual output, both digital and analog, whit analog being the most accurate.
+The digital output is in the form low(0) and high(1), while the analog is a number between low(0) and high(1)\cite{moisture}.
+When the output is high, the moisture content of the soil is high, while a low output means a low moisture content.
+The sensor comes with a small converter which can swap between the two outputs, and calibrate the sensor when using analog.
+The calibration is needed when there are several sensors which should provide the same range of moisture.
+On \ref{moisture_figure} a picture of the moisture sensor is seen, with the fork being the actual sensor, and the circuit board being the converter and calibrator. 
 
-\begin{figure}[H]
+\begin{figure}[H]\label{moisture_figure}
 \centering
 \includegraphics[width=0.6\textwidth]{chapters/analysis/figs/soilMoistureSensor.jpg}
 \caption{Soil moisture sensor.}
 \label{fig:moistureSensor}
 \end{figure}
 
-\subsection{Soil pH Sensor} \todo{the more i look, the harder it seem to prove this even exists.}
+
+
+\subsection{Soil pH Sensor}
 To get information about the acidity or alkalinity of the soil, a pH is needed. These, however, are both expensive and can be arguably inaccurate, so they will not be covered in depth, as they fall shot of our problem. 
 
 \begin{figure}[H]
