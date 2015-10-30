@@ -22,9 +22,10 @@ void setup()
 
 void loop()
 {
-  const char text[] = "11111111111111111111111111111111";
+  const char text[] = "a1b2c3d4e5f6g7h8i9j10k11l12m13n1";
   // "10101010101010101010101010101010"; 
+  // "11111111111111111111111111111111";
   // "01010101010101010101010101010101";
   radio.write(&text, sizeof(text));
-  delay(4); // 2 default
+  delay(2); // 2 default
 }

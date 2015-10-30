@@ -18,10 +18,10 @@ MoistureSensor::MoistureSensor(int aPin) {
 // Implementering af read ved moisture sensor
 double MoistureSensor::read() {
     int val =  analogRead(myPin);
-    return 1023-val;
+    return val;
 }
 
-MoistureSensor sens(0);
+MoistureSensor sens(1);
 
 void setup() {
   Serial.begin(9600);

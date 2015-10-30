@@ -4,6 +4,7 @@
 
 RF24 radio(7, 8);
 const byte rxAddr[6] = "00001";
+int count = 0;
 
 void setup()
 {
@@ -16,8 +17,12 @@ void setup()
 
 void loop()
 {
+  if(count < 10000)
+  {
   const char text[] = "11111111111111111111111111111111";
   radio.write(&text, sizeof(text));
   
-  delay(1);
+  delay(2);
+  count++;
+  }
 }
