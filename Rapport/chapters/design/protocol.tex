@@ -1,28 +1,62 @@
 \section{Protocol design}
+%META
 \todo{be more humble, analytic and include possibilities or explain why omitted}
-The protocol to be developed for the solution is based on the examination of networks in section \ref{fig:topologies} and the protocols described in section \ref{cha:comprot}. There are a number of considerations to be made to develop a protocol that complies to the requirements. Because the sensor nodes are battery driven, most of the choices are done with power consumption as a priority.
+To transmit the data from the nodes to the main node, there has to some sort of protocol. The protocol must support the utilized hardware components and be designed to work within their limitations. The network is supposed to be controlled by the main node, and the nodes will transmit sensor data on demand\todo{why?}.
 
-Considerations to be made:
-\begin{itemize}
-	\item (\_)Power consumption
-	\item (\_)Data amount
-	\item (\_)Sequence of requests, sensor readings, acknowledgements, etc.
-	\item (\_)Interference handling (exp. backoff)
-	\item (\_)Transfer speed (high power+short time vs low power+long time) - Discuss in analysis?
-	\item (\_)Branch loss caused by nodes
-	\item (\_)Reduce overloading on low level nodes
-\end{itemize}
+The protocol to be developed for the solution will be based on the examination of networks in section \ref{fig:topologies} and the protocols described in section \ref{cha:comprot}, and adapted to fit the requirements. There are a number of considerations to be made to develop a protocol that complies to the requirements. Because the sensor nodes are battery driven, most of the choices are done with power consumption as a priority, to increase the battery longevity.\todo{add to requirements?}
 
-To transmit the data from the nodes to the main node, there has to some sort of protocol. The protocol must support the hardware components and be designed to work with their limitations. While the individual nodes have a relatively short range of communication, a network of these devices can have a longer reach if the nodes can relay the data. Therefore, relaying must be supported by the protocol. 
+While the individual nodes have a relatively short communication range, a network of these devices can have a longer reach if the nodes are able to relay data. Therefore, relaying must be supported by the protocol. 
 
-The tree topology is chosen for the network because of several reasons. 
-According to the requirements\todo{give requirements individual names like M1, M2... S1, S2.. C1 for each category in mscw?}, the solution must respond appropriately to a disconnecting node as well as having a simple process for adding nodes. 
-This could be handled by a mesh network, by bypassing or finding another route to the main node, but a mesh network \todo{uses more energy? more data? Argue why bad.} is badder. 
+\subsection{Transfer method and topology}
+The solution is supposed to gather sensor data from all nodes in the network, and this subsection will contain the considerations made for the choice of topology.
 
-Instead of having a static tree, where the nodes have permanent parents and children, the tree is restructured for each new data request from the main node. 
-This is done by flooding the network from the main node to create a temporary spanning tree, where each node remembers its parent for the current data request\todo{find name for an instance of data gather/request}. 
-This solves the issues of a defective node, since it will not be part of the tree. 
+According to the requirements\todo{give requirements individual names like M1, M2... S1, S2.. C1 for each category in mscw?}, there is no need\todo{requirement?} to measure one specific node at a time. This leads to that the data readings can be done for all nodes at the same time. 
 
+There are multiple methods to request data from the network nodes. One can transmit a data request to every node in the network, by addressing it by name. This would require the main node to create an individual request to each node in the network, and the network nodes to know the path through the network to the addressee, so that the request can be relayed correctly. This is not appropriate when the network nodes have limited memory\todo{how much would routing tables fill?}. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that does exist. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy. 
+
+A second method is that the data request can be transmitted by flooding the network without sending a tailored request to each node. A flooded request will broadcast to all nodes in the network, and will only require one request packet. If the broadcast is done by controlled flooding, there will be no cycles, and the outgoing transmit topology will consequently be a tree. The flooding will not utilize much data, while it is one packet only, but the controlling of the flooding can use more processing power, as the nodes can receive the same packet multiple times and must analyze and discard any previously received packets.
+
+The controlled flooding has a low memory impact and thus best suited for the solution. The flooding protocol will create a tree which can be utilized to create a return path for the nodes' sensor readings.
+
+The tree created in each request broadcast can be different, based on interference, removed or faulty nodes or by other reasons. This will effectively solve the requirement of respond appropriately to a disconnecting node as well as including new nodes in the network. It will also use the shortest paths to 
+
+A process to add new nodes could be to pair a node with the main node before placing it in the network. This way, a node could have assigned a unique identity to be able to recognize its sensor readings from other sensors. 
+
+%Appropriate response to a disconnecting node could be handled by a mesh network, by bypassing or finding another route to the main node, but a mesh network \todo{uses more energy? more data? Argue why bad.} is badder. 
+
+
+%Instead of having a static tree where the nodes have permanent parents and children, the tree is restructured for each new data request from the main node. 
+%This is done by flooding the network from the main node to create a temporary spanning tree, where each node remembers its parent for the current data request\todo{find name for an instance of data gather/request}. 
+%This solves the issues of a defective node, since it will not be part of the tree. 
+
+\subsection{Data}
+
+\textbf{What data?}\newline
+The data to be transmitted is..
+
+\textbf{Precision/allocation}
+
+\subsection{Transfer speed}
+Faster transfer speed uses more energy, but in a shorter amount of time. Slower transfer speed uses less energy, but over longer time. What is best?
+
+\subsection{Interference}
+When using a flooding protocol, interference can become a problem, as explained in section \ref{cha:floodingSec}. This occurs even when using controlled flooding, but using a protocol can help reduce problems with interference.
+
+Interferences might cause packets to get mixed up, which makes it impossible to use the data received. Figure \ref{fig:prottree1} shows an example of possible interference. Nodes 5, 6, and 7 could send packets at the same time, causing node 3 to get scrambled data.
+
+To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. If the checksums match, the packet is accepted and can be relayed to the next node. This will cause the receiving node to send an acknowledgment to the node that sent the packet, which will then stop sending data.
+If the checksums does not match, the packet is ignored until a 'clean' packet makes it way to the node.
+
+To ensure that a 'clean' packet will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will get through to the receiver, without interference.
+This is possible, as time is not of the essence, and the delay between trying again is small.
+
+\textbf{Exponential backoff}\newline
+\textbf{Other handling of interference?}
+
+\subsection{Overloaded nodes}
+Nodes near the root transfers data for a lot of sensors. Can they handle it? Battery problems?
+
+\subsection{Sequence}
 \begin{enumerate}
 	\item Receive data request (Wireless request for nodes, user input at the main node)
 		\subitem Ignore if (already received or not recipient of package)
@@ -38,7 +72,7 @@ This solves the issues of a defective node, since it will not be part of the tre
 %which has a main node, called the root, and multiple branches and leaves. \todo{why?} The nodes in the tree does not necessarily connect directly to the main node, but relay information through nodes, which is necessary due to the short range of the radio modules used in the solution.
 
 
-\subsection*{Example}
+\textbf{Example}\newline
 The protocol uses flooding to distribute the data request through the network. 
 When data is requested by the user, the main node sends a packet containing a sensor reading request. 
 The nodes that receive this packet directly from the main node is the first level of nodes in the tree, as seen in figure \ref{fig:prottree1}. 
@@ -59,14 +93,13 @@ For each new data request from the main node the tree structure and node levels 
 	\label{fig:prottree1}
 \end{figure}
 
-
-\subsection*{Adding and removing nodes}
-If a new node is added to the network, it needs an identifier in the system, so that its sensor reading can be recognized. The identifier is permanent for the node until it is reassessed, and it is attached to every packet sent by the node.
+\textbf{Adding and removing nodes}\newline
+If a new node is added to the network, it needs an identifier in the system so that its sensor reading can be recognized. The identifier is permanent for the node until it is reassessed, and it is attached to every packet sent by the node.
 The identifier is provided by the main node by pairing the device with the main node before adding it to the network. 
 
 The identifier is additionally used to address parent nodes to relay the packets when transmitting sensor data. In figure \ref{fig:prottree1}, the nodes 5, 6, and 7 would send and address packets to the parent by the identifier 3. This means that other nodes in the vicinity would ignore these packets, and only node 3 reacts on the packets. Node 3 would then relay the data to node 2, as 2 is 3's parent, and finally 2 would relay to MN.
 
-Should a node somehow disconnect from the network, the nodes connected to this node will receive the packets from another node, and from that point on use that as the parent. This is \todo{DROP OF COURSE!!} if there are any nodes in range of the disconnected nodes' subnodes. 
+Should a node somehow disconnect from the network, the nodes connected to this node will receive the packets from another node, and from that point on use that as the parent. This is \todo{NO FUCKING "OF COURSE"!!} if there are any nodes in range of the disconnected nodes' subnodes. 
 
 \begin{figure}[!h]
 	\centering
@@ -78,15 +111,4 @@ Should a node somehow disconnect from the network, the nodes connected to this n
 An example of this can be seen on Figure \ref{fig:prottree2}. This figure shows how node 3 disconnected, and now node 7 is attached to node 4 instead. This, of course, assumes that node 7 was in range of node 4.
 This means that the next time data is requested, node 7 will be the parent for node 5 and 6, and they will now be a level higher than before.
 
-\subsection*{Interference}
-When using a flooding protocol, interference can become a problem, as explained in section \ref{cha:floodingSec}. This occurs even when using controlled flooding, but using a protocol can help reduce problems with interference.
 
-Interferences might cause packets to get mixed up, which makes it impossible to use the data received. Figure \ref{fig:prottree1} shows an example of possible interference. Nodes 5, 6, and 7 could send packets at the same time, causing node 3 to get scrambled data.
-
-To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. If the checksums match, the packet is accepted and can be relayed to the next node. This will cause the receiving node to send an acknowledgement to the node that sent the packet, which will then stop sending data.
-If the checksums does not match, the packet is ignored until a 'clean' packet makes it way to the node.
-
-To ensure that a 'clean' packet will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will get through to the receiver, without interference.
-This is possible, as time is not of the essence, and the delay between trying again is small.
-
-\textbf{Wut now?!}
