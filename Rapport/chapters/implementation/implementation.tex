@@ -4,7 +4,7 @@ First, the classes used in the implementation are shown and explained. Then impo
  
 
 \section{General}
-The implementation is written in C++. This section should probably contain more content.
+The implementation is written in C++.
 
 \section{Classes}
 The solution contains two different running applications. The main node and the sensor nodes. There are two sets of code due to the diffferent requirements of the nodes. For example, the main node does not have a sensor, so it should not be able to handle a sensor.
@@ -43,7 +43,7 @@ This section contains explanations about the classes used in the nodes.
 \item[Main] \hfill \\
 The \textit{Main} class is the entrypoint in the application. This class initializes the components, and a \textit{PacketHandler} object.
 
-Contains one or more \textit{Sensor}s, a \textit{Radio} object, and a \textit{PacketHandler} object. The sensors and radio objects are passed along to the \textit{PacketHandler}.
+Contains one or more \textit{Sensor}s, a \textit{Radio} object, and a \textit{PacketHandler} object. The sensors and radio objects are passed along to the \textit{PacketHandler} on instantiation.
 
 \item[iRadio and iSensor] \hfill \\
 The \textit{iSensor} and \textit{iRadio} interfaces are used to create a certain way that all sensors and radio module classes should work. This means that replacing or adding a new sensor or using another radio module is not a problem, as the rest of the application knows that the radio is able to send and receive, and the sensor is able to return a value. 
