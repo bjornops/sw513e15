@@ -1,36 +1,5 @@
-enum PacketType
-{
-  Acknowledgement,
-  Request,
-  Data,
-  PairRequest,
-  PairRequestAcknowledgement
-};
-
-class Packet
-{
-public:
-  PacketType type;
-  Packet(int sensorData)
-  {
-    
-  }
-};
-
-class iRadio
-{
-public:
-  virtual void broadcast(Packet packet);
-  virtual void waitForAccept();
-  virtual void broadcastRequest();
-};
-
-class iSensor
-{
-public:
-  virtual int read() = 0;
-};
-
+#import "Interfaces.h"
+#import "Packet.h"
 
 class PacketHandler
 {

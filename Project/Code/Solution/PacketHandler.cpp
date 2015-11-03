@@ -1,6 +1,5 @@
 #import "PacketHandler.h"
 
-
 void PacketHandler::determineAction(Packet packet)
 {
     switch(packet.type)
