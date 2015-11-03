@@ -1,3 +1,5 @@
+#import "Packet.h"
+
 class iRadio
 {
 public:

@@ -1,10 +1,14 @@
 #import <iostream>
-#import "Packet.h"
-#import "PacketHandler.h"
+
+#import "MoistureSensor.cpp" // Burde jo .h   men altså.. Det virker!
+//#import "Packet.h"
+//#import "PacketHandler.h"
 
 int main(int argc, char *argv[])
 {
-    std::cout << "Main is running! \\o/";
+    MoistureSensor sensor(1);
+    
+    std::cout << "Main is running! \\o/" <<  std::endl << "Sensor value: " <<  sensor.read();
     
     return 0;
 }
