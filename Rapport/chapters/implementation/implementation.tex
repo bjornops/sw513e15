@@ -4,7 +4,7 @@ First, the classes used in the implementation are shown and explained. Then impo
  
 
 \section{General}
-The implementation is written in C++.
+The implementation is written in C++. The development of the solution is done in two man teams, using pair programming.
 
 \section{Classes}
 The solution contains two different running applications. The main node and the sensor nodes. There are two sets of code due to the different requirements of the nodes. For example, the main node does not have a sensor, so it should not be able to handle a sensor.
@@ -52,9 +52,15 @@ It is not necessary to know how it is done, only that it is possible. These inte
 Every type of radio or sensor added to the node will inherit from these interfaces.
 
 
-\textit{iSensor} only contains the method \textit{double read()}, that returns the value of the sensor. \todo{Kan være der er mere?}
+\textit{iSensor} only contains the method \textit{int read()}, that returns the value of the sensor.
 
-\textit{iRadio} contains a method for sending a packet, \textit{void send(Packet packet)}. \todo{Kan være der er mere?}
+\textit{iRadio} contains the methods:
+\begin{description}
+\item[void broadcast(Packet packet)] sends a packet
+\item[void broadcastRequest()] begins sending requests
+\item[void beginListening()] begins listening for packets
+\item[void waitForAcknowledgement()] I did not add this. \todo{wtf}
+\end{description}
 
 \item[Sensor] \hfill \\
 The \textit{Sensor} class can be used for multiple sensors, as long as the sensor class inherits from \textit{iSensor}. This class' job is to read data from a sensor on the node, handle this data, and return it to the class that requested this data.
@@ -72,10 +78,20 @@ The \textit{PacketHandler} handles all packets received. This class is a singlet
 For example, should a node receive a pair request, this should be ignored, as only the main node acts on such requests. The same thing happens on the main node. Should the main node receive a data request, this will of course be ignored.
 If a response to the node is required, the \textit{PacketHandler} will manage this process. This could be getting a reading from the sensor and sending it back, or relaying data from another node to the parent.
 
+This class contains the public method \textit{void determineAction(Packet packet)} that is called when a packet is received.
+
 \item[Packet] \hfill \\
 The class \textit{Packet} contains the ability to parse a packet from a string to a \textit{Packet} object, along with the properties required to further handle the packet. This includes the type, and possibly sensor values, from/to values or an identifier from the main node.
 
 This class is passed between the \textit{Radio} and \textit{PacketHandler}, when sending and receiving packets.
+
+This class contains the public methods:
+\begin{description}
+\item[Packet(String packetString)] Create a packet from a string. Used when radio receives packet.
+\item[Packet(String from, String to, int sensorValue)] Creates packet with sender, receiver and a value
+\item[void setReceiver(String receiver)] Changes the packet receiver
+\item[String stringRepresentation()] Returns a string representation of the packet. Used for broadcasting from the radio
+\end{description}
 
 \end{description}
 
