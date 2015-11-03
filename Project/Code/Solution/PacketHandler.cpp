@@ -1,61 +1,8 @@
-#include <iostream>
-using namespace std;
+#import "PacketHandler.h"
 
-// To execute C++, please define "int main()"
-int main(int argc, char *argv[])
+
+void PacketHandler::determineAction(Packet packet)
 {
-  cout << "Lol";
-  return 0;
-}
-
-enum PacketType
-{
-  Acknowledgement,
-  Request,
-  Data,
-  PairRequest,
-  PairRequestAcknowledgement
-};
-
-class Packet
-{
-  public:
-  PacketType type;
-  Packet(int sensorData)
-  {
-    
-  }
-};
-
-class iRadio
-{
-  public:
-  virtual void broadcast(Packet packet);
-  virtual void waitForAccept();
-  virtual void broadcastRequest();
-};
-
-class iSensor
-{
-  public:
-  virtual int read() = 0;
-};
-
-
-
-class PacketHandler
-{
-  
-  private:
-    static iRadio  *radio;
-    static iSensor *sensor;
-    static bool waitForAcknowledgement;
-    static bool readyToForward;
-  
-  
-  
-  static void determineAction(Packet packet)
-  {
     switch(packet.type)
     {
       case Acknowledgement : 
@@ -67,7 +14,7 @@ class PacketHandler
           }
       }
       break;
-        
+    
       case Request :
       {
           if(!waitForAcknowledgement)
@@ -75,10 +22,10 @@ class PacketHandler
             readPackSend();
             waitForAcknowledgement = true;
           }
-          requestRecieved();
+          requestReceived();
       }
       break;
-        
+    
       case Data :
       {
           if (readyToForward)
@@ -87,48 +34,47 @@ class PacketHandler
           }
       }
       break;
-        
+    
       case PairRequest :
         // Wanna be a pair..
       break;
-        
+    
       case PairRequestAcknowledgement :
         // .. OF SOCKS!
       break;
-        
+    
       default:
-          cout << "FUCK";
+          std::cout << "FUCK";
       break;
     }
-  }
-  
-    // ACTIONS //
-  static void readPackSend()
-  {
+}
+
+// ACTIONS //
+void PacketHandler::readPackSend()
+{
     int sensorData = sensor->read();     //Read from sensor 
     Packet packet = Packet(sensorData); //Pack data
     radio->broadcast(packet);            //Send data
-    
+
     radio->waitForAccept();            //Wait for accept here?
-    
-  }
-  
-  static void sendRequest()
-  {
+}
+
+void PacketHandler::sendRequest()
+{
     radio->broadcastRequest();
-  }
-  
-  static void forwardSignal(Packet forwardData)
-  {
+}
+
+void PacketHandler::forwardSignal(Packet forwardData)
+{
     radio->broadcast(forwardData);
-  }
-  
-  static void requestRecieved()
-  {
-    
-  }
-  static void forwardSignal()
-  {
-    
-  }
-};
+}
+
+void PacketHandler::requestReceived()
+{
+
+}
+
+void PacketHandler::forwardSignal()
+{
+
+}
