@@ -48,6 +48,11 @@ void PacketHandler::determineAction(Packet packet)
       case PairRequestAcknowledgement :
         // .. OF SOCKS!
       break;
+	  
+	  case ClearSignal :
+        waitForAcknowledgement = false;
+        readyToForward         = false;
+      break;
     
       default:
           std::cout << "FUCK";

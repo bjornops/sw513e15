@@ -4,7 +4,8 @@ enum PacketType
   Request,
   Data,
   PairRequest,
-  PairRequestAcknowledgement
+  PairRequestAcknowledgement,
+  ClearSignal
 };
 
 class Packet
