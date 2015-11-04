@@ -24,12 +24,6 @@ int middle(int v1, int v2, int v3)
 }
 
 // Implementering af read ved moisture sensor
-<<<<<<< Updated upstream
-int MoistureSensor::read() {
-    int val =  1337; // analogRead(myPin);
-    return val;
-}
-=======
 int MoistureSensor::read() 
 {
     // Read three values and return the middle value
@@ -39,4 +33,3 @@ int MoistureSensor::read()
     
     return middle(val1, val2, val3);
 }
->>>>>>> Stashed changes

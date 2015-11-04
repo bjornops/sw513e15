@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 {
     MoistureSensor sensor(1);
     
-    std::cout << "Main is running! \\o/" <<  std::endl << "Sensor value: " <<  sensor.read();
+    std::cout << "Main is running! \\o/" <<  std::endl << "Sensor value: " <<  sensor.read() << std::endl;
     
     return 0;
 }
