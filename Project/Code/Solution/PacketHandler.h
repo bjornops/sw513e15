@@ -1,5 +1,4 @@
-#import "Interfaces.h"
-#import "Packet.h"
+#include "Interfaces.h"
 
 class PacketHandler
 {

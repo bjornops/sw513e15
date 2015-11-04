@@ -1,6 +1,6 @@
-#import <iostream>
+#include <iostream>
 
-#import "MoistureSensor.cpp" // Burde jo .h   men altså.. Det virker!
+#include "MoistureSensor.h" // Burde jo .h   men altså.. Det virker!
 //#import "Packet.h"
 //#import "PacketHandler.h"
 

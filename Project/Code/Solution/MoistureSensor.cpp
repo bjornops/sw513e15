@@ -1,4 +1,4 @@
-#import "MoistureSensor.h"
+#include "MoistureSensor.h"
 
 MoistureSensor::MoistureSensor(int aPin) {
     myPin = aPin;

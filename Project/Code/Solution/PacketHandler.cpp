@@ -1,4 +1,11 @@
-#import "PacketHandler.h"
+#include "PacketHandler.h"
+#include <iostream>
+
+iRadio *PacketHandler::radio = NULL;
+iSensor *PacketHandler::sensor = NULL;
+
+bool PacketHandler::waitForAcknowledgement = false;
+bool PacketHandler::readyToForward = false;
 
 void PacketHandler::determineAction(Packet packet)
 {
@@ -53,8 +60,8 @@ void PacketHandler::readPackSend()
 {
     int sensorData = sensor->read();     //Read from sensor 
     Packet packet = Packet(sensorData); //Pack data
-    radio->broadcast(packet);            //Send data
 
+    radio->broadcast(packet);            //Send data
     radio->waitForAccept();            //Wait for accept here?
 }
 
