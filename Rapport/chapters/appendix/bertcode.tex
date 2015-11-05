@@ -1,0 +1,10 @@
+\chapter{BERT code}\label{cha:bertcode}
+This chapter contains the code used in the Bit Error Rate Test. Run on Arduino and Raspberry Pi devices.
+
+\section{Sender}
+The sender code runs on an Arduino Uno. This code transmits the string called 'text' in the code, and waits 2ms before transmitting again.
+\lstinputlisting[language=C]{chapters/test/rf24code/BERT/Shout0.ino}
+
+\section{Receiver}
+The receiver code is run on the Raspberry Pi. This code receives packets and checks them against the expected packet. If the packet is correct, the correct value is incremented. If not, the error value is incremented. This is then printed to a file and the console.
+\lstinputlisting[language=C]{chapters/test/rf24code/BERT/receiver.cpp}

@@ -1,8 +1,8 @@
-\section{RF24 testing}
-The following section contains the tests performed on the RF24 radio module. These tests were performed to determine how 
+\section{nRF24L01}
+The following section contains the tests performed on the nRF24L01 radio module. These tests were performed to determine how 
 
-\subsection{RF24 reliability}
-The first test performed on the RF24 is a reliability test. This test is performed using one sender and one receiver device. The objective of the test is to determine the number of packets lost from one device to another. 
+\subsection{Reliability}
+The first test performed on the radio module is a reliability test. This test is performed using one sender and one receiver device. The objective of the test is to determine the number of packets lost from one device to another. 
 The code used in this test can be found in Appendix \ref{cha:reliabilityCode}.
 
 
@@ -12,73 +12,71 @@ The receiver accepts packets, and for every packet received it increments a coun
 
 Multiple delay values were tested, including no delay used. During these tests, only one packet did not reach the receiver, when using no delay at all. This could be due to a number of things, but most likely the receiver did not print the value to the console due to speed or the sender started before the receiver.
 
-The conclusion to the reliability test is that the RF24 is more than reliable enough for the requirements of this project.
-
-
-%\subsection{RF24 transreciever analysis}
-%To confirm the usability of the RF24 transreciever, labeled as RF24 from this point, a short analysis with tests will be performed.
+The conclusion to the reliability test is that the nRF24L01 is more than reliable enough for the requirements of this project.
+\todo{Update!}
 
 \subsection{Range}
-A basic test to test the range is useful to ensure that RF24 is usable in a practical application with a wide distance between units.
+A basic test to test the range is useful to ensure that the module is usable in a practical application with a wide distance between units.
 
-%\subsection{Testing method:}
 Testing is done by having two units set as transmitter and reciever units respectively, having the transmitter transmit a single signal repeatedly while increasing the distance between the units. When the reciever no longer recieves the signal, the distance can then be measured.
 
-CODE GOES HERE! \todo{set some code in here}
-
-%\subsection{Results:}
-\begin{table}[!h]
-\begin{tabular}{|l|l|l|l|} \hline
-	\diaghead{\theadfont Diag ColumnmnHead II} {Reciever}{Transmitter}
-			& Unit 1 	& Unit 2 	& Unit 3 	\\\hline
-	Unit 1  	& - 		& ? 		& ? 		\\\hline
-	Unit 2  	& ? 		& - 		& ? 		\\\hline
-	Unit 3  	& ? 		& ? 		& - 		\\\hline
-\end{tabular}
-\end{table}
-
-\iffalse %Kommmentarblok
-\subsection{Bit error rate:}
-what is?
-
-%\subsection{Testing method}:
-how? code, setup etc.
-
-%\subsection{Results:}
-\begin{table}[!h]
-\begin{tabular}{|l|l|l|l|} \hline
-	Datasheet 	& Unit 1 	& Unit 2 	& Unit 3 	\\\hline
-	0,0\% 		& ? 		& ? 		& ? 		\\\hline
-\end{tabular}
-\end{table}
-\fi %Afslutted kommentarblok
+This tests showed a range of about 40 meters with no obstacles, and about 15-20 meters when transmitting through a door or a walll.\todo{Range test results here!}.
 
 \subsection{Bit Error Rate}
-When transmitting data from one unit to another, knowing that the data is correct can be important. To get an idea of how much error is introduced in the communication, a bit error test can be performed, known as BERT from this point.
+When transmitting data from one unit to another, knowing that the data is correct can be important. To get an idea of how much error is introduced in the communication, a bit error test can be performed, known as BERT from this point on.
 
-\textbf{About BERT}
+\subsubsection*{About BERT}
 
-The basic concept of BERT is to send a known datastream from one unit to another, and check how much it differs from the expected datastream. As the RF24 is a radio transceiver there's possible factors as range and noise. \todo{source}
+The basic concept of BERT is to send a known datastream from one unit to another, and check how much it differs from the expected datastream.
 
-The duration of a BERT should vary depending on the results. To get an exact result it would have to take an infinite amount of time, which of course is not feasible. But du to the nature of randomness, if only a small amount of errors are met, then it could just be a "lucky"\todo{formulate}  test, so the testing length would have to be sufficiently long for getting a general idea.
+The duration of a BERT should vary depending on the results. To get an exact result it would have to take an infinite amount of time, which of course is not feasible. But due to the nature of randomness, if only a small amount of errors are met, then it could just be a "lucky" test, so the testing length would have to be sufficiently long for getting a general idea.
 
-\textbf{Executing BERT} 
+Because of this, multiple BERT runs was executed.
 
-Noise generated by another transceiver near the recieving point.
+\subsubsection*{Executing BERT} 
+The test was executed by sending packets from an Arduino to a Raspberry Pi, using the nRF24L01 modules.
 
-The code running on the arduinos for the test is:
+The code running on the devices for the test can be found in Appendix \ref{cha:bertcode}.
+The sender code transmits some deterministic value, and the receiver checks whether the received packet is the same as the one expected. If the two packets match, the 'successes' value is incremented, if not, the 'errors' value is incremented.
 
-Sender:
-Code sending some deterministic value
-
-Reciever:
-Code accepting some value, and checks verifyes it against same method it was generated by.
-Keeps track of amount of correct and wrong values
-
-The BER test was executed four times. The first three times with one million packets transmitted, and the fourth time with ten million packets. For every one thousand packet received, the number of errors and successes were printed for that thousand packet. 
+The BERT was executed four times. The first three times with one million packets transmitted, and the fourth time with ten million packets. For every one thousand packet received, the number of errors and successes were printed for those thousand packets. 
+The values were then imported into a spreadsheet and graphs were created.
 
 The complete spreadsheet with results and graphs can be found on the attached DVD. 
 
-\textbf{Result of BERT}
+\subsubsection*{Result of BERT}
+The results of the BERT showed a packet failure under one percent. Some spikes were present in the test results, with the highest being at 797 missed packets, which occured in the first test, as seen on Figure \ref{fig:bert1}.
+
+\begin{figure}[h!]
+\hspace*{-2cm}
+\includegraphics[width=1.3\textwidth]{chapters/test/figures/res1.png}
+\caption{Graph representing the first BERT run.}
+\label{fig:bert1}
+\end{figure}
+
+The three last tests generally had a lower number of missed packets. Test number two had at most 304 lost packets (Figure \ref{fig:bert2}, test three had at most 340 lost packets (Figure \ref{fig:bert2}) and test four had at most 163 lost packets(Figure \ref{fig:bert3}).
+
+\begin{figure}[h!]
+\hspace*{-2cm}
+\includegraphics[width=1.3\textwidth]{chapters/test/figures/res5.png}
+\caption{Graph representing the second and third BERT run.}
+\label{fig:bert2}
+\end{figure}
+
+As seen on the first and second test(Figure \ref{fig:bert2}), the high number of errors occured in clusters. This could be attributed to the time of the testing, where other groups might have been testing, or some other source of interference.
+
+Most of the tests scored high in successes, and low in failures. In the first run, the average failed packets per thousand was at 16.5, the second run had an average of 6.4 failed per thousand, the third run had 9.3 failed per thousand and the fourth run had 7.2 failed per thousand.
+
+
+\begin{figure}[h!]
+\hspace*{-2cm}
+\includegraphics[width=1.3\textwidth]{chapters/test/figures/res4.png}
+\caption{Graph representing the fourth BERT run.}
+\label{fig:bert3}
+\end{figure}
+
+The fourth run was performed using ten million packets, and the graph provides better insight on the randomness of errors. One large spike appeared, but mostly smaller spikes between 40 and 60 packets lost per thousand.
+
+The results were as expected. Generally, the error count is low, and even with the spikes the module seems stable. On a golf course, there will not be the same level of interference as in a group room, surrounded by wireless networks, phones, bluetooth and other sources of interference.
 
 %primarysource http://www.radio-electronics.com/info/rf-technology-design/ber/bit-error-rate-testing-bert.php
