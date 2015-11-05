@@ -14,6 +14,11 @@ void setup()
   pinMode(9, OUTPUT);
   
   radio.begin();
+  radio.setAutoAck(false);
+  radio.setDataRate(RF24_250KBPS);  
+  radio.setPALevel(RF24_PA_MIN);
+  radio.setCRCLength(RF24_CRC_DISABLED);
+  radio.setChannel(114);
   radio.openReadingPipe(0, rxAddr);
   
 
