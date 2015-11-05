@@ -11,6 +11,7 @@ void setup()
 {
   turn = 0;
   
+  Serial.begin(9600);
   radio.begin();
   radio.setRetries(15, 15);
   radio.openWritingPipe(rxAddr);
@@ -35,5 +36,6 @@ void loop()
     turn = 0;
   }
   
+  Serial.println("Sender!");
   delay(1000);
 }
