@@ -61,3 +61,7 @@ Rapport/.texpadtmp/SW513E15.pdf
 
 *.gz(busy)
 *.bak
+
+*.o
+
+*.exe
