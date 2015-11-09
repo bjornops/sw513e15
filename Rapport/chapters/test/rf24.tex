@@ -1,26 +1,12 @@
 \section{nRF24L01}
 The following section contains the tests performed on the nRF24L01 radio module. These tests were performed to determine how 
 
-\subsection{Reliability}
-The first test performed on the radio module is a reliability test. This test is performed using one sender and one receiver device. The objective of the test is to determine the number of packets lost from one device to another. 
-The code used in this test can be found in Appendix \ref{cha:reliabilityCode}.
-
-
-The sender device sends a number of packets before stopping, e.g. 10000 or more, using a delay between each package, though the delay can be removed. For every packet sent, the sender increments a counter value.
-
-The receiver accepts packets, and for every packet received it increments a counter value. This value is printed to the console, to allow the tester to track the number of packets received.
-
-Multiple delay values were tested, including no delay used. During these tests, only one packet did not reach the receiver, when using no delay at all. This could be due to a number of things, but most likely the receiver did not print the value to the console due to speed or the sender started before the receiver.
-
-The conclusion to the reliability test is that the nRF24L01 is more than reliable enough for the requirements of this project.
-\todo{Update!}
-
 \subsection{Range}
 A basic test to test the range is useful to ensure that the module is usable in a practical application with a wide distance between units.
 
 Testing is done by having two units set as transmitter and reciever units respectively, having the transmitter transmit a single signal repeatedly while increasing the distance between the units. When the reciever no longer recieves the signal, the distance can then be measured.
 
-This tests showed a range of about 40 meters with no obstacles, and about 15-20 meters when transmitting through a door or a walll.\todo{Range test results here!}.
+This tests showed a range of about 160 meters with no obstacles, though the number of packets succesfully transmitted without errors lowered the longer the distance.
 
 \subsection{Bit Error Rate}
 When transmitting data from one unit to another, knowing that the data is correct is important. To get an idea of how much error is introduced in the communication, a bit error test can be performed, known as BERT from this point on.

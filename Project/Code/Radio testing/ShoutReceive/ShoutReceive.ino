@@ -29,6 +29,8 @@ void loop()
     radio.read(&text, sizeof(text));
     
     String packetString = String(text);
-    Serial.println(packetString);
+    String p2 = String(millis());
+    
+    Serial.println(p2+packetString);
   }
 }
