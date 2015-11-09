@@ -23,7 +23,7 @@ Testing is done by having two units set as transmitter and reciever units respec
 This tests showed a range of about 40 meters with no obstacles, and about 15-20 meters when transmitting through a door or a walll.\todo{Range test results here!}.
 
 \subsection{Bit Error Rate}
-When transmitting data from one unit to another, knowing that the data is correct can be important. To get an idea of how much error is introduced in the communication, a bit error test can be performed, known as BERT from this point on.
+When transmitting data from one unit to another, knowing that the data is correct is important. To get an idea of how much error is introduced in the communication, a bit error test can be performed, known as BERT from this point on.
 
 \subsubsection*{About BERT}
 
@@ -39,8 +39,8 @@ The test was executed by sending packets from an Arduino to a Raspberry Pi, usin
 The code running on the devices for the test can be found in Appendix \ref{cha:bertcode}.
 The sender code transmits some deterministic value, and the receiver checks whether the received packet is the same as the one expected. If the two packets match, the 'successes' value is incremented, if not, the 'errors' value is incremented.
 
-The BERT was executed four times. The first three times with one million packets transmitted, and the fourth time with ten million packets. For every one thousand packet received, the number of errors and successes were printed for those thousand packets. 
-The values were then imported into a spreadsheet and graphs were created.
+The BERT was executed four times. The first three times with 1.000.000 packets transmitted, and the fourth time with 10.000.000 packets. For every 1.000 packet received, the number of errors and successes were printed for those 1.000 packets. 
+The values were then imported into a spreadsheet for statistics.
 
 The complete spreadsheet with results and graphs can be found on the attached DVD. 
 
@@ -54,7 +54,7 @@ The results of the BERT showed a packet failure under one percent. Some spikes w
 \label{fig:bert1}
 \end{figure}
 
-The three last tests generally had a lower number of missed packets. Test number two had at most 304 lost packets (Figure \ref{fig:bert2}, test three had at most 340 lost packets (Figure \ref{fig:bert2}) and test four had at most 163 lost packets(Figure \ref{fig:bert3}).
+The three last tests generally had a lower number of missed packets. Test number two had a peak of 304 lost packets [Figure \ref{fig:bert2}], test three had a peak of 340 lost packets [Figure \ref{fig:bert2}] and test four had a peak of 163 lost packets [Figure \ref{fig:bert3}].
 
 \begin{figure}[h!]
 \hspace*{-2cm}
@@ -63,9 +63,9 @@ The three last tests generally had a lower number of missed packets. Test number
 \label{fig:bert2}
 \end{figure}
 
-As seen on the first and second test(Figure \ref{fig:bert2}), the high number of errors occured in clusters. This could be attributed to the time of the testing, where other groups might have been testing, or some other source of interference.
+As seen on the first and second test(Figure \ref{fig:bert2}), the high number of errors occured in clusters. This could be attributed to the time of the testing, where other groups might have been testing, or some other source of interference occurred.
 
-Most of the tests scored high in successes, and low in failures. In the first run, the average failed packets per thousand was at 16.5, the second run had an average of 6.4 failed per thousand, the third run had 9.3 failed per thousand and the fourth run had 7.2 failed per thousand.
+Most of the tests were high in successes, and low on failures. In the first run, the average failed packets per 1.000 was at 16.5. The second run had an average of 6.4 failed per 1.000. Third run had 9.3 failed per 1.000 and the fourth run had 7.2 failed per 1.000.
 
 
 \begin{figure}[h!]
@@ -75,8 +75,8 @@ Most of the tests scored high in successes, and low in failures. In the first ru
 \label{fig:bert3}
 \end{figure}
 
-The fourth run was performed using ten million packets, and the graph provides better insight on the randomness of errors. One large spike appeared, but mostly smaller spikes between 40 and 60 packets lost per thousand.
+The fourth run was performed using ten million packets, and the graph provides better insight on the randomness of errors. A few spikes appeared, but usually smaller spikes between 40 and 60 packets lost per 1.000.
 
-The results were as expected. Generally, the error count is low, and even with the spikes the module seems stable. On a golf course, there will not be the same level of interference as in a group room, surrounded by wireless networks, phones, bluetooth and other sources of interference.
+Generally, the error count is low, and even with the spikes the module seems stable. On a golf course, there will not be the same level of interference as in the group room, surrounded by wireless networks, phones, bluetooth and other sources of interference.
 
 %primarysource http://www.radio-electronics.com/info/rf-technology-design/ber/bit-error-rate-testing-bert.php
