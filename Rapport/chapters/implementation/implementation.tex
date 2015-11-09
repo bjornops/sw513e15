@@ -43,7 +43,8 @@ This section contains explanations about the classes used in the nodes.
 \item[Main] \hfill \\
 The \textit{Main} class is the entrypoint in the application. This class initializes the components, and a \textit{PacketHandler} object.
 
-Contains one or more \textit{Sensor}s, a \textit{Radio} object, and a \textit{PacketHandler} object. The sensors and radio objects are passed along to the \textit{PacketHandler} on instantiation.
+Contains one or more \textit{Sensor}s, a \textit{Radio} object, and a \textit{RadioHandler} object. The sensors and radio objects are passed along to the \textit{RadioHandler} on instantiation.
+The \textit{Main} class determines what action to take when a packet is received. This happens in the method \textit{void determineAction(String packet)}.
 
 \item[iRadio and iSensor] \hfill \\
 The \textit{iSensor} and \textit{iRadio} interfaces are used to create a certain way that all sensors and radio module classes should work. This means that replacing or adding a new sensor or using another radio module is not a problem, as the rest of the application knows that the radio is able to send and receive, and the sensor is able to return a value. 
@@ -56,10 +57,8 @@ Every type of radio or sensor added to the node will inherit from these interfac
 
 \textit{iRadio} contains the methods:
 \begin{description}
-\item[void broadcast(Packet packet)] sends a packet
-\item[void broadcastRequest()] begins sending requests
-\item[void beginListening()] begins listening for packets
-\item[void waitForAcknowledgement()] I did not add this. \todo{wtf}
+\item[void broadcast(String packet)] sends a packet
+\item[String beginListening()] begins listening
 \end{description}
 
 \item[Sensor] \hfill \\
@@ -69,16 +68,13 @@ In the solution, as the moisture sensor is used, the sensor class is called \tex
 
 
 \item[Radio] \hfill \\
-The \textit{Radio} class handles the radio communication. Types of this class should inherit from the \textit{iRadio} interface. The \textit{Radio} class notifies the \textit{PacketHandler} when a packet is received. It is also able to send packets given from other classes.
+The \textit{Radio} class handles the radio communication. Types of this class should inherit from the \textit{iRadio} interface. The \textit{Radio} class returns a packet in string format when one is received. It is also able to send packets given from other classes.
 
-\item[PacketHandler] \hfill \\
-The \textit{PacketHandler} handles all packets received. This class is a singleton, as only one is needed in the application. This class is instantiated from the entrypoint.
+\item[RadioHandler] \hfill \\
+The \textit{RadioHandler} class handles the protocol. When a packet is received from the radio module, the \textit{Main} class determines what to do about this packet. When an action is determined, the \textit{RadioHandler} now starts this action, and makes sure the task is finished. 
 
-\textit{PacketHandler} receives a call from the \textit{Radio} object when a packet is received, passing a \textit{Packet} object created from the packet. The \textit{PacketHandler} then determines wether or not to act on this packet. 
-For example, should a node receive a pair request, this should be ignored, as only the main node acts on such requests. The same thing happens on the main node. Should the main node receive a data request, this will of course be ignored.
-If a response to the node is required, the \textit{PacketHandler} will manage this process. This could be getting a reading from the sensor and sending it back, or relaying data from another node to the parent.
-
-This class contains the public method \textit{void determineAction(Packet packet)} that is called when a packet is received.
+If data is received from another sensor that should be relayed, the \textit{RadioHandler} begins sending data until an acknowledgement is received. The methods on the \textit{Radio} class is used for listening and sending.
+If data is needed for a packet, for example when a request is received, the \textit{Main} class fetches data from the sensor, and creates the packet that needs to be sent. 
 
 \item[Packet] \hfill \\
 The class \textit{Packet} contains the ability to parse a packet from a string to a \textit{Packet} object, along with the properties required to further handle the packet. This includes the type, and possibly sensor values, from/to values or an identifier from the main node.
