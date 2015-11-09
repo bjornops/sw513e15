@@ -1,15 +1,9 @@
 #include <iostream>
 
 #include "MoistureSensor.h" // Burde jo .h   men altså.. Det virker!
-//#import "Packet.h"
-//#import "PacketHandler.h"
+#include "Main.h"
+#include "Packet.h"
 //#include "RadioHandler.h"
-
-//Put This in header?
-private:
-    bool _waitForAcknowledgement;
-    bool _readyToForward;
-    RadioHandler _radioHandler;
 
 int main(int argc, char *argv[])
 {
@@ -87,7 +81,6 @@ void readPackSend()
 
 void forwardSignal(Packet packet)
 {
-    // Burde dette ligge i radioHandler?
-    _radioHandler -> broadcast(packet->toString());
-    // waitForAccept() ?
+    _radioHandler -> broadcast(packet->toString()); //TODO
+    _radioHandler -> waitForAccept();
 }
