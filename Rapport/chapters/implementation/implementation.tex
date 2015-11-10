@@ -4,16 +4,16 @@ First, the classes used in the implementation are shown and explained. Then impo
  
 
 \section{General}
-The implementation is written in C++. The development of the solution is done in two man teams, using pair programming.
+The implementation is written in C++. The development of the solution is done in two man teams, using pair programming. Git is used for version control.
 
 \section{Classes}
-The solution contains two different running applications. The main node and the sensor nodes. There are two sets of code due to the different requirements of the nodes. For example, the main node does not have a sensor, so it should not be able to handle a sensor.
+The solution contains two different running applications. The main node and the sensor nodes. There are two sets of code due to the different requirements of the nodes. For example, the main node does not have a sensor, so it should not be able to handle a sensor, and therefore does not contain the classes used for sensors.
 
-This section contains the differences in the applications, and the classes contained in each application.
+This section contains the classes contained in each application.
 
 \subsubsection*{Main node}
 The main node is a Raspberry Pi device, running the Raspbian operating system. The classes in the main node application is seen on Figure \ref{fig:mainnodeClass}.
-The main node pairs nodes and handles receiving data.
+The main node pairs nodes, send requests, and handles receiving and handling data.
 
 \begin{figure}[h!]
 \centering
@@ -25,7 +25,7 @@ The main node pairs nodes and handles receiving data.
 
 
 \subsubsection*{Sensor nodes}
-The platform on the nodes are comprised of Arduino Uno or Mega. The difference in the two platforms are the pins used with the sensors and radio modules. Besides that, the code on the platforms are the same.
+The platform on the sensor nodes are comprised of Arduino Uno or Mega. The difference in the two platforms are the pins used with the sensors and radio modules. Besides that, the code on the platforms are the same. The sensor nodes handles receiving and sending requests, reading and sending sensor data, and relaying data through nodes until they arrive at the main node. 
 
 The classes used in the nodes are seen on Figure \ref{fig:nodeClass}.
 \begin{figure}[h!]
@@ -40,11 +40,13 @@ The classes used in the nodes are seen on Figure \ref{fig:nodeClass}.
 This section contains explanations about the classes used in the nodes.
 
 \begin{description}
-\item[Main] \hfill \\
-The \textit{Main} class is the entrypoint in the application. This class initializes the components, and a \textit{PacketHandler} object.
+\item[Node] \hfill \\
+The \textit{Node} class is the entrypoint in the application.
+Contains one or more \textit{iSensor}s, and a \textit{iRadio} object that are instantiated when the code is run.
 
-Contains one or more \textit{Sensor}s, a \textit{Radio} object, and a \textit{RadioHandler} object. The sensors and radio objects are passed along to the \textit{RadioHandler} on instantiation.
-The \textit{Main} class determines what action to take when a packet is received. This happens in the method \textit{void determineAction(String packet)}.
+The \textit{Node} class determines what action to take when a packet is received. This happens in the method \textit{void determineAction(String packet)}. 
+If data is received from another sensor node that should be relayed, the \textit{Node} begins sending data until an acknowledgement is received. The methods on the \textit{iRadio} object is used for listening and sending.
+If data is needed for a packet, for example when a request is received, the \textit{Node} class fetches data from the sensor, and creates the packet that needs to be sent, and makes sure that the data is sent.
 
 \item[iRadio and iSensor] \hfill \\
 The \textit{iSensor} and \textit{iRadio} interfaces are used to create a certain way that all sensors and radio module classes should work. This means that replacing or adding a new sensor or using another radio module is not a problem, as the rest of the application knows that the radio is able to send and receive, and the sensor is able to return a value. 
@@ -70,22 +72,14 @@ In the solution, as the moisture sensor is used, the sensor class is called \tex
 \item[Radio] \hfill \\
 The \textit{Radio} class handles the radio communication. Types of this class should inherit from the \textit{iRadio} interface. The \textit{Radio} class returns a packet in string format when one is received. It is also able to send packets given from other classes.
 
-\item[RadioHandler] \hfill \\
-The \textit{RadioHandler} class handles the protocol. When a packet is received from the radio module, the \textit{Main} class determines what to do about this packet. When an action is determined, the \textit{RadioHandler} now starts this action, and makes sure the task is finished. 
-
-If data is received from another sensor that should be relayed, the \textit{RadioHandler} begins sending data until an acknowledgement is received. The methods on the \textit{Radio} class is used for listening and sending.
-If data is needed for a packet, for example when a request is received, the \textit{Main} class fetches data from the sensor, and creates the packet that needs to be sent. 
-
 \item[Packet] \hfill \\
 The class \textit{Packet} contains the ability to parse a packet from a string to a \textit{Packet} object, along with the properties required to further handle the packet. This includes the type, and possibly sensor values, from/to values or an identifier from the main node.
 
-This class is passed between the \textit{Radio} and \textit{PacketHandler}, when sending and receiving packets.
 
 This class contains the public methods:
 \begin{description}
 \item[Packet(String packetString)] Create a packet from a string. Used when radio receives packet.
 \item[Packet(String from, String to, int sensorValue)] Creates packet with sender, receiver and a value
-\item[void setReceiver(String receiver)] Changes the packet receiver
 \item[String stringRepresentation()] Returns a string representation of the packet. Used for broadcasting from the radio
 \end{description}
 
