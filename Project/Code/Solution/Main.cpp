@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
 // CRC shit
 unsigned short crcTable[256];
 void crcInit(){//fill crcTable with values
-	width remainder;	// 2 byte remainder (according to CRC16/CCITT standard)
-	width dividend;		// What are you?
+	unsigned short remainder;	// 2 byte remainder (according to CRC16/CCITT standard)
+	unsigned short dividend;		// What are you?
 	int bit;			// bit counter
 	
 	for(dividend = 0; dividend < 256; dividend++){ //foreach value of 2 bytes/8 bits
