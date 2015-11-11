@@ -61,6 +61,7 @@ Every type of radio or sensor added to the node will inherit from these interfac
 \begin{description}
 \item[void broadcast(String packet)] sends a packet
 \item[String beginListening()] begins listening
+\item[String listenFor(int ms)] begins listening, but stops listening after 'ms' ms
 \end{description}
 
 \item[Sensor] \hfill \\
@@ -75,6 +76,7 @@ The \textit{Radio} class handles the radio communication. Types of this class sh
 \item[Packet] \hfill \\
 The class \textit{Packet} contains the ability to parse a packet from a string to a \textit{Packet} object, along with the properties required to further handle the packet. This includes the type, and possibly sensor values, from/to values or an identifier from the main node.
 
+Instances of this class is created and used in the \textit{Node} class.
 
 This class contains the public methods:
 \begin{description}
