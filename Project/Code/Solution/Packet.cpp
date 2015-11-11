@@ -2,7 +2,10 @@
 
 	Packet::Packet(string input)
 	{
-		decode(input);
+		if(correctChecksum(input))
+		{
+			decode(input);
+		}
 	}
 
 	Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input,
@@ -44,7 +47,24 @@ private:
 		}
 	}
 
-	uint16_t Packet::getChecksum()
+	uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
 	{
-		return 65535;
+		unsigned int offset;
+		unsigned char byte;
+		uint16_t remainder = INITIAL_REMAINDER;
+		
+		for(offset = 0; offset < nBytes; offset++){
+			byte = (remainder >> (WIDTH - 8)) ^ message[offset];
+			remainder = crcTable[byte] ^ (remainder << 8);
+		}
+		return (remainder ^ FINAL_XOR_VALUE);
+	}
+	
+	bool Packet::correctChecksum(unsigned char *message, unsigned int nBytes)
+	{
+		if(message.substr(0,2) == getChecksum(message.substr(2,13), 13))
+		{
+			return true;
+		}
+		return false;
 	}
