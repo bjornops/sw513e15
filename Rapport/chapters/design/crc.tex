@@ -1,0 +1,20 @@
+\section{Checksum}
+Wireless communication is prone to noise and shit\todo{source}. To be able to discern correct packets from incorrect packets, a detection method is necessary. There are multiple ways to verify a packet's integrity and this section will contain description of some methods and reasoning of the selected solution.
+
+\subsection{MD5}
+Takes a lot of space. Needs to generate checksum for the received packet and compare with the received checksum.
+
+\subsection{CRC}
+Cyclic redundancy check something something..
+Can be appended to the packet, resulting in a packet checksum equaling zero.
+
+r bit CRC checksum requires degree r generator polynomial.
+m bit message
+
+M = polynomial representation of the message(binary)
+R = polynomial representation of the remainder calculated by the sender
+Q = quotient discarded, as only R is necessary
+
+Sent message (transmitted data) = Mx\^r - R
+
+Mx\^r = QG + R
