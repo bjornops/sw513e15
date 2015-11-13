@@ -1,11 +1,8 @@
 #include "Packet.h"
 
-	Packet::Packet(string input)
+	Packet::Packet(char *input)
 	{
-		if(correctChecksum(input))
-		{
-			decode(input);
-		}
+		decode(input);
 	}
 
 	Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input,
@@ -22,15 +19,24 @@
 	}
 
 
-	string Packet::encode(){
+	char* Packet::encode(){
 
-		char returnstring[sizeof(Packet)-1];
+		char *returnstring;
+		returnstring = (char*)malloc(sizeof(Packet));
 
-		memcpy(returnstring, this, sizeof(Packet)-1);
+		memcpy(returnstring, this, sizeof(Packet));
 
-		string mystring = string(returnstring, returnstring + sizeof(Packet)-1);
 
-		return mystring;
+		return returnstring;
+	}
+  
+  bool Packet::verified()
+	{
+		if (getChecksum((unsigned char*)encode(), 16) == 0)
+		{
+			return true;
+		}
+		return false;
 	}
 
 
@@ -52,12 +58,21 @@ private:
 		unsigned int offset;
 		unsigned char byte;
 		uint16_t remainder = INITIAL_REMAINDER;
-		
-		for(offset = 0; offset < nBytes; offset++){
+
+		for (offset = 0; offset < nBytes; offset++){
 			byte = (remainder >> (WIDTH - 8)) ^ message[offset];
 			remainder = crcTable[byte] ^ (remainder << 8);
 		}
-		return (remainder ^ FINAL_XOR_VALUE);
+		uint16_t result = remainder ^ FINAL_XOR_VALUE;
+
+		char *toBeswapped = (char*)malloc(sizeof(char)*2);
+		memcpy(toBeswapped, (char*)&result, sizeof(char)*2);
+		char temp = toBeswapped[1];
+		toBeswapped[1] = toBeswapped[0];
+		toBeswapped[0] = temp;
+
+		memcpy((char*)&result, toBeswapped, sizeof(char) * 2);
+		return result;
 	}
 	
 	bool Packet::correctChecksum(unsigned char *message, unsigned int nBytes)
