@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <stdint.h>
 #include "Node.h"
 
 bool Node::_waitForAcknowledgement = true;
