@@ -1,4 +1,5 @@
 #include "iSensor.h"
+#include "Arduino.h"
 
 class MoistureSensor: public iSensor
 {

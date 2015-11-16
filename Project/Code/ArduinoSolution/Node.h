@@ -1,11 +1,11 @@
-#include "Packet.h"
-#include "MoistureSensor.h"
-#include "Radio.h"
+class iRadio;
+class iSensor;
+class Packet;
 
 class Node
 {
 public:
-    static void initializeNode(iSensor, iRadio);
+    static void initializeNode(iSensor *, iRadio *);
     
 private:
     static iSensor *_sensor;

@@ -1,26 +1,14 @@
-#include <iostream>
 #include <stdint.h>
 #include "Node.h"
+#include "Packet.h"
 
 bool Node::_waitForAcknowledgement = true;
 bool Node::_readyToForward = true;
-iSensor *Node::_sensor = NULL;
+iSensor *Node::_sensor;
 unsigned short Node::_crcTable[256];
 
-int main(int argc, char *argv[])
-{
-    MoistureSensor sensor(1);
-    nRF24L01 radio(8, 7);
-    
-    Node::initializeNode(sensor, radio);
-    
-    std::cout << "Main is running! \\o/" <<  std::endl << "Sensor value: " <<  sensor.read() << std::endl;
-    
-    return 0;
-}
-
 // Sætter variabler op i Node
-void Node::initializeNode(iSensor sensor, iRadio radio)
+void Node::initializeNode(iSensor *sensor, iRadio *radio)
 {
     crcInit();
 }
@@ -98,14 +86,15 @@ void Node::handlePacket(Packet packet)
         }
         break;
         default:
-            std::cout << "Hello? Yes, this is default.";
+            //std::cout << "Hello? Yes, this is default.";
+            // Hello default, this is broken!
         break;
     }
 }
 
 void Node::readPackSend()
 {
-    int sensorData = _sensor->read();              // Read
+    //int sensorData = _sensor->read();              // Read
     
 }
 

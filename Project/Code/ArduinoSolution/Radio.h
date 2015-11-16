@@ -1,14 +1,14 @@
+#include "iRadio.h"
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
-#include "iRadio.h"
 
-class nRF24Radio : public iRadio
+class NRF24Radio : public iRadio
 {
 private:
-    RF24 _radio = NULL
+    RF24 *_radio; 
     
-    const byte _rxAddr[6] = "00001";
+    const uint64_t _rxAddr = 0xF0F0F0F0E1LL;
     const int _channel = 114;
     const int _readingPipe = 0;
     
@@ -30,8 +30,10 @@ private:
     */
     
 public:
-    nRF24Radio(int, int);
+    NRF24Radio(int, int);
+    
     void broadcast(char *);
+    
     char *listen();
-    char *listenFor(int);
+    char *listenFor(unsigned long);
 };

@@ -2,9 +2,9 @@
 
 
 //Sætter hardware op.
-nRF24Radio::nRF24Radio()
+nRF24Radio::nRF24Radio(int cs, int ce)
 {
-    _radio = RF24(_cePin,_csPin);
+    _radio = RF24(ce,cs);
     _radio.begin();      
     _radio.setAutoAck(false);
     _radio.setDataRate(RF24_250KBPS);
