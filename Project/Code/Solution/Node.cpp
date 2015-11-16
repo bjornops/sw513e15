@@ -1,14 +1,15 @@
 #include <iostream>
-
 #include <stdint.h>
 #include "Node.h"
 
 bool Node::_waitForAcknowledgement = true;
 bool Node::_readyToForward = true;
 iSensor *Node::_sensor = NULL;
+unsigned short Node::crcTable[256];
 
 int main(int argc, char *argv[])
 {
+    Node::crcInit();
     MoistureSensor sensor(1);
     
     std::cout << "Main is running! \\o/" <<  std::endl << "Sensor value: " <<  sensor.read() << std::endl;
@@ -16,9 +17,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-// CRC shit
-unsigned short crcTable[256];
-void crcInit() //fill crcTable with values
+void Node::crcInit() //fill crcTable with values
 {
     unsigned short remainder;	    // 2 byte remainder (according to CRC16/CCITT standard)
     unsigned short dividend;		// What are you?
