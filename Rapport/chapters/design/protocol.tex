@@ -52,7 +52,7 @@ This subsection will contain elaborations regarding the data to be used in the p
 
 There are multiple types of data needed to make a functioning protocol. The nRF24L01 supports data payloads up to 32 KB, and is accordingly the limit of data to transfer in each packet. Although, a decrease in amount of data can enable the protocol to be implemented on more limited hardware in addition to require less energy to transfer.
 
-There are 5 types of packages: pair, data request, data response, acknowledgment and flush? These are used to tell the receiver what kind of data the packet contains, so that the receiving node can decide a reaction to the received packet.\todo{make subsection about these?} 1 byte will be sufficient to store the packet type.
+There are five types of packages: pair, data request, data response, acknowledgment and flush? These are used to tell the receiver what kind of data the packet contains, so that the receiving node can decide a reaction to the received packet.\todo{make subsection about these?} 1 byte will be sufficient to store the packet type.
 
 There has to be an addresser and an addressee. These are the 'from' and 'to' parts of the packet, and specifies which node the packet is for, and which node the packet is sent from. Since the data sent with the package not necessarily originates from the same node from which it is sent, because of relaying in the network, there also needs to be data allocated to identify the origin. The limitation of the network size is 1000 nodes, the identifier data fields needs to support 1000 unique addresses, which requires 9 bits. The allocated size for the addresses are accordingly 2 bytes each to maintain usage of whole\todo{byte evenness? what's its name?} bytes. The addresses utilize 6 bytes in total.
 
@@ -133,7 +133,7 @@ The identifier is provided by the main node by pairing the device with the main 
 
 The identifier is additionally used to address parent nodes to relay the packets when transmitting sensor data. In figure \ref{fig:prottree1}, the nodes 5, 6, and 7 would send and address packets to the parent by the identifier 3. This means that other nodes in the vicinity would ignore these packets, and only node 3 reacts on the packets. Node 3 would then relay the data to node 2, as 2 is 3's parent, and finally 2 would relay to MN.
 
-Should a node somehow disconnect from the network, the nodes connected to this node will receive the packets from another node, and from that point on use that as the parent. This is \todo{NO FUCKING "OF COURSE"!!} if there are any nodes in range of the disconnected nodes' subnodes. 
+Should a node somehow disconnect from the network, the nodes connected to this node will receive the packets from another node, and from that point on use that as the parent. This is if there are any nodes in range of the disconnected nodes' subnodes. 
 
 \begin{figure}[!h]
 	\centering
