@@ -50,7 +50,7 @@ The protocol is described more indepth in \ref{cha:floodingSec}
 \subsection{Data and allocation}
 This subsection will contain elaborations regarding the data to be used in the protocol.
 
-There are multiple types of data needed to make a functioning protocol. The NRF24L01 supports data payloads up to 32 KB, and is accordingly the limit of data to transfer in each packet. Although, a decrease in amount of data can enable the protocol to be implemented on more limited hardware in addition to require less energy to transfer.
+There are multiple types of data needed to make a functioning protocol. The nRF24L01 supports data payloads up to 32 KB, and is accordingly the limit of data to transfer in each packet. Although, a decrease in amount of data can enable the protocol to be implemented on more limited hardware in addition to require less energy to transfer.
 
 There are 5 types of packages: pair, data request, data response, acknowledgment and flush? These are used to tell the receiver what kind of data the packet contains, so that the receiving node can decide a reaction to the received packet.\todo{make subsection about these?} 1 byte will be sufficient to store the packet type.
 
