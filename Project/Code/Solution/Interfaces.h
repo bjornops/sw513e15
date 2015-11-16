@@ -3,9 +3,9 @@
 class iRadio
 {
 public:
-  virtual void broadcast(Packet);
-  virtual void waitForAccept();
-  virtual void broadcastRequest();
+  virtual void broadcast(char *);
+  virtual char *listen();
+  virtual char *listenFor(unsigned long);
 };
 
 class iSensor
