@@ -77,8 +77,14 @@ If the checksums do not match, the packet is ignored until a 'clean' packet make
 To ensure that a 'clean' packet will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will get through to the receiver, without interference.
 This is possible, as time is not of the essence, and the delay between trying again is small.
 
-\textbf{Exponential backoff}\newline
-\textbf{Other handling of interference?}
+\subsection*{Exponential Backoff}
+The technique \textit{exponential backoff} is used for handling interference. This technique works by incrementing the interval between sending packets, which at some points means the packet will get transferred without any other node interfering. 
+
+For example, if node 1 and 2 are trying to relay data to the main node at the same time, the packet may get scrambled and is not therefore not usable. This means that neither node 1 or 2 will get an acknowledgement, and they will both continue sending data. Though, instead of sending data right away, they will wait a small, random, amount of time before sending again. This amount increases every time it sends a packet. 
+
+A sequence of intervals on a node could be the following: Initial packet sent, wait 1 ms., next package sent, wait 2 ms.,  next package sent, wait 4 ms., next package sent, wait 6 ms. and so on. This continues until the node receives an acknowledgement.
+
+A random number is needed as the nodes needs different intervals. If both nodes have the same interval each time, the packets will continue colliding and the data could never come through. The random number ensures that, at some point, on of the sensors will send when the other is waiting, the main node will acknowledge, and the node is done. 
 
 \subsection{Overloaded nodes}
 Nodes near the root transfers data for a lot of sensors. Can they handle it? Battery problems?
@@ -100,7 +106,7 @@ The protocol sequence is determined as the following. A flowchart can be seen in
 %which has a main node, called the root, and multiple branches and leaves. \todo{why?} The nodes in the tree does not necessarily connect directly to the main node, but relay information through nodes, which is necessary due to the short range of the radio modules used in the solution.
 
 
-\textbf{Example}\newline
+\subsection*{Example}
 The protocol uses flooding to distribute the data request through the network. 
 When data is requested by the user, the main node sends a packet containing a sensor reading request. 
 The nodes that receive this packet directly from the main node is the first level of nodes in the tree, as seen in figure \ref{fig:prottree1}. 
@@ -121,7 +127,7 @@ For each new data request from the main node the tree structure and node levels 
 	\label{fig:prottree1}
 \end{figure}
 
-\textbf{Adding and removing nodes}\newline
+\subsection*{Adding and removing nodes}
 If a new node is added to the network, it needs an identifier in the system so that its sensor reading can be recognized. The identifier is permanent for the node until it is reassessed, and it is attached to every packet sent by the node.
 The identifier is provided by the main node by pairing the device with the main node before adding it to the network. 
 
