@@ -1,23 +1,31 @@
 #include <iostream>
 #include <stdint.h>
 #include "Node.h"
+#include "Radio.cpp"
 
 bool Node::_waitForAcknowledgement = true;
 bool Node::_readyToForward = true;
 iSensor *Node::_sensor = NULL;
-unsigned short Node::crcTable[256];
+unsigned short Node::_crcTable[256];
 
 int main(int argc, char *argv[])
 {
-    Node::crcInit();
     MoistureSensor sensor(1);
+    Node::initializeNode(sensor, NULL);
     
     std::cout << "Main is running! \\o/" <<  std::endl << "Sensor value: " <<  sensor.read() << std::endl;
     
     return 0;
 }
 
-void Node::crcInit() //fill crcTable with values
+// Sætter variabler op i Node
+void Node::initializeNode(iSensor sensor, iRadio radio)
+{
+    crcInit();
+}
+
+// Fill crcTable with values
+void Node::crcInit()
 {
     unsigned short remainder;	    // 2 byte remainder (according to CRC16/CCITT standard)
     unsigned short dividend;		// What are you?
@@ -38,7 +46,7 @@ void Node::crcInit() //fill crcTable with values
 				remainder = remainder << 1;//scooch and do nothing (MSB = 0, move along)
 			}
 		}
-		crcTable[dividend] = remainder;//save current crc value in crcTable
+		_crcTable[dividend] = remainder;//save current crc value in crcTable
 	}
 }
 
@@ -47,7 +55,7 @@ void Node::handlePacket(Packet packet)
 {
     switch(packet.packetType)
     {
-        case Acknowledgement :
+        case Acknowledgement: // Acknowledgement modtaget (Dvs. mit data er accepteret)
         {
             if (_waitForAcknowledgement)
             {
@@ -56,7 +64,7 @@ void Node::handlePacket(Packet packet)
             }
         }
         break;
-        case Request :
+        case Request: // Request modtaget
         {
             if (!_waitForAcknowledgement && !_readyToForward)
             {
@@ -65,7 +73,7 @@ void Node::handlePacket(Packet packet)
             }
         }
         break;
-        case Data :
+        case Data: // Har modtaget data der skal videresendes
         {
             if (_readyToForward)
             {
