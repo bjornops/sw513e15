@@ -39,9 +39,21 @@ A message $M$ is viewed as a polynomial with binary coefficients, by treating ea
 	\label{tab:string}
 \end{table}
 
-To generate an $r$ bit checksum it is required a generator polynomial of degree $r$. The generator polynomial 
+To generate an $r$ bit checksum it is required a generator polynomial of degree $r$. The generator polynomial is the dividend which generates the quotient and the remainder of the message. Some polynomials are prone to creating multiple similar remainders, while others generate mostly unique remainders. It is therefore advantageous to use already developed, tested and implemented polynomials.
 
+The execution of the division itself is done by binary dividing the message by the generator polynomial, without carries. This means that any bit $x^k$ is not affected by the bits $x^{k+1}$ or $x^{k-1}$. This kind of division propagates to be an \textit{exclusive or} function, as seen in \tabref{binarydivision}.
 
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{c|ll}
+		+/- & 0 & 1 \\
+		\hline
+		0   & 0 & 1 \\
+		1   & 1 & 0
+	\end{tabular}
+	\caption{Binary division}
+	\label{binarydivision}
+\end{table}
 
 
 
