@@ -27,26 +27,36 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
 // Starter hele lortet!
 void Node::begin(bool sendPairRequest)
 {
-    // Laeser fra radio og laver til pakke
-    char *res = _radio->listen();
-    Packet packet(res);
-    handlePacket(packet);
+    if(sendPairRequest)
+    {
+        printf("Sender pair request!\n");
+        sendPairRequest();
+    }
+    else
+    {
+        printf("Begynder at lytte.!");
+        
+        // Find dit ID her.. (Evt. brug EEPROM bibliotek)
+        
+        
+        // Laeser fra radio og laver til pakke
+        char *res = _radio->listen();
+        Packet packet(res);
+        handlePacket(packet);
+    }
 }
 
 // Sender pair request
 void Node::sendPairRequest()
 {
-    /*
-      Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input,
-	uint16_t sensor2Input, uint16_t sensor3Input)
-    */
-    Packet requestPacket(PairRequest, 0, 0, 0, 0, 0, 0);
+    Packet requestPacket(PairRequest, 0, 0, 0, 0, 0, 0); // Data does not matter, only need 'type'.
     beginBroadcasting(requestPacket);
 }
 
 // Begynder at sende pakke indtil den bliver bedt om at stoppe! (Exponential backoff handler!)
 void Node::beginBroadcasting(Packet packet)
 {
+    
 }
 
 // Fill crcTable with values
@@ -108,14 +118,15 @@ void Node::handlePacket(Packet packet)
         case PairRequest :
         {
             // Pair me up Scotty!
+            // Ignorer hvis paa almindelig Node.
         }
         break;
         case PairRequestAcknowledgement :
         {
-            // Ur paired dood
+            nodeID = packet.addressee;
         }
         break;
-        case ClearSignal :
+        case ClearSignal: // Slet alt!
         {
             // I had nothing to do with it!
         }
@@ -129,7 +140,7 @@ void Node::handlePacket(Packet packet)
 
 void Node::readPackSend()
 {
-    int sensorData = _sensor->read();              // Read
+    int sensorData = _sensor->read(); // Read
     
 }
 
