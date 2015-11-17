@@ -40,5 +40,5 @@ public:
 
 private:
     void decode(char *);
-    uint16_t getChecksum(unsigned char, unsigned int);
+    uint16_t getChecksum(unsigned char *, unsigned int);
 };
