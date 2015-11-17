@@ -21,7 +21,7 @@ public:
     
     static void initializeNode(iSensor *, iRadio *);
     
-    static void begin();
+    static void begin(bool);
     static void sendPairRequest();
     
 private:
@@ -34,6 +34,7 @@ private:
     static void readPackSend();
     static void forwardSignal(Packet);
     static void handlePacket(Packet);
+    static void beginBroadcasting(Packet);
 };
 
 #endif

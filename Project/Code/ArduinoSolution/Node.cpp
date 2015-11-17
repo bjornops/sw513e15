@@ -17,7 +17,7 @@ unsigned short Node::crcTable[256];
 // Sætter variabler op i Node
 void Node::initializeNode(iSensor *sensor, iRadio *radio)
 {
-    Serial.println("\nNode klar!");
+    printf("\nNode klar!\n");
     crcInit();
     
     _sensor = sensor;
@@ -25,20 +25,28 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
 }
 
 // Starter hele lortet!
-void Node::begin()
+void Node::begin(bool sendPairRequest)
 {
-    // Lser fra radio
+    // Laeser fra radio og laver til pakke
     char *res = _radio->listen();
     Packet packet(res);
-    
-    
-//    _radio->broadcast("babseraaaaaaaaaaaaaaaaaaaaaaaaaa");
+    handlePacket(packet);
 }
 
 // Sender pair request
 void Node::sendPairRequest()
 {
-      
+    /*
+      Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input,
+	uint16_t sensor2Input, uint16_t sensor3Input)
+    */
+    Packet requestPacket(PairRequest, 0, 0, 0, 0, 0, 0);
+    beginBroadcasting(requestPacket);
+}
+
+// Begynder at sende pakke indtil den bliver bedt om at stoppe! (Exponential backoff handler!)
+void Node::beginBroadcasting(Packet packet)
+{
 }
 
 // Fill crcTable with values
