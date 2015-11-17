@@ -1,6 +1,6 @@
-This chapter contains the implementation of the protocol designed in Chapter \ref{cha:protocolDesign}. 
+This chapter contains documentation about the implementation of the protocol designed in Chapter \ref{cha:protocolDesign}. 
 
-First, the classes used in the implementation are shown and explained. Then important parts of the code are explained.
+First, the classes used in the implementation are shown and explained. Then important parts of the sourcecode are explained.
  
 
 \section{General}
@@ -42,17 +42,17 @@ This section contains explanations about the classes used in the nodes.
 \begin{description}
 \item[Node] \hfill \\
 The \textit{Node} class is the entrypoint in the application.
-Contains one or more \textit{iSensor}s, and a \textit{iRadio} object that are instantiated when the code is run.
+It Contains one or more \textit{iSensor}s, and a \textit{iRadio} object that are instantiated when the code is run.
 
-The \textit{Node} class determines what action to take when a packet is received. This happens in the method \textit{void determineAction(String packet)}. 
+The \textit{Node} class determines what action to take when a packet is received. This happens in the method \textit{void determineAction(String packet)}.\todo{String??} 
 If data is received from another sensor node that should be relayed, the \textit{Node} begins sending data until an acknowledgement is received. The methods on the \textit{iRadio} object is used for listening and sending.
 If data is needed for a packet, for example when a request is received, the \textit{Node} class fetches data from the sensor, and creates the packet that needs to be sent, and makes sure that the data is sent.
 
 \item[iRadio and iSensor] \hfill \\
-The \textit{iSensor} and \textit{iRadio} interfaces are used to create a certain way that all sensors and radio module classes should work. This means that replacing or adding a new sensor or using another radio module is not a problem, as the rest of the application knows that the radio is able to send and receive, and the sensor is able to return a value. 
+The \textit{iSensor} and \textit{iRadio} interfaces are used to create a certain way that all sensors and radio module classes should work. This means that replacing or adding a new sensor or using another radio module is not a problem, as the rest of the application knows that the radio is able to send and receive data, and the sensor is able to return a value. 
 It is not necessary to know how it is done, only that it is possible. These interfaces are used to set a standard on how to communicate with them, whether it is a moisture sensor or a pH sensor.
 
-Every type of radio or sensor added to the node will inherit from these interfaces.
+Every type of radio or sensor added to the node must inherit from these interfaces.
 
 
 \textit{iSensor} only contains the method \textit{int read()}, that returns the value of the sensor.
