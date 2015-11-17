@@ -8,14 +8,14 @@ Packet::Packet(char *input)
 Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input,
 	uint16_t sensor2Input, uint16_t sensor3Input)
 {
-    this->packetType = packetTypeInput;
-    this->addresser = addresserInput;
-    this->addressee = addresseeInput;
-    this->origin = originInput;
-    this->sensor1 = sensor1Input;
-    this->sensor2 = sensor2Input;
-    this->sensor3 = sensor3Input;
-    //this->checksum = getChecksum(); // Fix!
+		this->packetType = packetTypeInput;
+		this->addresser = addresserInput;
+		this->addressee = addresseeInput;
+		this->origin = originInput;
+		this->sensor1 = sensor1Input;
+		this->sensor2 = sensor2Input;
+		this->sensor3 = sensor3Input;
+		this->checksum = getChecksum((unsigned char*)encode(), 14);
 }
 
 
@@ -40,17 +40,9 @@ bool Packet::verified()
 }
 
 void Packet::decode(char *input)
-{
-    if (input.length() == 15) // Nope.
-    {
-        memcpy(this, input, sizeof(Packet)-1);
-    }
-    else
-    {
-        // Nope.
-        //throw new exception("String not accepted for decoding");
-    }
-}
+	{
+		memcpy(this, input, sizeof(Packet));
+	}
 
 uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
 {
@@ -73,13 +65,4 @@ uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
 
     memcpy((char*)&result, toBeswapped, sizeof(char) * 2);
     return result;
-}
-
-bool Packet::correctChecksum(unsigned char *message, unsigned int nBytes)
-{
-    if(message.substr(0,2) == getChecksum(message.substr(2,13), 13))
-    {
-        return true;
-    }
-    return false;
 }
