@@ -44,7 +44,7 @@ This section contains explanations about the classes used in the nodes.
 The \textit{Node} class is the entrypoint in the application.
 It Contains one or more \textit{iSensor}s, and a \textit{iRadio} object that are instantiated when the code is run.
 
-The \textit{Node} class determines what action to take when a packet is received. This happens in the method \textit{void determineAction(String packet)}.\todo{String??} 
+The \textit{Node} class determines what action to take when a packet is received. This happens in the method \textit{void determineAction(char* packet)}.
 If data is received from another sensor node that should be relayed, the \textit{Node} begins sending data until an acknowledgement is received. The methods on the \textit{iRadio} object is used for listening and sending.
 If data is needed for a packet, for example when a request is received, the \textit{Node} class fetches data from the sensor, and creates the packet that needs to be sent, and makes sure that the data is sent.
 
@@ -59,9 +59,9 @@ Every type of radio or sensor added to the node must inherit from these interfac
 
 \textit{iRadio} contains the methods:
 \begin{description}
-\item[void broadcast(String packet)] sends a packet
-\item[String beginListening()] begins listening
-\item[String listenFor(int ms)] begins listening, but stops listening after 'ms' ms
+\item[void broadcast(char* packet)] sends a packet
+\item[char* beginListening()] begins listening
+\item[char* listenFor(int ms)] begins listening, but stops listening after 'ms' ms
 \end{description}
 
 \item[Sensor] \hfill \\
@@ -71,18 +71,18 @@ In the solution, as the moisture sensor is used, the sensor class is called \tex
 
 
 \item[Radio] \hfill \\
-The \textit{Radio} class handles the radio communication. Types of this class should inherit from the \textit{iRadio} interface. The \textit{Radio} class returns a packet in string format when one is received. It is also able to send packets given from other classes.
+The \textit{Radio} class handles the radio communication. Types of this class should inherit from the \textit{iRadio} interface. The \textit{Radio} class returns an array of char pointers when one is received. It is also able to send packets given from other classes.
 
 \item[Packet] \hfill \\
-The class \textit{Packet} contains the ability to parse a packet from a string to a \textit{Packet} object, along with the properties required to further handle the packet. This includes the type, and possibly sensor values, from/to values or an identifier from the main node.
+The class \textit{Packet} contains the ability to parse a packet from a char array to a \textit{Packet} object, along with the properties required to further handle the packet. This includes the type, and possibly sensor values, from/to values or an identifier from the main node.
 
 Instances of this class is created and used in the \textit{Node} class.
 
 This class contains the public methods:
 \begin{description}
-\item[Packet(String packetString)] Create a packet from a string. Used when radio receives packet.
-\item[Packet(String from, String to, int sensorValue)] Creates packet with sender, receiver and a value
-\item[String stringRepresentation()] Returns a string representation of the packet. Used for broadcasting from the radio
+\item[Packet(char* input)] Create a packet from a char array. Used when radio receives a packet.
+\item[Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input, uint16_t sensor2Input, uint16_t sensor3Input)] Creates packet a new packet.
+\item[char* encode()] Returns a char array representation of the packet. Used for broadcasting from the radio.
 \end{description}
 
 \end{description}
