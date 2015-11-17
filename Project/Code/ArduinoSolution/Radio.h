@@ -33,6 +33,8 @@ private:
     */
     
 public:
+    char lastMessage[32];
+    
     NRF24Radio(int, int);
     
     void broadcast(char *);

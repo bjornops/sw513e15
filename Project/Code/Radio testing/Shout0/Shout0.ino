@@ -4,7 +4,7 @@
 
 //RF24 radio(53,48); // Mega
 RF24 radio(7, 8); // Uno
-const byte rxAddr[6] = "00001";
+const uint64_t rxAddr = 0xF0F0F0F0E1LL;
 
 void setup()
 {

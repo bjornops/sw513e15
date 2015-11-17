@@ -11,8 +11,9 @@ NRF24Radio::NRF24Radio(int cePin, int csPin)
     _radio->setCRCLength(RF24_CRC_DISABLED);
     _radio->setChannel(_channel);
     _radio->openReadingPipe(_readingPipe, _rxAddr);
+    
     _radio->startListening();
-}
+}  
 
 // Sender pakke ud som string.
 void NRF24Radio::broadcast(char *packetAsString)
@@ -31,10 +32,10 @@ char *NRF24Radio::listenFor(unsigned long ms)
     {
         if(_radio->available()) // Læs og returner data
         {
-            char returnString[32] = {0};
-            _radio->read(&returnString, 32*sizeof(char));
+            memset(lastMessage, 0, 32);
+            _radio->read(&lastMessage, 32*sizeof(char));
             
-            return returnString;
+            return lastMessage;
         }
         
         // Er tiden gået?
@@ -55,10 +56,10 @@ char *NRF24Radio::listen(void)
     {
         if (_radio->available()) // Læs og returner data
         {
-            char returnString[32] = {0};
-            _radio->read(&returnString, 32*sizeof(char));
-        
-            return returnString;
+            memset(lastMessage, 0, 32);
+            _radio->read(&lastMessage, 32*sizeof(char));
+            
+            return lastMessage;
         }
     }
 }

@@ -1,4 +1,5 @@
 #include "Arduino.h"
+
 #include <stdint.h>
 
 #include "Node.h"
@@ -16,9 +17,7 @@ unsigned short Node::crcTable[256];
 // Sætter variabler op i Node
 void Node::initializeNode(iSensor *sensor, iRadio *radio)
 {
-    Serial.begin(9600);
-    Serial.println("Node initialized.");
-    
+    Serial.println("Node klar!");
     crcInit();
     
     _sensor = sensor;
@@ -28,12 +27,11 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
 // Starter hele lortet!
 void Node::begin()
 {
-    // Tjek her om vi har ID!..
-    
-    while(true)
+    // Lser fra radio
+    char *res = _radio->listen();
+    for(int n = 0; n < 32; n++)
     {
-        Serial.println("Venter paa radio!");
-        char *res = _radio->listen();
+       printf("Char %d: %c - %d\n", n, res[n], (int)res[n]); 
     }
 }
 

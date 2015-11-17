@@ -1,4 +1,5 @@
 #include "Arduino.h"
+#include "printf.h"
 
 #include <nRF24L01.h>
 #include <RF24.h>
@@ -11,9 +12,12 @@
 
 void setup()
 {
+    Serial.begin(57600);
+    printf_begin();
+    
     // Lav sensor og radio
     MoistureSensor sensor(1);
-    NRF24Radio radio(8, 7);
+    NRF24Radio radio(7, 8);
     
     // Initialiser og start node
     Node::initializeNode(&sensor, &radio);
@@ -21,4 +25,5 @@ void setup()
 }
 
 void loop()
-{ }
+{ 
+}
