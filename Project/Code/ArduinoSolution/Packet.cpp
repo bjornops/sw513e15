@@ -1,4 +1,7 @@
 #include "Packet.h"
+#import "Node.h"
+#import "iRadio.h"
+#import "iSensor.h"
 
 Packet::Packet(char *input)
 {
@@ -8,14 +11,14 @@ Packet::Packet(char *input)
 Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input,
 	uint16_t sensor2Input, uint16_t sensor3Input)
 {
-		this->packetType = packetTypeInput;
-		this->addresser = addresserInput;
-		this->addressee = addresseeInput;
-		this->origin = originInput;
-		this->sensor1 = sensor1Input;
-		this->sensor2 = sensor2Input;
-		this->sensor3 = sensor3Input;
-		this->checksum = getChecksum((unsigned char*)encode(), 14);
+    this->packetType = packetTypeInput;
+    this->addresser = addresserInput;
+    this->addressee = addresseeInput;
+    this->origin = originInput;
+    this->sensor1 = sensor1Input;
+    this->sensor2 = sensor2Input;
+    this->sensor3 = sensor3Input;
+    this->checksum = getChecksum((unsigned char*)encode(), 14);
 }
 
 
@@ -40,9 +43,9 @@ bool Packet::verified()
 }
 
 void Packet::decode(char *input)
-	{
-		memcpy(this, input, sizeof(Packet));
-	}
+{
+    memcpy(this, input, sizeof(Packet));
+}
 
 uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
 {
@@ -53,7 +56,7 @@ uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
     for (offset = 0; offset < nBytes; offset++)
     {
         byte = (remainder >> (WIDTH - 8)) ^ message[offset];
-        remainder = crcTable[byte] ^ (remainder << 8);
+        remainder = Node::crcTable[byte] ^ (remainder << 8);
     }
     uint16_t result = remainder ^ FINAL_XOR_VALUE;
 

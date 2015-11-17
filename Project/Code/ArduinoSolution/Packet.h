@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef PACKET_H
+#define PACKET_H
+
 #define size_m 14
 #define size_t 16
 #define POLYNOMIAL			0x1021
@@ -40,5 +43,7 @@ public:
 
 private:
     void decode(char *);
-    uint16_t getChecksum(unsigned char, unsigned int);
+    uint16_t getChecksum(unsigned char *, unsigned int);
 };
+
+#endif

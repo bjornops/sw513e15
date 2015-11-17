@@ -1,5 +1,7 @@
 #include "iSensor.h"
-#include "Arduino.h"
+
+#ifndef MOISTURESENSOR_H
+#define MOISTURESENSOR_H
 
 class MoistureSensor: public iSensor
 {
@@ -10,3 +12,5 @@ public:
     MoistureSensor(int);
     int read();  
 };
+
+#endif
