@@ -3,6 +3,9 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 
+#ifndef RADIO_H
+#define RADIO_H
+
 class NRF24Radio : public iRadio
 {
 private:
@@ -37,3 +40,5 @@ public:
     char *listen();
     char *listenFor(unsigned long);
 };
+
+#endif

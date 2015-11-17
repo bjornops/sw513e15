@@ -1,4 +1,5 @@
 #include "MoistureSensor.h"
+#include "Arduino.h"
 
 MoistureSensor::MoistureSensor(int aPin) 
 {

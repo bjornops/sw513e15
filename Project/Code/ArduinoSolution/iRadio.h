@@ -1,3 +1,6 @@
+#ifndef IRADIO_H
+#define IRADIO_H
+
 class iRadio
 {
 public:
@@ -6,3 +9,4 @@ public:
   virtual char *listenFor(unsigned long);
 };
 
+#endif

@@ -2,11 +2,25 @@ class iRadio;
 class iSensor;
 class Packet;
 
+#ifndef NODE_H
+#define NODE_H
+
+enum NodeState
+{
+    WaitingState,
+    RequestingState,
+    RelayingDataState,
+    SendingOwnDataState
+};
+
 class Node
 {
 public:
     static void initializeNode(iSensor *, iRadio *);
     static unsigned short crcTable[256];
+    
+    static void begin();
+    static void sendPairRequest();
     
 private:
     static iSensor *_sensor;
@@ -19,3 +33,5 @@ private:
     static void forwardSignal(Packet);
     static void handlePacket(Packet);
 };
+
+#endif
