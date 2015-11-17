@@ -16,8 +16,10 @@ enum NodeState
 class Node
 {
 public:
-    static void initializeNode(iSensor *, iRadio *);
     static unsigned short crcTable[256];
+    static int nodeID;
+    
+    static void initializeNode(iSensor *, iRadio *);
     
     static void begin();
     static void sendPairRequest();

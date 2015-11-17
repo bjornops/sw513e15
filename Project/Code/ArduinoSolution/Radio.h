@@ -13,7 +13,6 @@ private:
     
     const uint64_t _rxAddr = 0xF0F0F0F0E1LL;
     const int _channel = 114;
-    const int _readingPipe = 0;
     
     //UNO
     /*

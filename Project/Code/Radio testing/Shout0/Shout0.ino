@@ -27,5 +27,5 @@ void loop()
   // "11111111111111111111111111111111";
   // "01010101010101010101010101010101";
   radio.write(&text, sizeof(text));
-  delay(2); // 2 default
+  delay(2000); // 2 default
 }

@@ -17,7 +17,7 @@ unsigned short Node::crcTable[256];
 // Sætter variabler op i Node
 void Node::initializeNode(iSensor *sensor, iRadio *radio)
 {
-    Serial.println("Node klar!");
+    Serial.println("\nNode klar!");
     crcInit();
     
     _sensor = sensor;
@@ -29,10 +29,10 @@ void Node::begin()
 {
     // Lser fra radio
     char *res = _radio->listen();
-    for(int n = 0; n < 32; n++)
-    {
-       printf("Char %d: %c - %d\n", n, res[n], (int)res[n]); 
-    }
+    Packet packet(res);
+    
+    
+//    _radio->broadcast("babseraaaaaaaaaaaaaaaaaaaaaaaaaa");
 }
 
 // Sender pair request
