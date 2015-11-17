@@ -9,7 +9,7 @@
 #include "Packet.h"
 #include "Node.h"
 
-int main(int argc, char *argv[])
+void setup()
 {
     // Lav sensor og radio
     MoistureSensor sensor(1);
@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
     // Initialiser og start node
     Node::initializeNode(&sensor, &radio);
     Node::begin();
-    
-    return 0;
 }
+
+void loop()
+{ }

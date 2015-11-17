@@ -16,9 +16,10 @@ unsigned short Node::crcTable[256];
 // Sætter variabler op i Node
 void Node::initializeNode(iSensor *sensor, iRadio *radio)
 {
-    crcInit();
-    
     Serial.begin(9600);
+    Serial.println("Node initialized.");
+    
+    crcInit();
     
     _sensor = sensor;
     _radio = radio;
@@ -27,6 +28,8 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
 // Starter hele lortet!
 void Node::begin()
 {
+    // Tjek her om vi har ID!..
+    
     while(true)
     {
         Serial.println("Venter paa radio!");
