@@ -49,13 +49,6 @@ In order to add a new node to the network, the node is first needed to be paired
 This way, a node could have assigned a unique identity to be able to recognize its sensor readings from other sensors. 
 The protocol is described more indepth in \ref{cha:floodingSec}
 
-%Appropriate response to a disconnecting node could be handled by a mesh network, by bypassing or finding another route to the main node, but a mesh network \todo{uses more energy? more data? Argue why bad.} is badder. 
-
-
-%Instead of having a static tree where the nodes have permanent parents and children, the tree is restructured for each new data request from the main node. 
-%This is done by flooding the network from the main node to create a temporary spanning tree, where each node remembers its parent for the current data request\todo{find name for an instance of data gather/request}. 
-%This solves the issues of a defective node, since it will not be part of the tree. 
-
 \subsection{Data and allocation}
 This section will contain elaborations regarding the data to be used in the protocol.
 
@@ -64,7 +57,7 @@ Although, a decrease in amount of data can enable the protocol to be implemented
 
 There are five types of packages: pair request, data request, data response, acknowledgment and flush?
 These are used to tell the receiver what kind of data the packet contains, so that the receiving node can decide how to handle the received packet. 1 byte will be sufficient to store the packet type.
-Following are the five \todo{4 eller 5} packets described.
+Following are the five packets described.
 
 \begin{itemize}
 \item Pair request
@@ -72,59 +65,70 @@ Following are the five \todo{4 eller 5} packets described.
 A pair request is a packet send from the main node, the raspberry pi.
 The packet will be read by a single sensor node set to be paired with the network.
 When the two nodes, main and sensor node, are paired, the sensor node knows what networks it belongs to, and can then be deployed in the field as a park of the network. 
-The packet will contain 
 
 \begin{itemize}
 \item Data request
 \end{itemize}
-A data request is a 
+A data request is a packet which the main node transmits to all sensor nodes within range.
+Each sensor node then relay the data request out though the network.
+The packet contains the ID of the previous node transmitting it, so each sensor node receiving the packet, knows where it comes from.
+
 
 \begin{itemize}
 \item Data response
 \end{itemize}
+A data response is a response to the data request.
+A sensor node which receive a data request will transmit a packet with data back to its parent.
+The parent is whom the data request came from.
 
 \begin{itemize}
 \item Acknowledgment
 \end{itemize}
+A Acknowledgment packet is a packet which is expected to be received after a data response packet have been delivered.
+The packet is only to make sure the recorded date from the sensor nodes reach another node, and is not lost.
 
 \begin{itemize}
 \item Flush
 \end{itemize}
+Flush is used to reset every node in the network, this will happen when all data is collected.
+The flush packet let every node in the network know that it should forget any previous information stored, such as parent information.
 
-There has to be an addresser and an addressee. These are the 'from' and 'to' parts of the packet, and specifies which node the packet is for, and which node the packet is sent from. Since the data sent with the package not necessarily originates from the same node from which it is sent, because of relaying in the network, there also needs to be data allocated to identify the origin. The limitation of the network size is 1000 nodes, the identifier data fields needs to support 1000 unique addresses, which requires 9 bits. The allocated size for the addresses are accordingly 2 bytes each to maintain usage of whole\todo{byte evenness? what's its name?} bytes. The addresses utilize 6 bytes in total.
+There has to be an addresser and an addressee. These are the 'from' and 'to' parts of the packet, and specifies which node the packet is for, and which node the packet is sent from.
+Since the data sent with the package not necessarily originates from the same node from which it is sent, because of relaying in the network, there also needs to be data allocated to identify the origin.
+The limitation of the network size is 1000 nodes, the identifier data fields needs to support 1000 unique addresses, which requires 9 bits. The allocated size for the addresses are accordingly 2 bytes(16 bits) each to maintain usage of whole bytes. This is done because it is more efficient to manipulate a byte instead of a bit.\cite{bytevsbit} The addresses utilize 6 bytes in total.
 
-To verify the correctness of the received package, a checksum is appended. The CRC16 uses 2 bytes and is sufficient to distinguish a successfully transfered packet from an erroneous one. 
+To verify the correctness of the received package, a Cyclic redundancy check (CRC16) is appended. CRC16 uses 2 bytes to distinguish a successfully transfered packet from an erroneous one. 
 
-To support multiple sensors per node there are two\todo{three?} fields allocated for sensor data.
-The readings of the moisture sensor have a resolution of 1024, and the required size allocated for the sensor reading data is 10 bits. To exploit the something\todo{what?}, the allocated data size in the transfer is 2 bytes.
+To support multiple sensors per node there are three fields allocated for sensor data.
+The readings of the moisture sensor have a resolution of 1024, and the required size allocated for the sensor reading data is 10 bits. The allocated data size in the transfer is therefore 2 bytes.
 
 The sizes of the different data to transfer sums up to 16 bytes. The distribution is displayed in figure \todo{missingfigure}.
 
 \subsection{Transfer speed}
-Faster transfer speed uses more energy, but in a shorter amount of time. Slower transfer speed uses less energy, but over longer time. What is best? The slower data transfer speed for the nRF24L01 has a significantly longer reach, and will therefore be implemented. 
+Faster transfer speed uses more energy, but in a shorter amount of time. Slower transfer speed uses less energy, but over longer time for the nRF24L01. The slower data transfer rate has a significantly longer reach for the nRF24L01, and will therefore be implemented. 
 
 \subsection{Interference}
 When using a flooding protocol, interference can become a problem, as explained in section \ref{cha:floodingSec}. This occurs even when using controlled flooding, but using a protocol can help reduce problems with interference.
 
 Interferences might cause packets to get mixed up, which makes it impossible to use the data received. Figure \ref{fig:prottree1} shows an example of possible interference. Nodes 5, 6, and 7 could send packets at the same time, causing node 3 to get scrambled data.
 
-To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. If the checksums match, the packet is accepted and can be relayed to the next node. This will cause the receiving node to send an acknowledgment to the node that sent the packet, which will then stop sending data.
-If the checksums do not match, the packet is ignored until a 'clean' packet makes it way to the node.
+To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. If the checksums match, the packet is accepted and can be relayed to the next node. This will cause the receiving node to send an acknowledgment to the node that sent the packet, which will then stop transmitting data.
+If the checksums do not match, the packet is ignored until a packet that have the same check sum makes its way to the node.
 
-To ensure that a 'clean' packet will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will get through to the receiver, without interference.
+To ensure that a packet with the correct check sum will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will get through to the receiver, without interference.
 This is possible, as time is not of the essence, and the delay between trying again is small.
 
-\subsection*{Exponential Backoff}
-The technique \textit{exponential backoff} is used for handling interference. This technique works by incrementing the interval between sending packets, which at some points means the packet will get transferred without any other node interfering. 
+\subsection*{Exponential Backoff}\label{cha:expbackoff}
+The technique \textit{exponential backoff} is another method used for handling interference. This technique works by incrementing the interval between sending packets, which at some points means the packet will get transferred without any other node interfering. 
 
-For example, if node 1 and 2 are trying to relay data to the main node at the same time, the packet may get scrambled and is not therefore not usable. This means that neither node 1 or 2 will get an acknowledgement, and they will both continue sending data. Though, instead of sending data right away, they will wait a small, random, amount of time before sending again. This amount increases every time it sends a packet. 
+For example, if node 1 and 2 are trying to relay data to the main node at the same time, the packet may get corrupt and are therefore not usable. This means that neither node 1 or 2 will get an acknowledgment, and they will both continue sending data. Though, instead of sending data right away, they will wait a small, random but increasing, amount of time before sending again.
 
 A sequence of intervals on a node could be the following: Initial packet sent, wait 1 ms., next package sent, wait 2 ms.,  next package sent, wait 4 ms., next package sent, wait 6 ms. and so on. This continues until the node receives an acknowledgement.
 
-A random number is needed as the nodes needs different intervals. If both nodes have the same interval each time, the packets will continue colliding and the data could never come through. The random number ensures that, at some point, on of the sensors will send when the other is waiting, the main node will acknowledge, and the node is done. 
+A random number is needed as the nodes needs different intervals. If both nodes have the same interval each time, the packets will continue colliding and the data could never come through. The random number ensures that, at some point, one of the sensors will send when the other is waiting. Resulting in the packet being readable and accepted based on the checksum.
 
 \subsection{Overloaded nodes}
-Nodes near the root transfers data for a lot of sensors. Can they handle it? Battery problems?
+Nodes near the root transfers data for a lot of sensors. Can they handle it? Battery problems? /todo{Hvad er det her for et afsnit?}
 
 \subsection{Sequence}
 The protocol sequence is determined as the following. A flowchart can be seen in the appendix.\todo{add flowchart to appendix}
@@ -139,9 +143,6 @@ The protocol sequence is determined as the following. A flowchart can be seen in
 	\item Receive data from children
 	\item If no response or acknowledgment within 10 min: (deep) sleep?
 \end{enumerate}
-
-%which has a main node, called the root, and multiple branches and leaves. \todo{why?} The nodes in the tree does not necessarily connect directly to the main node, but relay information through nodes, which is necessary due to the short range of the radio modules used in the solution.
-
 
 \subsection*{Example}
 The protocol uses flooding to distribute the data request through the network. 
@@ -165,12 +166,12 @@ For each new data request from the main node the tree structure and node levels 
 \end{figure}
 
 \subsection*{Adding and removing nodes}
-If a new node is added to the network, it needs an identifier in the system so that its sensor reading can be recognized. The identifier is permanent for the node until it is reassessed, and it is attached to every packet sent by the node.
+If a new node is to be added to the network, it needs an identifier in the system so that its sensor reading can be recognized. The identifier is permanent as long as it is in the network.
 The identifier is provided by the main node by pairing the device with the main node before adding it to the network. 
 
-The identifier is additionally used to address parent nodes to relay the packets when transmitting sensor data. In figure \ref{fig:prottree1}, the nodes 5, 6, and 7 would send and address packets to the parent by the identifier 3. This means that other nodes in the vicinity would ignore these packets, and only node 3 reacts on the packets. Node 3 would then relay the data to node 2, as 2 is 3's parent, and finally 2 would relay to MN.
+The identifier is used to address parent nodes to relay the packets when transmitting sensor data. In figure \ref{fig:prottree1}, the nodes 5, 6, and 7 would send and address packets to the parent by the identifier 3. This means that other nodes in the vicinity would ignore these packets, and only node 3 reacts on the packets. Node 3 would then relay the data to node 2, as 2 is 3's parent, and finally 2 would relay to MN.
 
-Should a node somehow disconnect from the network, the nodes connected to this node will receive the packets from another node, and from that point on use that as the parent. This is if there are any nodes in range of the disconnected nodes' subnodes. 
+Should a node somehow disconnect from the network, the nodes connected to this node will receive the packets from another node first, and from that point on use that as the parent. This is if there are any nodes in range of the disconnected nodes' subnodes. 
 
 \begin{figure}[!h]
 	\centering
@@ -181,5 +182,3 @@ Should a node somehow disconnect from the network, the nodes connected to this n
 
 An example of this can be seen on Figure \ref{fig:prottree2}. This figure shows how node 3 disconnected, and now node 7 is attached to node 4 instead. This, of course, assumes that node 7 was in range of node 4.
 This means that the next time data is requested, node 7 will be the parent for node 5 and 6, and they will now be a level higher than before.
-
-
