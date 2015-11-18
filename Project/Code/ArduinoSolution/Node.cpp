@@ -22,7 +22,7 @@ int Node::nodeID = -1;
 
 // Andre declarations
 static bool shouldKeepSendingPacket = false;
-
+static PacketType currentHandlingPacketType;
 
 // Sætter variabler op i Node
 void Node::initializeNode(iSensor *sensor, iRadio *radio)
@@ -62,6 +62,8 @@ void Node::begin(bool shouldSendPairRequest)
 void Node::sendPairRequest()
 {
     Packet requestPacket(PairRequest, 0, 0, 0, 0, 0, 0); // Data does not matter, only need 'type'.
+    currentHandlingPacketType = PairRequest;
+    
     beginBroadcasting(requestPacket);
 }
 
@@ -81,8 +83,11 @@ void broadcast(Packet packet, int msWait)
     
     if(res[0] != (char)0) // Data modtaget, bail out!
     {
-      shouldKeepSendingPacket = false;
-      return;
+        Packet receivedPacket(res);
+        handlePacket(receivedPacket);
+        
+        shouldKeepSendingPacket = false;
+        return;
     }
     
     int nextWait = nextExponentialBackoff(msWait);
