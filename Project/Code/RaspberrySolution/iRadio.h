@@ -4,9 +4,9 @@
 class iRadio
 {
 public:
-  virtual void broadcast(char *);
-  virtual char *listen();
-  virtual char *listenFor(unsigned long);
+  virtual void broadcast(char *) = 0;
+  virtual char *listen() = 0;
+  virtual char *listenFor(unsigned long) = 0;
 };
 
 #endif

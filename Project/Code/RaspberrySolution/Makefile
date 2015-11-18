@@ -15,3 +15,9 @@ Radio.o:
 
 Node.o:
 	g++ -std=c++11 -c Node.h Node.cpp
+
+semi-clean:
+	rm -f bcm2835.o bcm2835.h.gch spi.o spi.h.gch RF24.o RF24.h.gch Radio.o Radio.h.gch Node.o Node.h.gch
+
+clean:
+	rm -f bcm2835.o bcm2835.h.gch spi.o spi.h.gch RF24.o RF24.h.gch Radio.o Radio.h.gch Node.o Node.h.gch solution
