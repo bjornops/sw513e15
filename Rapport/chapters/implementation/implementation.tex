@@ -59,9 +59,9 @@ Every type of radio or sensor added to the node must inherit from these interfac
 
 \textit{iRadio} contains the methods:
 \begin{description}
-\item[void broadcast(char* packet)] sends a packet
-\item[char* beginListening()] begins listening
-\item[char* listenFor(int ms)] begins listening, but stops listening after 'ms' ms
+\item[void broadcast(char *packet)] sends a packet
+\item[char *beginListening()] begins listening
+\item[char *listenFor(int ms)] begins listening, but stops listening after 'ms' ms
 \end{description}
 
 \item[Sensor] \hfill \\
@@ -80,12 +80,18 @@ Instances of this class is created and used in the \textit{Node} class.
 
 This class contains the public methods:
 \begin{description}
-\item[Packet(char* input)] Create a packet from a char array. Used when radio receives a packet.
-\item[Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input, uint16_t sensor2Input, uint16_t sensor3Input)] Creates packet a new packet.
-\item[char* encode()] Returns a char array representation of the packet. Used for broadcasting from the radio.
+\item[Packet(char *input)] Create a packet from a char array. Used when radio receives a packet.
+\item[Packet(PacketType packetTypeInput, uint16\_t addresserInput, uint16\_t addresseeInput, uint16\_t originInput, uint16\_t sensor1Input, uint16\_t sensor2Input, uint16\_t sensor3Input)] Creates a new packet with data as noted in parameters.
+\item[char *encode()] Returns a char array representation of the packet. Used for broadcasting from the radio.
 \end{description}
 
 \end{description}
 
 
-\section{Code?}
+\section{Code}
+This section contains explanations for some of the important parts of the code.
+\textbf{Moar.}
+
+
+\input{chapters/implementation/packet.tex}
+\input{chapters/implementation/node.tex}
