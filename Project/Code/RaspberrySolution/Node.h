@@ -1,5 +1,4 @@
 class iRadio;
-class iSensor;
 class Packet;
 
 #ifndef NODE_H

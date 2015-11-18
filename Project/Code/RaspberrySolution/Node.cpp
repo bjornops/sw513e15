@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+#include <stdio.h>
 #include "Node.h"
 #include "Packet.h"
 #include "iRadio.h"
@@ -10,10 +11,15 @@ bool Node::_readyToForward = true;
 iRadio *Node::_radio;
 unsigned short Node::crcTable[256];
 
+int main(int argc, char* argv[])
+{
+    return 0;
+}
+
 // Sætter variabler op i Node
 void Node::initializeNode(iRadio *radio)
 {
-    Serial.println("Node klar!");
+    printf("Node klar!");
     crcInit();
     
     _radio = radio;
@@ -115,9 +121,7 @@ void Node::handlePacket(Packet packet)
 }
 
 void Node::readPackSend()
-{
-    int sensorData = _sensor->read();              // Read
-    
+{    
 }
 
 void Node::forwardSignal(Packet packet)

@@ -1,7 +1,6 @@
 #include "iRadio.h"
-#include <SPI.h>
-#include <nRF24L01.h>
-#include <RF24.h>
+#include "spi.h"
+#include "RF24.h"
 
 #ifndef RADIO_H
 #define RADIO_H
@@ -27,15 +26,13 @@ private:
     */
   
     //RPI
-    /*
     const int _cePin = 22;
     const int _csPin = 0;
-    */
     
 public:
     char lastMessage[32];
     
-    NRF24Radio(int, int);
+    NRF24Radio(/*int, int*/);
     
     void broadcast(char *);
     

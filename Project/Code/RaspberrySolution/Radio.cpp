@@ -1,9 +1,9 @@
 #include "Radio.h"
 
 //Sætter hardware op.
-NRF24Radio::NRF24Radio(int cePin, int csPin) 
+NRF24Radio::NRF24Radio(/*int cePin, int csPin*/) 
 { 
-    _radio = new RF24(cePin, csPin);
+    _radio = new RF24(_cePin, _csPin);
     _radio->begin();      
     _radio->setAutoAck(false);
     _radio->setDataRate(RF24_250KBPS);
