@@ -8,14 +8,20 @@
 #include "iSensor.h"
 
 // Static declarations
+// Private
 bool Node::_waitForAcknowledgement = true;
 bool Node::_readyToForward = true;
 
 iSensor *Node::_sensor;
 iRadio *Node::_radio;
 
+// Public
 unsigned short Node::crcTable[256];
+int Node::nodeID = -1;
 
+
+// Andre declarations
+static bool shouldKeepSendingPacket = false;
 
 
 // Sætter variabler op i Node
@@ -26,12 +32,14 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
     
     _sensor = sensor;
     _radio = radio;
+    
+    randomSeed(analogRead(0));
 }
 
 // Starter hele lortet!
-void Node::begin(bool sendPairRequest)
+void Node::begin(bool shouldSendPairRequest)
 {
-    if(sendPairRequest)
+    if(shouldSendPairRequest)
     {
         printf("Sender pair request!\n");
         sendPairRequest();
@@ -60,7 +68,40 @@ void Node::sendPairRequest()
 // Begynder at sende pakke indtil den bliver bedt om at stoppe! (Exponential backoff handler!)
 void Node::beginBroadcasting(Packet packet)
 {
+    int startingWait = 1; // 1 ms. start
+    shouldKeepSendingPacket = true;
     
+    broadcast(packet, startingWait);
+}
+
+void broadcast(Packet packet, int msWait)
+{
+    _radio->broadcast(packet.encode(), msDelay);
+    char *res = _radio->listenFor(msWait);
+    
+    if(res[0] != (char)0) // Data modtaget, bail out!
+    {
+      shouldKeepSendingPacket = false;
+      return;
+    }
+    
+    int nextWait = nextExponentialBackoff(msWait);
+    broadcast(packet, nextWait);
+}
+
+int nextExponentialBackoff(int cur)
+{
+   int nextBackoff = cur;
+   int randAdd = random(1, 5);
+   
+   nextBackoff += randAdd;
+   
+   if(nextBackoff >= 500)
+   {
+       nextBackoff = randAdd;
+   }
+   
+   return nextBackoff;
 }
 
 // Fill crcTable with values
@@ -125,9 +166,12 @@ void Node::handlePacket(Packet packet)
             // Ignorer hvis paa almindelig Node.
         }
         break;
-        case PairRequestAcknowledgement :
+        case PairRequestAcknowledgement: // Har modtaget mit ID
         {
-            nodeID = packet.addressee;
+            if(nodeID == -1) // Default ID
+            {
+                nodeID = packet.addressee;
+            }
         }
         break;
         case ClearSignal: // Slet alt!

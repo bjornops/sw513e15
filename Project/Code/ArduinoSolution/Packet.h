@@ -15,6 +15,7 @@
 #define TOPBIT	(1 << (WIDTH - 1))
 
 enum PacketType : uint16_t {
+    Error,
     Acknowledgement,
     Request,
     Data,

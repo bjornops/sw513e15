@@ -6,7 +6,7 @@
 Packet::Packet(char *input)
 {
     decode(input);
-    
+    verified();
     printf("Pakke lavet med type: %d", this->packetType);
 }
 
@@ -41,6 +41,7 @@ bool Packet::verified()
         return true;
     }
     
+    this->packetType = Error;
     return false;
 }
 
