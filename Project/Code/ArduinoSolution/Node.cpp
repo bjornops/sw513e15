@@ -10,9 +10,13 @@
 // Static declarations
 bool Node::_waitForAcknowledgement = true;
 bool Node::_readyToForward = true;
+
 iSensor *Node::_sensor;
 iRadio *Node::_radio;
+
 unsigned short Node::crcTable[256];
+
+
 
 // Sætter variabler op i Node
 void Node::initializeNode(iSensor *sensor, iRadio *radio)

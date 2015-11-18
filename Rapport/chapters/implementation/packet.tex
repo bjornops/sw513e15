@@ -47,7 +47,7 @@ This copies the memory of the \textit{char *input} into the memory location wher
 
 This is possible as every part of the packet has a known, pre-determined size. \textit{uint16\_t} always has the same size, not dependant on the architecture running the code. When a packet is encoded, using the \textit{char *encode()} function, the returned character array is built in the same way, by setting the contents of the array to the contents of the package.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C]
 char *Packet::encode()
 {
     char *returnstring;
