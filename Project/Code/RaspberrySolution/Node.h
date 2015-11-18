@@ -16,16 +16,13 @@ enum NodeState
 class Node
 {
 public:
+    static void initializeNode(iRadio *);
     static unsigned short crcTable[256];
-    static int nodeID;
     
-    static void initializeNode(iSensor *, iRadio *);
-    
-    static void begin(bool);
+    static void begin();
     static void sendPairRequest();
     
 private:
-    static iSensor *_sensor;
     static iRadio *_radio;
     static bool _waitForAcknowledgement;
     static bool _readyToForward;
@@ -34,7 +31,6 @@ private:
     static void readPackSend();
     static void forwardSignal(Packet);
     static void handlePacket(Packet);
-    static void beginBroadcasting(Packet);
 };
 
 #endif

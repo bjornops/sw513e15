@@ -1,62 +1,39 @@
-#include "Arduino.h"
-
 #include <stdint.h>
 
 #include "Node.h"
 #include "Packet.h"
 #include "iRadio.h"
-#include "iSensor.h"
 
 // Static declarations
 bool Node::_waitForAcknowledgement = true;
 bool Node::_readyToForward = true;
-iSensor *Node::_sensor;
 iRadio *Node::_radio;
 unsigned short Node::crcTable[256];
 
 // Sætter variabler op i Node
-void Node::initializeNode(iSensor *sensor, iRadio *radio)
+void Node::initializeNode(iRadio *radio)
 {
-    printf("\nNode klar!\n");
+    Serial.println("Node klar!");
     crcInit();
     
-    _sensor = sensor;
     _radio = radio;
 }
 
 // Starter hele lortet!
-void Node::begin(bool sendPairRequest)
+void Node::begin()
 {
-    if(sendPairRequest)
+    // Lser fra radio
+    char *res = _radio->listen();
+    for(int n = 0; n < 32; n++)
     {
-        printf("Sender pair request!\n");
-        sendPairRequest();
-    }
-    else
-    {
-        printf("Begynder at lytte.!");
-        
-        // Find dit ID her.. (Evt. brug EEPROM bibliotek)
-        
-        
-        // Laeser fra radio og laver til pakke
-        char *res = _radio->listen();
-        Packet packet(res);
-        handlePacket(packet);
+       printf("Char %d: %c - %d\n", n, res[n], (int)res[n]); 
     }
 }
 
 // Sender pair request
 void Node::sendPairRequest()
 {
-    Packet requestPacket(PairRequest, 0, 0, 0, 0, 0, 0); // Data does not matter, only need 'type'.
-    beginBroadcasting(requestPacket);
-}
-
-// Begynder at sende pakke indtil den bliver bedt om at stoppe! (Exponential backoff handler!)
-void Node::beginBroadcasting(Packet packet)
-{
-    
+      
 }
 
 // Fill crcTable with values
@@ -118,15 +95,14 @@ void Node::handlePacket(Packet packet)
         case PairRequest :
         {
             // Pair me up Scotty!
-            // Ignorer hvis paa almindelig Node.
         }
         break;
         case PairRequestAcknowledgement :
         {
-            nodeID = packet.addressee;
+            // Ur paired dood
         }
         break;
-        case ClearSignal: // Slet alt!
+        case ClearSignal :
         {
             // I had nothing to do with it!
         }
@@ -140,7 +116,7 @@ void Node::handlePacket(Packet packet)
 
 void Node::readPackSend()
 {
-    int sensorData = _sensor->read(); // Read
+    int sensorData = _sensor->read();              // Read
     
 }
 
