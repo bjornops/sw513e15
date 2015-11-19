@@ -11,19 +11,20 @@ A single bit checksum can only distinguish between two messages, and is not able
 %What kind of checksum
 Checksums can variate by multiple properties, either by how it is calculated or by its length. 
 
-\textbf{Digit sum}\newline
+\subsection*{Digit sum}
 A simple algorithm for producing a checksum is to use the digit sum and store it in a byte. This algorithm is efficient, but has multiple flaws, therein the uniqueness of the checksum of only 256 values and that two bit flips could cancel each other out and cause the same checksum. The error detection level is regarded as too small, and the this algorithm will not be used in the protocol.
 
-\textbf{MD5}\newline
+\subsection*{MD5}
 MD5 is a widespread checksum algorithm. It produces a 128 bit checksum, which is 16 bytes. MD5 is designed to run efficiently on 32 bit processors, which is a disadvantage on the Arduino boards used in the solution, that have 8 bit processors. The 16 byte checksum uses half of the possible payload of the nRF24L01, and makes the protocol less scalable to other systems. The MD5 algorithm is therefore discarded as the checksum generator. \cite[p.~308]{boyles2010ccna}.
 
-\textbf{Cyclic redundancy check}\newline
+\subsection*{Cyclic redundancy check}
 Another checksum algorithm is cyclic redundancy check/code, hereafter referenced to as \textit{CRC}. This exists in several forms, based on the parameters. The checksum size is variable as well as internal algorithm parameters. CRC can detect single error, more than a single error and burst error \cite[p.~31]{elahi2001network}. The CRC meets the criteria for the solution, hence the selected checksum generator is CRC.
 
 \subsection{Computation of a checksum}
 %Calculation of a checksum
 The algorithm for generating a CRC checksum is described in this subsection.
 In short, the CRC executes a division of the message on a fixed polynomial, and the remainder is the checksum. 
+The CRC algorithm requires both sender and receiver to agree upon a generator polynomial in advance.
 
 A message $M$ is viewed as a polynomial with binary coefficients, by treating each character in $M$ bit-wise. This makes for a relatively large number, but the decimal equivalent is irrelevant for the computation. M's length in bits is called $m$, which in example in \tabref{string} is 24.
 
@@ -41,24 +42,39 @@ A message $M$ is viewed as a polynomial with binary coefficients, by treating ea
 
 To generate an $r$ bit checksum it is required a generator polynomial of degree $r$. The generator polynomial is the dividend which generates the quotient and the remainder of the message. Some polynomials are prone to creating multiple similar remainders, while others generate mostly unique remainders. It is therefore advantageous to use already developed, tested and implemented polynomials.
 
-The execution of the division itself is done by binary dividing the message by the generator polynomial, without carries. This means that any bit $x^k$ is not affected by the bits $x^{k+1}$ or $x^{k-1}$. This kind of division propagates to be an \textit{exclusive or} function, as seen in \tabref{binarydivision}.
+The execution of the division itself is done by binary long division of the polynomial representation of the message by the generator polynomial. This is done without carries and means that any bit $x^k$ is not affected by the bits $x^{k+1}$ or $x^{k-1}$. This kind of division propagates to be an \textit{exclusive or} function, as seen in \tabref{binaryxor}, applied from left to right on all bits within the length of the polynomial through the message and only when the leftmost bit in the message is 1. To illustrate the algorithm, an example of the division can be seen in \figref{crccalc}.
+
+
+\begin{figure}[!h]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth]{chapters/design/figures/crc-calc.png}}	
+	\caption{An example of binary long division \cite{tanenbaum81}, where ''Frame'' equals message.}
+	\label{fig:crccalc}
+\end{figure}
 
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{c|ll}
-		+/- & 0 & 1 \\
+		$\pm$ & 0 & 1 \\
 		\hline
 		0   & 0 & 1 \\
 		1   & 1 & 0
 	\end{tabular}
-	\caption{Binary division}
-	\label{binarydivision}
+	\caption{Binary addition and subtraction without carries.}
+	\label{tab:binaryxor}
 \end{table}
 
+The equation for the checksum is shown here. $M$ minus some quotient/multiple of the generator polynomial $G$ leaves a remainder $R$, as seen in equation \ref{eq:remainder}. 
 
-
+\begin{align}
+	Mx^r - QG &= R \label{eq:remainder} \\
+	Mx^r - R  &= QG \\
+	Mx^r &= QG + R
+\end{align}
 
 % notes
+\iffalse
+prerequisites:
 r bit CRC checksum requires degree r generator polynomial.
 m bit message
 
@@ -68,7 +84,17 @@ Q = quotient discarded, as only R is necessary
 
 Sent message (transmitted data) = Mx$^r$ - R
 
-Mx$^r$ = QG + R
+$Mx^r = QG + R$
+
+algorithm:
+r degree of G: append r zeroes to the lower end of M, s.t. $M+R = Mx^r$
+divide $Mx^r$ by G, using mod 2/binary division
+Subtract remainder from $Mx^r$ using binary subtraction
+Result $(Mx^r - R = T)$ is the transfer message
+
+$Mx^r / G = R$
+$Mx^r - R = T$
+\fi
 % /notes
 
 
@@ -79,3 +105,4 @@ The received message is verified by doing one of the two following methods.
 
 Generate checksum of message m and compare with received checksum r.
 The checksum of a correctly transferred packet t is 0.
+

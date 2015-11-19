@@ -4,7 +4,7 @@
 
 //RF24 radio(53,48); // Mega
 RF24 radio(7, 8); // Uno
-const byte rxAddr[6] = "00001";
+const uint64_t rxAddr = 0xF0F0F0F0E1LL;
 
 void setup()
 {
@@ -27,5 +27,5 @@ void loop()
   // "11111111111111111111111111111111";
   // "01010101010101010101010101010101";
   radio.write(&text, sizeof(text));
-  delay(2); // 2 default
+  delay(2000); // 2 default
 }

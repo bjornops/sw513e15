@@ -1,0 +1,64 @@
+\subsection{Packet}
+The \textit{Packet} class contains the data from a packet received from the radio module. It can be instantiated with a string, or with every part of the packet as a parameter, using the constructors:
+\begin{lstlisting}
+Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input,
+	uint16_t sensor2Input, uint16_t sensor3Input)
+	
+Packet::Packet(char *input)
+\end{lstlisting}
+
+
+This class is passed around in \textit{Node}, where it is used to determine actions based on the type, or being relayed with some new data. 
+The class itself contains the variables:
+\begin{lstlisting}
+PacketType packetType;
+uint16_t addresser;
+uint16_t addressee;
+uint16_t origin;
+uint16_t sensor1;
+uint16_t sensor2;
+uint16_t sensor3;
+uint16_t checksum;
+\end{lstlisting}
+These values cover everything in a packet; the type, the sender, the receiver, the origin of the packet, values and a checksum.
+Every packet has this format, and all values are filled out. With packets that might not require all these values, they will simply be zero. For example when sending a request, the sensor values and addressee will be zero.
+
+\textit{PacketType} is defined as follows:
+\begin{lstlisting}
+enum PacketType : uint16_t {
+    Acknowledgement,
+    Request,
+    Data,
+    PairRequest,
+    PairRequestAcknowledgement,
+    ClearSignal
+};
+\end{lstlisting}
+
+
+When a \textit{Packet} is instantiated using the constructor with the \textit{char *input} as parameter, these values are found using the function \textit{memcpy}, in the \textit{decode} function:
+\begin{lstlisting}
+void Packet::decode(char *input)
+{
+    memcpy(this, input, sizeof(Packet));
+}
+\end{lstlisting}
+This copies the memory of the \textit{char *input} into the memory location where the current \textit{Packet} object is located. This means that the contents of the packet is set to the content of \textit{input}.
+
+This is possible as every part of the packet has a known, pre-determined size. \textit{uint16\_t} always has the same size, not dependant on the architecture running the code. When a packet is encoded, using the \textit{char *encode()} function, the returned character array is built in the same way, by setting the contents of the array to the contents of the package.
+
+\begin{lstlisting}[language=C]
+char *Packet::encode()
+{
+    char *returnstring;
+    returnstring = (char*)malloc(sizeof(Packet));
+
+    memcpy(returnstring, this, sizeof(Packet));
+
+    return returnstring;
+}
+\end{lstlisting}
+The \textit{encode} function allocates the size necessary for a \textit{Packet}, but as a \textit{char *} and uses \textit{memcpy} to set the contents of the array to the contents of the current \textit{Packet} and then returning the array.
+
+\subsubsection{Checksum}
+\textit{Packet} objects contains a checksum, used to see if the content is correct. \todo{Bjørn indsæt CRC implementering her.}
