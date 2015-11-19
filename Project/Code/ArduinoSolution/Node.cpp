@@ -46,7 +46,7 @@ void Node::begin(bool shouldSendPairRequest)
     }
     else
     {
-        printf("Begynder at lytte.!");
+        printf("Begynder at lytte.!\n");
         
         // Find dit ID her.. (Evt. brug EEPROM bibliotek)
         
@@ -70,42 +70,57 @@ void Node::sendPairRequest()
 // Begynder at sende pakke indtil den bliver bedt om at stoppe! (Exponential backoff handler!)
 void Node::beginBroadcasting(Packet packet)
 {
-    int startingWait = 1; // 1 ms. start
+    int startingWait = 100; // 1 ms. start
     shouldKeepSendingPacket = true;
     
     broadcast(packet, startingWait);
 }
 
-void broadcast(Packet packet, int msWait)
+void Node::broadcast(Packet packet, int msWait)
 {
-    _radio->broadcast(packet.encode(), msDelay);
-    char *res = _radio->listenFor(msWait);
+    printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, msWait);
     
-    if(res[0] != (char)0) // Data modtaget, bail out!
+    char *packetCoding = packet.encode();
+    int tmpWait = msWait;
+    char *res;
+    
+    while(true)
     {
-        Packet receivedPacket(res);
-        handlePacket(receivedPacket);
+        _radio->broadcast(packetCoding);
+        res = _radio->listenFor(tmpWait);
         
-        shouldKeepSendingPacket = false;
-        return;
+        if(res[0] != (char)0) // Data modtaget, bail out!
+        {
+            printf("Modtog pakke med index 0: %d!\n", (int)res[0]);
+            
+            Packet receivedPacket(res);
+            handlePacket(receivedPacket);
+            
+            printf("Packet haandteret!\n");
+            
+            shouldKeepSendingPacket = false;
+            break;
+        }
+        
+        printf("Modtog ingen pakke, proever igen!\n");
+        tmpWait = nextExponentialBackoff(tmpWait);
     }
-    
-    int nextWait = nextExponentialBackoff(msWait);
-    broadcast(packet, nextWait);
 }
 
-int nextExponentialBackoff(int cur)
+int Node::nextExponentialBackoff(int cur)
 {
+   printf("Foer: %d\n", cur);
    int nextBackoff = cur;
-   int randAdd = random(1, 5);
+   int randAdd = 10; //random(1, 5);
    
    nextBackoff += randAdd;
-   
-   if(nextBackoff >= 500)
+   printf("Efter: %d\n", nextBackoff);
+   /*
+   if(nextBackoff >= 1000)
    {
        nextBackoff = randAdd;
    }
-   
+   */
    return nextBackoff;
 }
 
@@ -139,7 +154,7 @@ void Node::handlePacket(Packet packet)
 {
     switch(packet.packetType)
     {
-        case Acknowledgement: // Acknowledgement modtaget (Dvs. mit data er accepteret)
+        case DataAcknowledgement: // Acknowledgement modtaget (Dvs. mit data er accepteret)
         {
             if (_waitForAcknowledgement)
             {
@@ -148,7 +163,7 @@ void Node::handlePacket(Packet packet)
             }
         }
         break;
-        case Request: // Request modtaget
+        case DataRequest: // Request modtaget
         {
             if (!_waitForAcknowledgement && !_readyToForward)
             {

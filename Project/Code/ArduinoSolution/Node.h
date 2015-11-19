@@ -35,6 +35,8 @@ private:
     static void forwardSignal(Packet);
     static void handlePacket(Packet);
     static void beginBroadcasting(Packet);
+    static int nextExponentialBackoff(int);
+    static void broadcast(Packet, int);
 };
 
 #endif
