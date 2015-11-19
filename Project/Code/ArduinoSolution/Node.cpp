@@ -1,5 +1,6 @@
 #include "Arduino.h"
 
+#include <EEPROM.h>
 #include <stdint.h>
 
 #include "Node.h"
@@ -49,12 +50,23 @@ void Node::begin(bool shouldSendPairRequest)
         printf("Begynder at lytte.!\n");
         
         // Find dit ID her.. (Evt. brug EEPROM bibliotek)
-        
+        int ID = EEPROM.read(0);
+        if(nodeID != 0)
+        {
+            nodeID = ID;
+        }
         
         // Laeser fra radio og laver til pakke
-        char *res = _radio->listen();
-        Packet packet(res);
-        handlePacket(packet);
+        while(true)
+        {
+            char *res = _radio->listen();
+            for(int n = 0; n < 32; n++)
+            {
+                 printf("Packet (%d): %d\n", n, (uint16_t)res[n]); 
+            }
+            Packet packet(res);
+        }
+//        handlePacket(packet);
     }
 }
 
@@ -89,17 +101,21 @@ void Node::broadcast(Packet packet, int msWait)
         _radio->broadcast(packetCoding);
         res = _radio->listenFor(tmpWait);
         
-        if(res[0] != (char)0) // Data modtaget, bail out!
+        printf("Modtaget: %d\n", (int)res[0]);
+        if((int)res[0] != 0) // Data modtaget, bail out!
         {
-            printf("Modtog pakke med index 0: %d!\n", (int)res[0]);
-            
+            printf("Inde i if.");
             Packet receivedPacket(res);
-            handlePacket(receivedPacket);
-            
-            printf("Packet haandteret!\n");
-            
-            shouldKeepSendingPacket = false;
-            break;
+            printf("Packet modtaget har typen: %d", receivedPacket.packetType);
+            if(receivedPacket.packetType != 0)
+            {
+              handlePacket(receivedPacket);
+              
+              printf("Packet haandteret!\n");
+              
+              shouldKeepSendingPacket = false;
+              break;
+            }
         }
         
         printf("Modtog ingen pakke, proever igen!\n");
@@ -188,9 +204,12 @@ void Node::handlePacket(Packet packet)
         break;
         case PairRequestAcknowledgement: // Har modtaget mit ID
         {
+            printf("Modtaget ack paa pair!");
             if(nodeID == -1) // Default ID
             {
+                printf("Har nu faaet ID: %d\n", packet.addressee);
                 nodeID = packet.addressee;
+                EEPROM.write(0, nodeID);
             }
         }
         break;
