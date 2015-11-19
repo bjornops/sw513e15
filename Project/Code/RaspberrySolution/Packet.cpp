@@ -1,11 +1,12 @@
 #include "Packet.h"
-#import "Node.h"
-#import "iRadio.h"
-#import "iSensor.h"
+#include "Node.h"
+#include "iRadio.h"
 
 Packet::Packet(char *input)
 {
     decode(input);
+    verified();
+    printf("Pakke lavet med type: %d", this->packetType);
 }
 
 Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input,
@@ -39,6 +40,7 @@ bool Packet::verified()
         return true;
     }
     
+    this->packetType = Error;
     return false;
 }
 

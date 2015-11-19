@@ -15,11 +15,9 @@ enum NodeState
 class Node
 {
 public:
-    static void initializeNode(iRadio *);
+    static void initializeNode();
     static unsigned short crcTable[256];
-    
     static void begin();
-    static void sendPairRequest();
     
 private:
     static iRadio *_radio;
@@ -27,8 +25,6 @@ private:
     static bool _readyToForward;
     
     static void crcInit();
-    static void readPackSend();
-    static void forwardSignal(Packet);
     static void handlePacket(Packet);
 };
 

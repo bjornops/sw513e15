@@ -14,17 +14,6 @@ private:
     const int _channel = 114;
     const int _readingPipe = 0;
     
-    //UNO
-    /*
-    const int _cePin = 7;
-    const int _csPin = 8;
-    */
-    //MEGA 
-    /*
-    const int _cePin = 53;
-    const int _csPin = 48; 
-    */
-  
     //RPI
     const int _cePin = 22;
     const int _csPin = 0;

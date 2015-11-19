@@ -6,8 +6,8 @@
 #ifndef PACKET_H
 #define PACKET_H
 
-#define size_m 14
-#define size_t 16
+#define size_message 14
+#define size_total 16
 #define POLYNOMIAL			0x1021
 #define INITIAL_REMAINDER	0x1D0F
 #define FINAL_XOR_VALUE		0x0000
@@ -15,8 +15,9 @@
 #define TOPBIT	(1 << (WIDTH - 1))
 
 enum PacketType : uint16_t {
-    Acknowledgement,
-    Request,
+    Error,
+    DataAcknowledgement,
+    DataRequest,
     Data,
     PairRequest,
     PairRequestAcknowledgement,

@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "Node.h"
 #include "Packet.h"
-#include "iRadio.h"
+#include "Radio.h"
 
 // Static declarations
 bool Node::_waitForAcknowledgement = true;
@@ -13,33 +13,34 @@ unsigned short Node::crcTable[256];
 
 int main(int argc, char* argv[])
 {
+    Node::initializeNode();
+    Node::begin();
     return 0;
 }
 
 // Sætter variabler op i Node
-void Node::initializeNode(iRadio *radio)
+void Node::initializeNode()
 {
-    printf("Node klar!");
+    printf("\nNode is being initialized.");
     crcInit();
-    
-    _radio = radio;
+    printf("\ncrc has been set up.");
+    _radio = new NRF24Radio();
+    printf("\nDone initializing.");
 }
 
 // Starter hele lortet!
 void Node::begin()
 {
     // Lser fra radio
-    char *res = _radio->listen();
-    for(int n = 0; n < 32; n++)
+    while(true)
     {
-       printf("Char %d: %c - %d\n", n, res[n], (int)res[n]); 
+        char *res = _radio->listen();
+        Packet packet(res);
+        printf("\nPacket received with type: %d",packet.packetType);
+        handlePacket(packet);
+        printf("\nPacket er handlet.");
+        fflush(stdout);
     }
-}
-
-// Sender pair request
-void Node::sendPairRequest()
-{
-      
 }
 
 // Fill crcTable with values
@@ -61,10 +62,10 @@ void Node::crcInit()
             }
             else
             {
-		remainder = remainder << 1;//scooch and do nothing (MSB = 0, move along)
+		        remainder = remainder << 1;//scooch and do nothing (MSB = 0, move along)
+	        }
 	    }
-	}
-	crcTable[dividend] = remainder;//save current crc value in crcTable
+    	crcTable[dividend] = remainder;//save current crc value in crcTable
     }
 }
 
@@ -72,7 +73,7 @@ void Node::handlePacket(Packet packet)
 {
     switch(packet.packetType)
     {
-        case Acknowledgement: // Acknowledgement modtaget (Dvs. mit data er accepteret)
+        case DataAcknowledgement: // Acknowledgement modtaget (Dvs. mit data er accepteret)
         {
             if (_waitForAcknowledgement)
             {
@@ -81,49 +82,32 @@ void Node::handlePacket(Packet packet)
             }
         }
         break;
-        case Request: // Request modtaget
+        case DataRequest: // Request modtaget
         {
-            if (!_waitForAcknowledgement && !_readyToForward)
-            {
-                _waitForAcknowledgement = true;
-                readPackSend();
-            }
         }
         break;
         case Data: // Har modtaget data der skal videresendes
         {
-            if (_readyToForward)
-            {
-                forwardSignal(packet);
-            }
         }
         break;
         case PairRequest :
         {
             // Pair me up Scotty!
+            // Ignorer hvis paa almindelig Node.
         }
         break;
-        case PairRequestAcknowledgement :
+        case PairRequestAcknowledgement: // Har modtaget mit ID
         {
-            // Ur paired dood
         }
         break;
-        case ClearSignal :
+        case ClearSignal: // Slet alt!
         {
             // I had nothing to do with it!
         }
         break;
         default:
-            //std::cout << "Hello? Yes, this is default.";
+            //std::cout << "Hello? Yes, this is default. No this is patrick!";
             // Hello default, this is broken!
         break;
     }
-}
-
-void Node::readPackSend()
-{    
-}
-
-void Node::forwardSignal(Packet packet)
-{
 }
