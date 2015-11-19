@@ -1,4 +1,5 @@
 #include <EEPROM.h>
+
 #include "Arduino.h"
 #include "printf.h"
 
@@ -15,12 +16,9 @@ void setup()
 {
     Serial.begin(9600);
     printf_begin();
-    
-    int myPossibleID  = EEPROM.read(0);
-    printf("Mit ID: %d\n", myPossibleID);
-    
+
     // Skal der sendes pair request ved startup?
-    bool sendPairRequest = true;
+    bool sendPairRequest = false;
     /*
     pinMode(2, INPUT);
     int val = digitalRead(2);
