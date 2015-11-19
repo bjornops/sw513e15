@@ -7,7 +7,6 @@ Packet::Packet(char *input)
 {
     decode(input);
     verified();
-    printf("Pakke lavet med type: %d", this->packetType);
 }
 
 Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input,

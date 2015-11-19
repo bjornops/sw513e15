@@ -1,8 +1,55 @@
 \chapter{The working process}
-Since this project can be seen as the development of a professional software system, rather than personal software development, it can be considered software engineering. As the developers on this project is a group of students, it is important to set up specification and design before implementing the solution to avoid each individual in the group designing their own ideas.
+Since this project can be seen as the development of a professional\todo{Dangerous statement?} software system, rather than personal software development, it may be considered software engineering. As the developers on this project is a group of students, it is important to set up specification and design before implementing the solution\todo{It usually are in any case, right?} to avoid each individual in the group designing their own personal ideas.
 
-In software engineering two types of software processes are usually relevant. Plan-driven and agile. In the plan-driven process all activities are planned in advance, and progress is measures against this plan. The agile process is incremental, and easier to change due to changing requirements for example.
+In software engineering two types of software processes are usually relevant. Plan-driven and agile. In the plan-driven process all activities are planned in advance, and progress is measured against this plan. The agile process is incremental, and easier to change due to changing requirements for example.
 
-This project is based on both processes, but separated to different areas of the developing process. As the requirements is assumed not to change during the project period, the processes of developing requirements and design will be mainly plan-driven. The requirements will be designed as prioritized, to support an agile implementation process.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.5\textwidth]{figures/ProcessmodelDiagram.png}
+\caption{Processmodel diagram}
+\label{fig:processmodelDiagram}
+\end{figure}
 
-An agile implementation process is chosen, because the domain of the project is new and unknown for the hole group, and therefore very hard to plan considering time. Furthermore this project has an impassable deadline, and therefore it would be hard for the group to set up a perfect set of requirements that would correspond to the project timespan.
+Figure \figref{processmodelDiagram} flow chart above shows the project's processmodel and displays the different stages of the project. This processmodel is a mix between the plan-driven and the agile method, but they are separated to different areas of the developing process. - starting out in a plan-driven manner, while the implementation part is done in an agile manner.
+
+The plan-driven part consist of the two first stages of the project. First the problem domain and application domain will be researched and analyzed. This enables the construction of requirements for the project. The requirement is assumed not to change during the project period. In the next stage the requirements will be given priorities in order to determine the their importance for the final solution. The priorities are given by performing a MoSCoW analysis.
+
+The next four stages are performed in an agile manner. Whenever the last of the four stages have been completed, which is the test stage, the time left until deadline will be evaluated. If there is enough time left, then the four agile stages will be repeated. This is where the priorities that was given during the MoSCoW analysis come into play. Each iteration will focus on a single tier of the requirements e.g. first iteration will focus on the "Must have" requirements. These will be the requirements in focus. If these requirements are considered met at the end of the four stages, then the next iteration will focus on the next tier of requirements, which in this example would be "Should have" priorities.
+
+Research on how to meet the requirements in focus is done during the first stage of the agile stage followed by the second stage where the design of the solution will be developed. The designed solution will in the third stage be implemented.
+
+The solution will be tested as a follow up to the implementation. Here it will be determined whether the requirements in focus are met. If the requirements was not met, then the requirements in focus will remain during the next iteration. If the requirements are met, then the next iteration will focus on the next tier of requirements. An extra iteration will only be considered if there is sufficient time left until the deadline.
+
+An agile implementation process is chosen, because the domain of the project is new and unknown for all group members, and therefore hard to plan considering time. Furthermore this project has an impassable deadline, and therefore it would be hard for the group to set up a perfect set of requirements that would correspond to the project timespan. By keeping focus on a single tier at the time it ensures that the most important features of the requirements are met first, which can then be expanded upon.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
