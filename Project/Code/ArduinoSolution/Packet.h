@@ -16,8 +16,8 @@
 
 enum PacketType : uint16_t {
     Error,
-    Acknowledgement,
-    Request,
+    DataAcknowledgement,
+    DataRequest,
     Data,
     PairRequest,
     PairRequestAcknowledgement,

@@ -76,9 +76,10 @@ void Node::beginBroadcasting(Packet packet)
     broadcast(packet, startingWait);
 }
 
-void broadcast(Packet packet, int msWait)
+void Node::broadcast(Packet packet, int msWait)
 {
-    _radio->broadcast(packet.encode(), msDelay);
+    printf("Sender pakke med typen: %d og lytter for %d ms", packet.packetType, msWait);
+    _radio->broadcast(packet.encode());
     char *res = _radio->listenFor(msWait);
     
     if(res[0] != (char)0) // Data modtaget, bail out!
@@ -94,7 +95,7 @@ void broadcast(Packet packet, int msWait)
     broadcast(packet, nextWait);
 }
 
-int nextExponentialBackoff(int cur)
+int Node::nextExponentialBackoff(int cur)
 {
    int nextBackoff = cur;
    int randAdd = random(1, 5);
@@ -139,7 +140,7 @@ void Node::handlePacket(Packet packet)
 {
     switch(packet.packetType)
     {
-        case Acknowledgement: // Acknowledgement modtaget (Dvs. mit data er accepteret)
+        case DataAcknowledgement: // Acknowledgement modtaget (Dvs. mit data er accepteret)
         {
             if (_waitForAcknowledgement)
             {
@@ -148,7 +149,7 @@ void Node::handlePacket(Packet packet)
             }
         }
         break;
-        case Request: // Request modtaget
+        case DataRequest: // Request modtaget
         {
             if (!_waitForAcknowledgement && !_readyToForward)
             {
