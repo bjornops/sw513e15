@@ -38,15 +38,13 @@ char *NRF24Radio::listenFor(unsigned long ms)
             _radio->read(&lastMessage, 32*sizeof(char));
             _radio->stopListening();
             
-            printf("Modtaget pakke i Radio!\n");
             return lastMessage;
         }
-        
+
         // Er tiden gået?
         unsigned long thisMs = millis();
         if(thisMs-firstMs > ms)
         {
-            printf("Ingen pakke, stopper.\n");
             return {(char)0};
         }
     }

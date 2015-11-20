@@ -57,87 +57,10 @@ void Node::begin(bool shouldSendPairRequest)
         }
         
         // Laeser fra radio og laver til pakke
-        while(true)
-        {
-            char *res = _radio->listen();
-            for(int n = 0; n < 32; n++)
-            {
-                 printf("Packet (%d): %d\n", n, (uint16_t)res[n]); 
-            }
-            Packet packet(res);
-        }
-//        handlePacket(packet);
+        char *res = _radio->listen();
+        Packet packet(res);
+        handlePacket(packet);
     }
-}
-
-// Sender pair request
-void Node::sendPairRequest()
-{
-    Packet requestPacket(PairRequest, 0, 0, 0, 0, 0, 0); // Data does not matter, only need 'type'.
-    currentHandlingPacketType = PairRequest;
-    
-    beginBroadcasting(requestPacket);
-}
-
-// Begynder at sende pakke indtil den bliver bedt om at stoppe! (Exponential backoff handler!)
-void Node::beginBroadcasting(Packet packet)
-{
-    int startingWait = 100; // 1 ms. start
-    shouldKeepSendingPacket = true;
-    
-    broadcast(packet, startingWait);
-}
-
-void Node::broadcast(Packet packet, int msWait)
-{
-    printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, msWait);
-    
-    char *packetCoding = packet.encode();
-    int tmpWait = msWait;
-    char *res;
-    
-    while(true)
-    {
-        _radio->broadcast(packetCoding);
-        res = _radio->listenFor(tmpWait);
-        
-        printf("Modtaget: %d\n", (int)res[0]);
-        if((int)res[0] != 0) // Data modtaget, bail out!
-        {
-            printf("Inde i if.");
-            Packet receivedPacket(res);
-            printf("Packet modtaget har typen: %d", receivedPacket.packetType);
-            if(receivedPacket.packetType != 0)
-            {
-              handlePacket(receivedPacket);
-              
-              printf("Packet haandteret!\n");
-              
-              shouldKeepSendingPacket = false;
-              break;
-            }
-        }
-        
-        printf("Modtog ingen pakke, proever igen!\n");
-        tmpWait = nextExponentialBackoff(tmpWait);
-    }
-}
-
-int Node::nextExponentialBackoff(int cur)
-{
-   printf("Foer: %d\n", cur);
-   int nextBackoff = cur;
-   int randAdd = 10; //random(1, 5);
-   
-   nextBackoff += randAdd;
-   printf("Efter: %d\n", nextBackoff);
-   /*
-   if(nextBackoff >= 1000)
-   {
-       nextBackoff = randAdd;
-   }
-   */
-   return nextBackoff;
 }
 
 // Fill crcTable with values
@@ -176,6 +99,7 @@ void Node::handlePacket(Packet packet)
             {
                 _waitForAcknowledgement = false;
                 _readyToForward = true;
+                _shouldKeepSendingPacket = false;
             }
         }
         break;
@@ -208,8 +132,10 @@ void Node::handlePacket(Packet packet)
             if(nodeID == -1) // Default ID
             {
                 printf("Har nu faaet ID: %d\n", packet.addressee);
+                
                 nodeID = packet.addressee;
                 EEPROM.write(0, nodeID);
+                shouldKeepSendingPacket = false;
             }
         }
         break;
@@ -225,12 +151,101 @@ void Node::handlePacket(Packet packet)
     }
 }
 
+
+
+// Sender pair request
+void Node::sendPairRequest()
+{
+    Packet requestPacket(PairRequest, 0, 0, 0, 0, 0, 0); // Data does not matter, only need 'type'.
+    currentHandlingPacketType = PairRequest;
+    
+    beginBroadcasting(requestPacket);
+}
+
+// Begynder at sende pakke indtil den bliver bedt om at stoppe! (Exponential backoff handler!)
+void Node::beginBroadcasting(Packet packet)
+{
+    int startingWait = 100; // 1 ms. start
+    shouldKeepSendingPacket = true;
+    
+    broadcast(packet, startingWait);
+}
+
+void Node::broadcast(Packet packet, int msWait)
+{
+    printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, msWait);
+    
+    char *packetCoding = packet.encode();
+    int tmpWait = msWait;
+    char *res;
+    
+    while(true)
+    {
+        _radio->broadcast(packetCoding);
+        res = _radio->listenFor(tmpWait);
+        
+        printf("Modtaget: %d\n", (int)res[0]);
+        if((int)res[0] != 0) // Data modtaget, bail out!
+        {
+            Packet receivedPacket(res);
+
+            if(receivedPacket.packetType != 0) // Ikke en error
+            {
+                handlePacket(receivedPacket);
+                printf("Packet haandteret!\n");
+            }
+        }
+        
+        if(!shouldKeepSendingPacket)
+        {
+            break;
+        }
+        tmpWait = nextExponentialBackoff(tmpWait);
+    }
+}
+
+int Node::nextExponentialBackoff(int cur)
+{
+   printf("Foer: %d\n", cur);
+   int nextBackoff = cur;
+   int randAdd = 10; //random(1, 5);
+   
+   nextBackoff += randAdd;
+   printf("Efter: %d\n", nextBackoff);
+   /*
+   if(nextBackoff >= 1000)
+   {
+       nextBackoff = randAdd;
+   }
+   */
+   return nextBackoff;
+}
+
+void Node::sendRequests()
+{
+  
+}
+
+// Request modtager. Send data hjem, og request videre
 void Node::readPackSend()
 {
     int sensorData = _sensor->read(); // Read
-    
+    Packet dataPacket(Data, nodeID, parentID, nodeID, sensorData, 0, 0);
+    beginBroadcast(dataPacket);
 }
 
+
+// Send data videre til min forlaeldr!
 void Node::forwardSignal(Packet packet)
 {
+    // acket(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input,
+//	uint16_t sensor2Input, uint16_t sensor3Input)
+
+    // Send acknowledgement til sender af data
+    Packet acknowledgement(DataAcknowledgement, nodeID, parentID, packet.origin, packet.sensor1Input, packet.sensor2Input, packet.sensor3Input);
+    
+    
+    // Hent min foraeldr
+    // Relay data til foraeldr
+    
 }

@@ -37,6 +37,7 @@ private:
     static void beginBroadcasting(Packet);
     static int nextExponentialBackoff(int);
     static void broadcast(Packet, int);
+    static void sendRequests();
 };
 
 #endif
