@@ -19,6 +19,7 @@ iRadio *Node::_radio;
 // Public
 unsigned short Node::crcTable[256];
 int Node::nodeID = -1;
+int Node::parentID = -1;
 
 
 // Andre declarations
@@ -99,7 +100,7 @@ void Node::handlePacket(Packet packet)
             {
                 _waitForAcknowledgement = false;
                 _readyToForward = true;
-                _shouldKeepSendingPacket = false;
+                shouldKeepSendingPacket = false;
             }
         }
         break;
@@ -202,6 +203,8 @@ void Node::broadcast(Packet packet, int msWait)
         }
         tmpWait = nextExponentialBackoff(tmpWait);
     }
+    
+    free(packetCoding);
 }
 
 int Node::nextExponentialBackoff(int cur)
@@ -231,7 +234,7 @@ void Node::readPackSend()
 {
     int sensorData = _sensor->read(); // Read
     Packet dataPacket(Data, nodeID, parentID, nodeID, sensorData, 0, 0);
-    beginBroadcast(dataPacket);
+    beginBroadcasting(dataPacket);
 }
 
 
@@ -242,7 +245,7 @@ void Node::forwardSignal(Packet packet)
 //	uint16_t sensor2Input, uint16_t sensor3Input)
 
     // Send acknowledgement til sender af data
-    Packet acknowledgement(DataAcknowledgement, nodeID, parentID, packet.origin, packet.sensor1Input, packet.sensor2Input, packet.sensor3Input);
+    Packet acknowledgement(DataAcknowledgement, nodeID, parentID, packet.origin, packet.sensor1, packet.sensor2, packet.sensor3);
     
     
     // Hent min foraeldr

@@ -17,7 +17,7 @@ class Node
 {
 public:
     static unsigned short crcTable[256];
-    static int nodeID;
+    static int nodeID, parentID;
     
     static void initializeNode(iSensor *, iRadio *);
     
