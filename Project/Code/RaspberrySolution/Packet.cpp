@@ -38,11 +38,11 @@ bool Packet::verified()
     unsigned char *encoded = (unsigned char*)encode();
     if (getChecksum(encoded, 16) == 0)
     {
-        free(encoded)
+        free(encoded);
         return true;
     }
     
-    free(encoded)
+    free(encoded);
     
     this->packetType = Error;
     return false;
