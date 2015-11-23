@@ -17,7 +17,7 @@ class Node
 {
 public:
     static unsigned short crcTable[256];
-    static int nodeID;
+    static int nodeID, parentID;
     
     static void initializeNode(iSensor *, iRadio *);
     
@@ -37,6 +37,7 @@ private:
     static void beginBroadcasting(Packet);
     static int nextExponentialBackoff(int);
     static void broadcast(Packet, int);
+    static void sendRequests();
 };
 
 #endif
