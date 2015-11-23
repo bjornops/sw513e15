@@ -45,6 +45,8 @@ bool Packet::verified()
         return true;
     }
     
+    free(encoded);
+
     this->packetType = Error;
     return false;
 }

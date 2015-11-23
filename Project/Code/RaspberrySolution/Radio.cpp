@@ -19,7 +19,7 @@ NRF24Radio::NRF24Radio(/*int cePin, int csPin*/)
 void NRF24Radio::broadcast(char *packetAsString)
 {
     _radio->stopListening();
-    _radio->write(&packetAsString, strlen(packetAsString));
+    _radio->write(&packetAsString,16);//&packetAsString, 16);
 }
 
 // Lyt indtil en pakke modtages, eller tiden er gået

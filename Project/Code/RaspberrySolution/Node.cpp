@@ -33,12 +33,14 @@ void Node::begin()
 {
     // Lser fra radio
     
-            Packet ackPacket(DataAcknowledgement, 0, 1, 0, 0, 0, 0); 
+            Packet ackPacket(DataAcknowledgement, 0, 4, 0, 3, 0, 0); 
             printf("\n%d\n\n",sizeof(Packet));
             char *encoded = ackPacket.encode();
-            for (int i = 0; i < 32; i++)
+            Packet rebuild(encoded);
+            char *reencoded = rebuild.encode();
+            for (int i = 0; i < 16; i++)
             {
-                printf("\n%d",(int)encoded[i]);
+                printf("\n%d - %d",(int)encoded[i], (int)reencoded[i]);
             }
             //printf("\n");
             //printf(PairRequestAcknowledgement);
