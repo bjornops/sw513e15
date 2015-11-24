@@ -21,6 +21,10 @@ public:
     static void sendRequest(int, int);
     
 private:
+    // ID generating
+    static int _currentID;
+    static unsigned int _lastPairRequestMillis;
+    
     static iRadio *_radio;
     static bool _waitForAcknowledgement;
     static bool _readyToForward;

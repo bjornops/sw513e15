@@ -7,15 +7,19 @@
 #include "Radio.h"
 
 #define MAIN_NODE_ID 0
+#define REQUEST_GENERATE_ID_TIMER 5000
 
 void sigal(int);
 void getAndSavePID();
 
 // Static declarations
+unsigned short Node::crcTable[256];
+
 bool Node::_waitForAcknowledgement = true;
 bool Node::_readyToForward = true;
 iRadio *Node::_radio;
-unsigned short Node::crcTable[256];
+int Node::_currentID = 0;
+unsigned int Node::_lastPairRequestMillis = 0;
 
 int main(int argc, char* argv[])
 {
@@ -28,6 +32,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+// Finder og gemmer PID så det kan bruges af andre!
 void getAndSavePID()
 {
     int myPID = getpid();
@@ -42,11 +47,15 @@ void getAndSavePID()
     fclose(f);
 }
 
+// Når vi får en 'alarm', send requests
 void sigal(int al)
 {
     printf("Signal alarm (Sender requests!)!\n");
     fflush(stdout);
+    
     Node::sendRequest(1, 31); // Meget tilfældigt interval.
+    
+    signal(al, sigal);
 }
 
 // Sætter variabler op i Node
@@ -54,8 +63,9 @@ void Node::initializeNode()
 {
     crcInit();
     _radio = new NRF24Radio();
-
-    printf("\nDone initializing.");
+    _lastPairRequestMillis = bcm2835_millis();
+    
+    printf("Done initializing.\n");
     fflush(stdout);
 }
 
@@ -65,13 +75,13 @@ void Node::begin()
     // Læser fra radio
     while(true)
     {
-        printf("i loop i begin!\n");
+        printf("Begynder at lytte efter pakke!\n");
         char *res = _radio->listen();
         Packet packet(res);
-        printf("\nPacket received with type: %d\n",packet.packetType);
+        printf("Packet received with type: %d\n", packet.packetType);
         handlePacket(packet);
 
-        printf("\nPacket er handlet.\n");
+        printf("Packet er handlet.\n");
         fflush(stdout);
     }
 }
@@ -106,19 +116,6 @@ void Node::handlePacket(Packet packet)
 {
     switch(packet.packetType)
     {
-        case DataAcknowledgement: // Acknowledgement modtaget (Dvs. mit data er accepteret)
-        {
-            if (_waitForAcknowledgement)
-            {
-                _waitForAcknowledgement = false;
-                _readyToForward = true;
-            }
-        }
-        break;
-        case DataRequest: // Request modtaget
-        {
-        }
-        break;
         case Data: // Har modtaget data der skal gemmes!
         {
             printf("Har modtaget data fra node med ID: %d\n", packet.addresser);
@@ -130,26 +127,32 @@ void Node::handlePacket(Packet packet)
             free(enc);
         }
         break;
-        case PairRequest :
+        
+        case PairRequest: // En eller anden stakkel vil gerne have et ID.
         {
-            //Print
-            Packet ackPacket(PairRequestAcknowledgement, 0, 1337, 0, 0, 0, 0);
+            // Skal der genereres et nyt ID?
+            unsigned int currentMillis = bcm2835_millis();
+            if(currentMillis - _lastPairRequestMillis >= REQUEST_GENERATE_ID_TIMER)
+            {
+                _currentID += 1;
+                printf("Genererer nyt ID til node: %d\n", _currentID);
+                fflush(stdout);
+            }
+                
+            _lastPairRequestMillis = bcm2835_millis();
+            Packet ackPacket(PairRequestAcknowledgement, 0, _currentID, 0, 0, 0, 0);
             char *enc = ackPacket.encode();
             _radio->broadcast(enc);
             free(enc);
         }
         break;
-        case PairRequestAcknowledgement: // Har modtaget mit ID
-        {
-        }
-        break;
-        case ClearSignal: // Slet alt!
-        {
-            // I had nothing to do with it!
-        }
-        break;
+        
+        case PairRequestAcknowledgement:
+        case DataAcknowledgement:
+        case DataRequest:
+        case ClearSignal:
         default:
-            //std::cout << "Hello? Yes, this is default. No this is patrick!";
+            //std::cout << "Hello? Yes, this is default.";
             // Hello default, this is broken!
         break;
     }
