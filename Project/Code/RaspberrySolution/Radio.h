@@ -21,7 +21,7 @@ private:
 public:
     char lastMessage[32];
     
-    NRF24Radio(/*int, int*/);
+    NRF24Radio();
     
     void broadcast(char *);
     

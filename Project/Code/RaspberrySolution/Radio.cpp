@@ -1,7 +1,8 @@
 #include "Radio.h"
+#include <stdlib.h>
 
 //Sætter hardware op.
-NRF24Radio::NRF24Radio(/*int cePin, int csPin*/) 
+NRF24Radio::NRF24Radio()
 { 
     _radio = new RF24(_cePin, _csPin);
     _radio->begin();      
@@ -18,8 +19,11 @@ NRF24Radio::NRF24Radio(/*int cePin, int csPin*/)
 // Sender pakke ud som string.
 void NRF24Radio::broadcast(char *packetAsString)
 {
+    memset(lastMessage, 0, 16*sizeof(char));
+    memcpy(lastMessage, packetAsString, 16*sizeof(char));
+
     _radio->stopListening();
-    _radio->write(&packetAsString,16);//&packetAsString, 16);
+    _radio->write(&lastMessage, 16*sizeof(char));
 }
 
 // Lyt indtil en pakke modtages, eller tiden er gået

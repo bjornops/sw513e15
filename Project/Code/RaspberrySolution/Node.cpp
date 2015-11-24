@@ -32,28 +32,14 @@ void Node::initializeNode()
 void Node::begin()
 {
     // Lser fra radio
-    
-            Packet ackPacket(DataAcknowledgement, 0, 4, 0, 3, 0, 0); 
-            printf("\n%d\n\n",sizeof(Packet));
-            char *encoded = ackPacket.encode();
-            Packet rebuild(encoded);
-            char *reencoded = rebuild.encode();
-            for (int i = 0; i < 16; i++)
-            {
-                printf("\n%d - %d",(int)encoded[i], (int)reencoded[i]);
-            }
-            //printf("\n");
-            //printf(PairRequestAcknowledgement);
-            printf("\n");            
-            _radio->broadcast(ackPacket.encode());
-    return;
+
     while(true)
     {
         char *res = _radio->listen();
         Packet packet(res);
-        printf("\nPacket received with type: %d",packet.packetType);
+        printf("\nPacket received with type: %d\n",packet.packetType);
         handlePacket(packet);
-        printf("\nPacket er handlet.");
+        printf("\nPacket er handlet.\n");
         fflush(stdout);
     }
 }
