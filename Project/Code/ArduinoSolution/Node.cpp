@@ -40,7 +40,7 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
 
 // Starter hele lortet!
 void Node::begin(bool shouldSendPairRequest)
-{
+{    
     if(shouldSendPairRequest)
     {
         printf("Sender pair request!\n");
@@ -51,7 +51,7 @@ void Node::begin(bool shouldSendPairRequest)
         printf("Begynder at lytte.!\n");
         
         // Find dit ID her.. (Evt. brug EEPROM bibliotek)
-        int ID = EEPROM.read(0);
+        int ID = loadID();
         if(nodeID != 0)
         {
             nodeID = ID;
@@ -62,6 +62,28 @@ void Node::begin(bool shouldSendPairRequest)
         Packet packet(res);
         handlePacket(packet);
     }
+}
+
+void Node::saveID(int16_t id)
+{
+  char *val = (char *)&id;
+  EEPROM.write(0,val[0]);
+  EEPROM.write(1,val[1]);
+  
+  printf("%d\n",val[0]);
+  printf("%d\n",val[1]);
+}
+
+int16_t Node::loadID()
+{
+  char *val = (char *)malloc(2);
+  val[0] = EEPROM.read(0);
+  val[1] = EEPROM.read(1);
+  
+  int16_t id = 0;
+  memcpy(&id,val,2);
+  free(val);
+  return id;
 }
 
 // Fill crcTable with values
@@ -134,8 +156,7 @@ void Node::handlePacket(Packet packet)
             {
                 printf("Har nu faaet ID: %d\n", packet.addressee);
                 
-                nodeID = packet.addressee;
-                EEPROM.write(0, nodeID);
+                saveID(packet.addressee);
                 shouldKeepSendingPacket = false;
             }
         }
