@@ -19,6 +19,7 @@ unsigned short Node::crcTable[256];
 
 int main(int argc, char* argv[])
 {
+    signal(SIGALRM, sigal);
     getAndSavePID();
 
     Node::initializeNode();
@@ -61,8 +62,6 @@ void Node::initializeNode()
 // Starter hele lortet!
 void Node::begin()
 {
-    signal(SIGALRM, sigal);
-
     // Læser fra radio
     while(true)
     {
@@ -173,6 +172,6 @@ void Node::sendRequest(int turn, int delay)
     else
     {
         printf("Sender ikke flere requests!\n");
-        Node::begin();
+        //Node::begin();
     }
 }
