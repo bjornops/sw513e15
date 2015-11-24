@@ -38,9 +38,9 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
     randomSeed(analogRead(0));
 }
 
-// Starter hele lortet!
+// Starter hele lortet! 
 void Node::begin(bool shouldSendPairRequest)
-{
+{    
     if(shouldSendPairRequest)
     {
         printf("Sender pair request!\n");
@@ -51,10 +51,11 @@ void Node::begin(bool shouldSendPairRequest)
         printf("Begynder at lytte.!\n");
         
         // Find dit ID her.. (Evt. brug EEPROM bibliotek)
-        int ID = EEPROM.read(0);
+        int ID = loadID();
         if(nodeID != 0)
         {
             nodeID = ID;
+            printf("Har nodeID: %d\n", nodeID);
         }
         
         // Laeser fra radio og laver til pakke
@@ -62,6 +63,28 @@ void Node::begin(bool shouldSendPairRequest)
         Packet packet(res);
         handlePacket(packet);
     }
+}
+
+void Node::saveID(int16_t id)
+{
+  char *val = (char *)&id;
+  EEPROM.write(0,val[0]);
+  EEPROM.write(1,val[1]);
+  
+  printf("%d\n",val[0]);
+  printf("%d\n",val[1]);
+}
+
+int16_t Node::loadID()
+{
+  char *val = (char *)malloc(2);
+  val[0] = EEPROM.read(0);
+  val[1] = EEPROM.read(1);
+  
+  int16_t id = 0;
+  memcpy(&id,val,2);
+  free(val);
+  return id;
 }
 
 // Fill crcTable with values
@@ -129,13 +152,12 @@ void Node::handlePacket(Packet packet)
         break;
         case PairRequestAcknowledgement: // Har modtaget mit ID
         {
-            printf("Modtaget ack paa pair!");
+            printf("Modtaget ack paa pair!\n");
             if(nodeID == -1) // Default ID
             {
                 printf("Har nu faaet ID: %d\n", packet.addressee);
                 
-                nodeID = packet.addressee;
-                EEPROM.write(0, nodeID);
+                saveID(packet.addressee);
                 shouldKeepSendingPacket = false;
             }
         }
@@ -166,7 +188,7 @@ void Node::sendPairRequest()
 // Begynder at sende pakke indtil den bliver bedt om at stoppe! (Exponential backoff handler!)
 void Node::beginBroadcasting(Packet packet)
 {
-    int startingWait = 100; // 1 ms. start
+    int startingWait = 200; // 1 ms. start
     shouldKeepSendingPacket = true;
     
     broadcast(packet, startingWait);
