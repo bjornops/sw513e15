@@ -18,6 +18,7 @@ public:
     static void initializeNode();
     static unsigned short crcTable[256];
     static void begin();
+    static void sendRequest(int, int);
     
 private:
     static iRadio *_radio;
