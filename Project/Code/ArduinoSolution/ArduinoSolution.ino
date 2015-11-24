@@ -18,7 +18,7 @@ void setup()
     printf_begin();
 
     // Skal der sendes pair request ved startup?
-    bool sendPairRequest = true;
+    bool sendPairRequest = false;
     /*
     pinMode(2, INPUT);
     int val = digitalRead(2);

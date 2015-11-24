@@ -10,8 +10,8 @@
 
 // Static declarations
 // Private
-bool Node::_waitForAcknowledgement = true;
-bool Node::_readyToForward = true;
+bool Node::_waitForAcknowledgement = false;
+bool Node::_readyToForward = false;
 
 iSensor *Node::_sensor;
 iRadio *Node::_radio;
@@ -57,11 +57,18 @@ void Node::begin(bool shouldSendPairRequest)
             nodeID = ID;
             printf("Har nodeID: %d\n", nodeID);
         }
+        else
+        {
+            printf("Har ingen nodeID..\n");
+        }
         
-        // Laeser fra radio og laver til pakke
-        char *res = _radio->listen();
-        Packet packet(res);
-        handlePacket(packet);
+        while(true)
+        {
+            // Laeser fra radio og laver til pakke
+            char *res = _radio->listen();
+            Packet packet(res);
+            handlePacket(packet);
+        }
     }
 }
 
@@ -121,6 +128,7 @@ void Node::handlePacket(Packet packet)
         {
             if (_waitForAcknowledgement)
             {
+                printf("Modtaget acknowledgement fra %d\n", packet.addresser);
                 _waitForAcknowledgement = false;
                 _readyToForward = true;
                 shouldKeepSendingPacket = false;
@@ -129,9 +137,13 @@ void Node::handlePacket(Packet packet)
         break;
         case DataRequest: // Request modtaget
         {
+            printf("Har modtaget datarequest. Sender data tilbage!\n");
+            parentID = packet.addresser;
+            
             if (!_waitForAcknowledgement && !_readyToForward)
             {
                 _waitForAcknowledgement = true;
+                shouldKeepSendingPacket = true;
                 readPackSend();
             }
         }
@@ -254,7 +266,7 @@ void Node::sendRequests()
 // Request modtager. Send data hjem, og request videre
 void Node::readPackSend()
 {
-    int sensorData = _sensor->read(); // Read
+    int sensorData = 100; //_sensor->read(); // Read
     Packet dataPacket(Data, nodeID, parentID, nodeID, sensorData, 0, 0);
     beginBroadcasting(dataPacket);
 }
