@@ -39,8 +39,23 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
 }
 
 // Starter hele lortet! 
-void Node::begin(bool shouldSendPairRequest)
-{    
+void Node::begin()
+{
+    // Find dit ID her
+    bool shouldSendPairRequest = false;
+    int ID = loadID();
+    if(nodeID != 0)
+    {
+        nodeID = ID;
+        printf("Har nodeID: %d\n", nodeID);
+    }
+    else
+    {
+        printf("Har ingen nodeID..\n");
+        shouldSendPairRequest = true;
+    }
+    
+    // Haandter!
     if(shouldSendPairRequest)
     {
         printf("Sender pair request!\n");
@@ -48,20 +63,6 @@ void Node::begin(bool shouldSendPairRequest)
     }
     else
     {
-        printf("Begynder at lytte.!\n");
-        
-        // Find dit ID her.. (Evt. brug EEPROM bibliotek)
-        int ID = loadID();
-        if(nodeID != 0)
-        {
-            nodeID = ID;
-            printf("Har nodeID: %d\n", nodeID);
-        }
-        else
-        {
-            printf("Har ingen nodeID..\n");
-        }
-        
         while(true)
         {
             // Laeser fra radio og laver til pakke
@@ -92,32 +93,6 @@ int16_t Node::loadID()
   memcpy(&id,val,2);
   free(val);
   return id;
-}
-
-// Fill crcTable with values
-void Node::crcInit()
-{
-    unsigned short remainder; // 2 byte remainder (according to CRC16/CCITT standard)
-    unsigned short dividend; // What are you?
-    int bit; // bit counter
-	
-    for(dividend = 0; dividend < 256; dividend++) //foreach value of 2 bytes/8 bits
-    { 
-        remainder = dividend << (WIDTH - 8);//
-		
-        for(bit = 0; bit < 8; bit++)
-        {
-            if(remainder & TOPBIT) // MSB = 1 => divide by POLYNOMIAL
-            { 
-                remainder = (remainder << 1) ^ POLYNOMIAL; //scooch and divide
-            }
-            else
-            {
-		remainder = remainder << 1;//scooch and do nothing (MSB = 0, move along)
-	    }
-	}
-	crcTable[dividend] = remainder;//save current crc value in crcTable
-    }
 }
 
 void Node::handlePacket(Packet packet)
@@ -156,12 +131,7 @@ void Node::handlePacket(Packet packet)
             }
         }
         break;
-        case PairRequest :
-        {
-            // Pair me up Scotty!
-            // Ignorer hvis paa almindelig Node.
-        }
-        break;
+
         case PairRequestAcknowledgement: // Har modtaget mit ID
         {
             printf("Modtaget ack paa pair!\n");
@@ -179,6 +149,7 @@ void Node::handlePacket(Packet packet)
             // I had nothing to do with it!
         }
         break;
+        case PairRequest:
         default:
             //std::cout << "Hello? Yes, this is default.";
             // Hello default, this is broken!
@@ -260,13 +231,13 @@ int Node::nextExponentialBackoff(int cur)
 
 void Node::sendRequests()
 {
-  
+    
 }
 
 // Request modtager. Send data hjem, og request videre
 void Node::readPackSend()
 {
-    int sensorData = 100; //_sensor->read(); // Read
+    int sensorData = random(10,1000); // _sensor->read(); // Read
     Packet dataPacket(Data, nodeID, parentID, nodeID, sensorData, 0, 0);
     beginBroadcasting(dataPacket);
 }
@@ -285,4 +256,31 @@ void Node::forwardSignal(Packet packet)
     // Hent min foraeldr
     // Relay data til foraeldr
     
+}
+
+
+// Fill crcTable with values
+void Node::crcInit()
+{
+    unsigned short remainder; // 2 byte remainder (according to CRC16/CCITT standard)
+    unsigned short dividend; // What are you?
+    int bit; // bit counter
+	
+    for(dividend = 0; dividend < 256; dividend++) //foreach value of 2 bytes/8 bits
+    { 
+        remainder = dividend << (WIDTH - 8);//
+		
+        for(bit = 0; bit < 8; bit++)
+        {
+            if(remainder & TOPBIT) // MSB = 1 => divide by POLYNOMIAL
+            { 
+                remainder = (remainder << 1) ^ POLYNOMIAL; //scooch and divide
+            }
+            else
+            {
+		remainder = remainder << 1;//scooch and do nothing (MSB = 0, move along)
+	    }
+	}
+	crcTable[dividend] = remainder;//save current crc value in crcTable
+    }
 }

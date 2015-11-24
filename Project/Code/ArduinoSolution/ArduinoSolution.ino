@@ -17,29 +17,15 @@ void setup()
     Serial.begin(9600);
     printf_begin();
 
-    // Skal der sendes pair request ved startup?
-    bool sendPairRequest = false;
-    /*
-    pinMode(2, INPUT);
-    int val = digitalRead(2);
-    if(val == HIGH)
-    {
-        Serial.println("Sender pair request!");
-    }
-    else
-    {
-        Serial.println("Ingen pair request!");
-    }
-    */
     // Lav sensor og radio
     MoistureSensor sensor(1);
     NRF24Radio radio(7, 8);
     
     // Initialiser og start node
     Node::initializeNode(&sensor, &radio);
-    Node::begin(sendPairRequest);
+    Node::begin();
 }
 
+// Tom loop, fordi den skal fandeme med (Fucking Arduino compiler..)
 void loop()
-{ 
-}
+{ }

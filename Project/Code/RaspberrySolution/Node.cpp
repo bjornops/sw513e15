@@ -59,11 +59,12 @@ void sigal(int al)
 // Sætter variabler op i Node
 void Node::initializeNode()
 {
-    crcInit();
+    Node::crcInit();
+    
     _radio = new NRF24Radio();
     _lastPairRequestMillis = bcm2835_millis();
     
-    
+    // TODO: Find alle kendte koder her!
     
     printf("Done initializing.\n");
     fflush(stdout);
@@ -80,7 +81,7 @@ void Node::begin()
         char *res = _radio->listen();
         Packet packet(res);
         printf("Packet received with type: %d\n", packet.packetType);
-        handlePacket(packet);
+        Node::handlePacket(packet);
 
         printf("Packet er handlet.\n");
         fflush(stdout);
@@ -96,8 +97,8 @@ void Node::handlePacket(Packet packet)
             printf("Noden %d sender værdien %d.\n", packet.origin, packet.sensor1);
             fflush(stdout);
             
-            // Gem data
-            
+            // TODO: Gem data
+            // TODO: Undersøg om vi er færdige, eller vi venter flere
             
             // Send acknowledgement
             Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
@@ -149,7 +150,7 @@ void Node::sendRequest(int turn, int delay)
     if(turn+1 <= 6)
     {
         bcm2835_delay(delay);
-        sendRequest(turn+1, delay+12); // Meget tilfældigt interval.
+        Node::sendRequest(turn+1, delay+12); // Meget tilfældigt interval.
     }
     else
     {
