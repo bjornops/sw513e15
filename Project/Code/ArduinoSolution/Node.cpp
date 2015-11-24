@@ -38,7 +38,7 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
     randomSeed(analogRead(0));
 }
 
-// Starter hele lortet!
+// Starter hele lortet! 
 void Node::begin(bool shouldSendPairRequest)
 {    
     if(shouldSendPairRequest)
@@ -55,6 +55,7 @@ void Node::begin(bool shouldSendPairRequest)
         if(nodeID != 0)
         {
             nodeID = ID;
+            printf("Har nodeID: %d\n", nodeID);
         }
         
         // Laeser fra radio og laver til pakke
@@ -151,7 +152,7 @@ void Node::handlePacket(Packet packet)
         break;
         case PairRequestAcknowledgement: // Har modtaget mit ID
         {
-            printf("Modtaget ack paa pair!");
+            printf("Modtaget ack paa pair!\n");
             if(nodeID == -1) // Default ID
             {
                 printf("Har nu faaet ID: %d\n", packet.addressee);
@@ -187,7 +188,7 @@ void Node::sendPairRequest()
 // Begynder at sende pakke indtil den bliver bedt om at stoppe! (Exponential backoff handler!)
 void Node::beginBroadcasting(Packet packet)
 {
-    int startingWait = 100; // 1 ms. start
+    int startingWait = 200; // 1 ms. start
     shouldKeepSendingPacket = true;
     
     broadcast(packet, startingWait);

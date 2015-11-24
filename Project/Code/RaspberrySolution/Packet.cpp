@@ -35,10 +35,14 @@ char *Packet::encode()
 
 bool Packet::verified()
 {
-    if (getChecksum((unsigned char*)encode(), 16) == 0)
+    unsigned char *encoded = (unsigned char*)encode();
+    if (getChecksum(encoded, 16) == 0)
     {
+        free(encoded);
         return true;
     }
+    
+    free(encoded);
     
     this->packetType = Error;
     return false;
@@ -62,12 +66,13 @@ uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
     }
     uint16_t result = remainder ^ FINAL_XOR_VALUE;
 
-    char *toBeswapped = (char*)malloc(sizeof(char)*2);
-    memcpy(toBeswapped, (char*)&result, sizeof(char)*2);
-    char temp = toBeswapped[1];
-    toBeswapped[1] = toBeswapped[0];
-    toBeswapped[0] = temp;
+    char *toBeSwapped = (char*)malloc(sizeof(char)*2);
+    memcpy(toBeSwapped, (char*)&result, sizeof(char)*2);
+    char temp = toBeSwapped[1];
+    toBeSwapped[1] = toBeSwapped[0];
+    toBeSwapped[0] = temp;
 
-    memcpy((char*)&result, toBeswapped, sizeof(char) * 2);
+    memcpy((char*)&result, toBeSwapped, sizeof(char) * 2);
+    free(toBeSwapped);
     return result;
 }
