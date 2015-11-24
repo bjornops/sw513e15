@@ -17,7 +17,7 @@ class Node
 {
 public:
     static unsigned short crcTable[256];
-    static int nodeID;
+    static int nodeID, parentID;
     
     static void initializeNode(iSensor *, iRadio *);
     
@@ -30,6 +30,8 @@ private:
     static bool _waitForAcknowledgement;
     static bool _readyToForward;
     
+    static void saveID(int);
+    static int loadID();
     static void crcInit();
     static void readPackSend();
     static void forwardSignal(Packet);

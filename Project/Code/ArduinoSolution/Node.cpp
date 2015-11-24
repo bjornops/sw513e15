@@ -19,6 +19,7 @@ iRadio *Node::_radio;
 // Public
 unsigned short Node::crcTable[256];
 int Node::nodeID = -1;
+int Node::parentID = -1;
 
 
 // Andre declarations
@@ -37,9 +38,9 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
     randomSeed(analogRead(0));
 }
 
-// Starter hele lortet!
+// Starter hele lortet! 
 void Node::begin(bool shouldSendPairRequest)
-{
+{    
     if(shouldSendPairRequest)
     {
         printf("Sender pair request!\n");
@@ -50,10 +51,11 @@ void Node::begin(bool shouldSendPairRequest)
         printf("Begynder at lytte.!\n");
         
         // Find dit ID her.. (Evt. brug EEPROM bibliotek)
-        int ID = EEPROM.read(0);
+        int ID = loadID();
         if(nodeID != 0)
         {
             nodeID = ID;
+            printf("Har nodeID: %d\n", nodeID);
         }
         
         // Laeser fra radio og laver til pakke
@@ -61,6 +63,28 @@ void Node::begin(bool shouldSendPairRequest)
         Packet packet(res);
         handlePacket(packet);
     }
+}
+
+void Node::saveID(int16_t id)
+{
+  char *val = (char *)&id;
+  EEPROM.write(0,val[0]);
+  EEPROM.write(1,val[1]);
+  
+  printf("%d\n",val[0]);
+  printf("%d\n",val[1]);
+}
+
+int16_t Node::loadID()
+{
+  char *val = (char *)malloc(2);
+  val[0] = EEPROM.read(0);
+  val[1] = EEPROM.read(1);
+  
+  int16_t id = 0;
+  memcpy(&id,val,2);
+  free(val);
+  return id;
 }
 
 // Fill crcTable with values
@@ -99,7 +123,7 @@ void Node::handlePacket(Packet packet)
             {
                 _waitForAcknowledgement = false;
                 _readyToForward = true;
-                _shouldKeepSendingPacket = false;
+                shouldKeepSendingPacket = false;
             }
         }
         break;
@@ -128,13 +152,12 @@ void Node::handlePacket(Packet packet)
         break;
         case PairRequestAcknowledgement: // Har modtaget mit ID
         {
-            printf("Modtaget ack paa pair!");
+            printf("Modtaget ack paa pair!\n");
             if(nodeID == -1) // Default ID
             {
                 printf("Har nu faaet ID: %d\n", packet.addressee);
                 
-                nodeID = packet.addressee;
-                EEPROM.write(0, nodeID);
+                saveID(packet.addressee);
                 shouldKeepSendingPacket = false;
             }
         }
@@ -165,7 +188,7 @@ void Node::sendPairRequest()
 // Begynder at sende pakke indtil den bliver bedt om at stoppe! (Exponential backoff handler!)
 void Node::beginBroadcasting(Packet packet)
 {
-    int startingWait = 100; // 1 ms. start
+    int startingWait = 200; // 1 ms. start
     shouldKeepSendingPacket = true;
     
     broadcast(packet, startingWait);
@@ -202,6 +225,8 @@ void Node::broadcast(Packet packet, int msWait)
         }
         tmpWait = nextExponentialBackoff(tmpWait);
     }
+    
+    free(packetCoding);
 }
 
 int Node::nextExponentialBackoff(int cur)
@@ -231,7 +256,7 @@ void Node::readPackSend()
 {
     int sensorData = _sensor->read(); // Read
     Packet dataPacket(Data, nodeID, parentID, nodeID, sensorData, 0, 0);
-    beginBroadcast(dataPacket);
+    beginBroadcasting(dataPacket);
 }
 
 
@@ -242,7 +267,7 @@ void Node::forwardSignal(Packet packet)
 //	uint16_t sensor2Input, uint16_t sensor3Input)
 
     // Send acknowledgement til sender af data
-    Packet acknowledgement(DataAcknowledgement, nodeID, parentID, packet.origin, packet.sensor1Input, packet.sensor2Input, packet.sensor3Input);
+    Packet acknowledgement(DataAcknowledgement, nodeID, parentID, packet.origin, packet.sensor1, packet.sensor2, packet.sensor3);
     
     
     // Hent min foraeldr

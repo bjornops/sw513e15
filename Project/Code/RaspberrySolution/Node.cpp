@@ -32,13 +32,14 @@ void Node::initializeNode()
 void Node::begin()
 {
     // Lser fra radio
+
     while(true)
     {
         char *res = _radio->listen();
         Packet packet(res);
-        printf("\nPacket received with type: %d",packet.packetType);
+        printf("\nPacket received with type: %d\n",packet.packetType);
         handlePacket(packet);
-        printf("\nPacket er handlet.");
+        printf("\nPacket er handlet.\n");
         fflush(stdout);
     }
 }
@@ -92,8 +93,9 @@ void Node::handlePacket(Packet packet)
         break;
         case PairRequest :
         {
-            // Pair me up Scotty!
-            // Ignorer hvis paa almindelig Node.
+            //Print
+            Packet ackPacket(PairRequestAcknowledgement, 0, 1337, 0, 0, 0, 0);
+            _radio->broadcast(ackPacket.encode());
         }
         break;
         case PairRequestAcknowledgement: // Har modtaget mit ID
