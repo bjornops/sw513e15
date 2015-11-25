@@ -1,7 +1,9 @@
 #include <stdint.h>
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 #include "Node.h"
 #include "Packet.h"
 #include "Radio.h"
@@ -79,6 +81,9 @@ void Node::initializeNode()
             Node::_receivedThisSession[nodeID] = -1;
         }
     }
+
+    //setup rand() til brug i exponential backoff
+    srand(time(NULL));
     
     printf("Done initializing.\n");
     fflush(stdout);
@@ -210,24 +215,32 @@ bool Node::receivedFromAllNodes()
 
 void Node::sendRequest(int turn, int delay)
 {
-    // Send pakke
+    int attemptsToDo = 6;
+    
+    //Byg pakke
     Packet requestPacket(DataRequest, 0, MAIN_NODE_ID, 0, 0, 0, 0);
     char *enc = requestPacket.encode();
-    _radio->broadcast(enc);
-    free(enc);
 
-    // Vent og send igen!
-    if(turn+1 <= 6)
+    //Try it
+    for (int i = 1; i <= attemptsToDo; i++)
     {
-        bcm2835_delay(delay);
-        Node::sendRequest(turn+1, delay+12); // Meget tilfældigt interval.
+        // Broadcast
+        _radio->broadcast(enc);
+        
+        // Backoff
+        nextExponentialBackoffDelay(i)
     }
-    else
-    {
-        printf("Sender ikke flere requests!\n");
-    }
+    
+    //Ryd op
+    free(enc);
 }
 
+void Node::nextExponentialBackoffDelay(int attemtNumber)
+{   
+    //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
+    int delay = (rand() % (1<<(attemptNumber-1))) + 1;
+    bcm2835_delay(delay);
+}
 
 // Fill crcTable with values
 void Node::crcInit()
