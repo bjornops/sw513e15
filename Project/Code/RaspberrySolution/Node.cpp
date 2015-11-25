@@ -228,14 +228,14 @@ void Node::sendRequest(int turn, int delay)
         _radio->broadcast(enc);
         
         // Backoff
-        nextExponentialBackoffDelay(i)
+        nextExponentialBackoffDelay(i);
     }
     
     //Ryd op
     free(enc);
 }
 
-void Node::nextExponentialBackoffDelay(int attemtNumber)
+void Node::nextExponentialBackoffDelay(int attemptNumber)
 {   
     //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
     int delay = (rand() % (1<<(attemptNumber-1))) + 1;

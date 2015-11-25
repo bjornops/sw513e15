@@ -28,6 +28,7 @@ private:
     static iRadio *_radio;
     static void sendRequest(int);
 
+    static void nextExponentialBackoffDelay(int);
     static void crcInit();
     static void handlePacket(Packet);
     static bool receivedFromAllNodes();
