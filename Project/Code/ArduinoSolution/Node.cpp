@@ -79,8 +79,8 @@ void Node::saveID(int16_t id)
   EEPROM.write(0,val[0]);
   EEPROM.write(1,val[1]);
   
-  printf("%d\n",val[0]);
-  printf("%d\n",val[1]);
+  //printf("%d\n",val[0]);
+  //printf("%d\n",val[1]);
 }
 
 int16_t Node::loadID()
@@ -103,10 +103,13 @@ void Node::handlePacket(Packet packet)
         {
             if (_waitForAcknowledgement)
             {
-                printf("Modtaget acknowledgement fra %d\n", packet.addresser);
-                _waitForAcknowledgement = false;
-                _readyToForward = true;
-                shouldKeepSendingPacket = false;
+                if (packet.addressee == Node::nodeID) // Checker om acknowledgement er relevant
+                {
+                  printf("Modtaget acknowledgement fra %d\n", packet.addresser);
+                  _waitForAcknowledgement = false;
+                  _readyToForward = true;
+                  shouldKeepSendingPacket = false;
+                }
             }
         }
         break;
