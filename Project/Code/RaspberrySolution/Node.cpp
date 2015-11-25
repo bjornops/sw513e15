@@ -69,7 +69,7 @@ void Node::initializeNode()
     
     // Find kendte noder (i home/pi/wasp.conf)
     FILE *optionsFile;
-    optionsFile = fopen("/home/pi/wasp.conf", "a+");
+    optionsFile = fopen("/home/pi/wasp/wasp.conf", "a+");
     if(optionsFile != NULL)
     {
         int nodeID = 0;
@@ -94,7 +94,7 @@ void Node::begin()
         
         char *res = _radio->listen();
         Packet packet(res);
-        printf("Packet received with type: %d\n", packet.packetType);
+
         Node::handlePacket(packet);
 
         printf("Packet er handlet.\n");
@@ -111,7 +111,6 @@ void Node::handlePacket(Packet packet)
             printf("Noden %d sender værdien %d.\n", packet.origin, packet.sensor1);
             fflush(stdout);
             
-            // TODO: Undersøg om vi er færdige, eller vi venter flere
             if(Node::_receivedThisSession[packet.origin] == -1)
             {
                 // Ikke modtaget før, så gem værdi!
@@ -126,11 +125,8 @@ void Node::handlePacket(Packet packet)
                 // Er vi færdige?
                 if(Node::receivedFromAllNodes())
                 {
-                    printf("Ja vi er.\n");
-                }
-                else
-                {
-                    printf("Mangler stadig data fra node(r)!\n");
+                    Node::saveSessionResults();
+                    printf("Alt done. Yay!");
                 }
             }
         }
@@ -166,12 +162,41 @@ void Node::handlePacket(Packet packet)
     }
 }
 
+// Gemmer denne sessions resulteter
+void Node::saveSessionResults()
+{
+    FILE *resFile = fopen("/home/pi/results/test.txt", "w");
+
+    if(resFile != NULL) 
+    {
+        std::map<int, int>::iterator it;
+        for (it = Node::_receivedThisSession.begin(); it != Node::_receivedThisSession.end(); it++)
+        {
+            fprintf(resFile, "%d:%d\n", it->first, it->second);
+        }
+    }
+    
+    fclose(resFile);
+
+    Node::clearSession();
+}
+
+// Renser section
+void Node::clearSession()
+{
+    std::map<int, int>::iterator it;
+    for (it = Node::_receivedThisSession.begin(); it != Node::_receivedThisSession.end(); it++)
+    {
+        Node::_receivedThisSession[it->first] = -1;
+    }
+}
+
 bool Node::receivedFromAllNodes()
 {
     bool done = true;
     
     std::map<int, int>::iterator it;
-    for ( it = Node::_receivedThisSession.begin(); it != Node::_receivedThisSession.end(); it++ )
+    for (it = Node::_receivedThisSession.begin(); it != Node::_receivedThisSession.end(); it++)
     {
         if(it->second == -1)
         {
