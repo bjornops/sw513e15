@@ -30,6 +30,8 @@ private:
     static void crcInit();
     static void handlePacket(Packet);
     static bool receivedFromAllNodes();
+    static void saveSessionResults();
+    static void clearSession();
 };
 
 #endif
