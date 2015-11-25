@@ -1,6 +1,4 @@
 #include "Packet.h"
-#include "Node.h"
-#include "iRadio.h"
 
 Packet::Packet(char *input)
 {
@@ -18,9 +16,10 @@ Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t add
     this->sensor1 = sensor1Input;
     this->sensor2 = sensor2Input;
     this->sensor3 = sensor3Input;
-    this->checksum = getChecksum((unsigned char*)encode(), 14);
+    unsigned char *temp = (unsigned char *)encode();
+    this->checksum = getChecksum(temp, 14);
+    free(temp);
 }
-
 
 char *Packet::encode()
 {
@@ -32,17 +31,24 @@ char *Packet::encode()
     return returnstring;
 }
 
+void Packet::updateChecksum()
+{
+    unsigned char *temp = (unsigned char *)encode();
+    this->checksum = getChecksum(temp, 14);
+    free(temp);
+}
+
 bool Packet::verified()
 {
-    unsigned char *encoded = (unsigned char*)encode();
-    if (getChecksum(encoded, 16) == 0)
+    char *encoded = encode();
+    if (getChecksum((unsigned char*)encoded, 16) == 0)
     {
         free(encoded);
         return true;
     }
     
     free(encoded);
-    
+
     this->packetType = Error;
     return false;
 }
@@ -75,3 +81,4 @@ uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
     free(toBeSwapped);
     return result;
 }
+
