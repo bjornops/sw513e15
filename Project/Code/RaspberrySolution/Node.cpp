@@ -18,7 +18,7 @@ unsigned short Node::crcTable[256];
 iRadio *Node::_radio;
 int Node::_currentID = 0;
 unsigned int Node::_lastPairRequestMillis = 0;
-std::map<int, bool> Node::_receivedThisSession;
+std::map<int, int> Node::_receivedThisSession;
 
 int main(int argc, char* argv[])
 {
@@ -55,6 +55,8 @@ void sigal(int al)
     Node::sendRequest(1, 31); // Meget tilfældigt interval.
     
     signal(al, sigal);
+    
+    Node::begin();
 }
 
 // Sætter variabler op i Node
@@ -62,8 +64,8 @@ void Node::initializeNode()
 {
     Node::crcInit();
     
-    _radio = new NRF24Radio();
-    _lastPairRequestMillis = bcm2835_millis();
+    Node::_radio = new NRF24Radio();
+    Node::_lastPairRequestMillis = bcm2835_millis();
     
     // Find kendte noder (i home/pi/wasp.conf)
     FILE *optionsFile;
@@ -74,7 +76,7 @@ void Node::initializeNode()
     	while(fscanf(optionsFile, "%d", &nodeID) != EOF)
     	{
             printf("Kendt node: %d\n", nodeID);
-            Node::_receivedThisSession[nodeID] = false;
+            Node::_receivedThisSession[nodeID] = -1;
         }
     }
     
@@ -109,14 +111,28 @@ void Node::handlePacket(Packet packet)
             printf("Noden %d sender værdien %d.\n", packet.origin, packet.sensor1);
             fflush(stdout);
             
-            // TODO: Gem data
             // TODO: Undersøg om vi er færdige, eller vi venter flere
-            
-            // Send acknowledgement
-            Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
-            char *enc = ackPacket.encode();
-            _radio->broadcast(enc);
-            free(enc);
+            if(Node::_receivedThisSession[packet.origin] == -1)
+            {
+                // Ikke modtaget før, så gem værdi!
+                Node::_receivedThisSession[packet.origin] = packet.sensor1;
+                
+                // Send acknowledgement
+                Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
+                char *enc = ackPacket.encode();
+                _radio->broadcast(enc);
+                free(enc);
+                
+                // Er vi færdige?
+                if(Node::receivedFromAllNodes())
+                {
+                    printf("Ja vi er.\n");
+                }
+                else
+                {
+                    printf("Mangler stadig data fra node(r)!\n");
+                }
+            }
         }
         break;
         
@@ -150,6 +166,23 @@ void Node::handlePacket(Packet packet)
     }
 }
 
+bool Node::receivedFromAllNodes()
+{
+    bool done = true;
+    
+    std::map<int, int>::iterator it;
+    for ( it = Node::_receivedThisSession.begin(); it != Node::_receivedThisSession.end(); it++ )
+    {
+        if(it->second == -1)
+        {
+            done = false;
+            break;
+        }
+    }
+    
+    return done;
+}
+
 void Node::sendRequest(int turn, int delay)
 {
     // Send pakke
@@ -167,7 +200,6 @@ void Node::sendRequest(int turn, int delay)
     else
     {
         printf("Sender ikke flere requests!\n");
-        //Node::begin();
     }
 }
 
