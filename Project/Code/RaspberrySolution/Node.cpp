@@ -64,7 +64,7 @@ void Node::initializeNode()
     _radio = new NRF24Radio();
     _lastPairRequestMillis = bcm2835_millis();
     
-    // TODO: Find alle kendte koder her!
+    // TODO: Find alle kendte noder her!
     
     printf("Done initializing.\n");
     fflush(stdout);
