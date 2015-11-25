@@ -6,11 +6,7 @@
 Packet::Packet(char *input)
 {
     decode(input);
-    printf("Foer verify: %d\n", this->packetType);
-    
     verified();
-    
-    printf("Efter verify: %d\n", this->packetType);
 }
 
 Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input,

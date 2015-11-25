@@ -1,6 +1,6 @@
 \section{Protocol design}\label{cha:protocolDesign}
 \todo{be more humble, analytic and include possibilities or explain why omitted}
-To transmit the data from the nodes to the main node, a protocol has to be implemented.
+To transmit the data from the nodes to the main node, a protocol must be implemented.
 The protocol must support the utilized hardware components and be designed to work within their limitations. 
 
 The protocol to be developed for the solution will be based on the examination of networks in section \ref{fig:topologies} and the protocols described in section \ref{cha:comprot}.
@@ -19,14 +19,14 @@ Hence, an on demand request for data will be sufficient.
 \subsection{Transfer method and topology}
 The solution must gather sensor data from all nodes in the network, and this subsection will contain the considerations made for the choice of topology.
 
-To fulfill the requirements found in \ref{cha:requirements}, there is no demand to measure one specific node at a time.
+To fulfill the requirements found in \ref{cha:requirements}, there is no demand to request data for only one specific node at a time.
 There are multiple methods to request data from the network nodes, some of the most used ones can be found in \ref{cha:comprot}. 
 \iffalse
-One method can transmit a data request to every node in the network, by addressing it by name. This would require the main node to create an individual request to each node in the network, and the network nodes to know the path through the network to the addressee, so that the request can be relayed correctly. This is not appropriate when the network nodes have limited memory\todo{how much would routing tables fill?}. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that does exist. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy.
+One way of requesting data can be done by transmitting a data request to every node in the network, addressing the nodes by name. This would require the main node to create an individual request to each node in the network, and the network nodes to know the path through the network to the addressee, so that the request can be relayed correctly. This is not appropriate when the network nodes have limited memory\todo{how much would routing tables fill?}. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that does exist. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy.
 \fi
 
-The protocol selected for the solution is the flooding protocol.
-Which is a method where the data request can be transmitted by flooding the network, without needing to send a tailored request to every node in the network. 
+The protocol selected for the solution is partly based on the flooding protocol.
+This protocol is a method where the data request can be transmitted by flooding the network, without needing to send a tailored request to every node in the network. 
 A data request will be broadcasted to all nodes in the network, using flooding, and will only require one packet. 
 If the broadcast is done by controlled flooding, there will be no cycles, and the outgoing transmit topology will consequently be a tree. 
 Flooding will only handle one packet, but the nodes can receive the same packet multiple times and must analyze and discard any duplicate packets.
@@ -44,7 +44,7 @@ The child will then repeat the request signal, and be the parent of nodes hearin
 The topology of the network will effectively be a tree, although prone to changes in branches.
 Any node receiving a request signal will then be able to respond to its parent, causing all nodes to have a single identifier for the routing towards the destination node, the main node.
 
-\subsection{Parring}
+\subsection{Pairing}
 In order to add a new node to the network, the node is first needed to be paired up with the main node.
 This way, a node could have assigned a unique identity to be able to recognize its sensor readings from other sensors. 
 The protocol is described more indepth in \ref{cha:floodingSec}
@@ -212,7 +212,7 @@ For each new data request from the main node the tree structure and node levels 
 	\label{fig:prottree1}
 \end{figure}
 
-\subsection*{Adding and removing nodes}
+\subsection{Adding and removing nodes}
 If a new node is to be added to the network, it needs an identifier in the system so that its sensor reading can be recognized. The identifier is permanent as long as it is in the network.
 The identifier is provided by the main node by pairing the device with the main node before adding it to the network. 
 
