@@ -40,7 +40,7 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
 
 // Starter hele lortet! 
 void Node::begin()
-{
+{    
     // Find dit ID her
     bool shouldSendPairRequest = false;
     int ID = loadID();
@@ -54,7 +54,7 @@ void Node::begin()
         printf("Har ingen nodeID..\n");
         shouldSendPairRequest = true;
     }
-    
+
     // Haandter!
     if(shouldSendPairRequest)
     {
@@ -125,6 +125,7 @@ void Node::handlePacket(Packet packet)
         break;
         case Data: // Har modtaget data der skal videresendes
         {
+          
             if (_readyToForward)
             {
                 forwardSignal(packet);
