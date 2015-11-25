@@ -19,7 +19,9 @@ Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t add
     this->sensor1 = sensor1Input;
     this->sensor2 = sensor2Input;
     this->sensor3 = sensor3Input;
-    this->checksum = getChecksum((unsigned char*)encode(), 14);
+    unsigned char *temp = (unsigned char *)encode();
+    this->checksum = getChecksum(temp, 14);
+    free(temp);
 }
 
 char *Packet::encode()
@@ -30,6 +32,13 @@ char *Packet::encode()
     memcpy(returnstring, this, sizeof(Packet));
 
     return returnstring;
+}
+
+void Packet::updateChecksum()
+{
+    unsigned char *temp = (unsigned char *)encode();
+    this->checksum = getChecksum(temp, 14);
+    free(temp);
 }
 
 bool Packet::verified()
@@ -75,3 +84,4 @@ uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
     free(toBeSwapped);
     return result;
 }
+

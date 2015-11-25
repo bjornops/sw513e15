@@ -38,6 +38,7 @@ public:
     
     char *encode();
     bool verified();
+    void updateChecksum();
     
     Packet(char *);
     Packet(PacketType, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t);
