@@ -18,6 +18,7 @@ unsigned short Node::crcTable[256];
 iRadio *Node::_radio;
 int Node::_currentID = 0;
 unsigned int Node::_lastPairRequestMillis = 0;
+std::map<int, bool> Node::_receivedThisSession;
 
 int main(int argc, char* argv[])
 {
@@ -64,7 +65,18 @@ void Node::initializeNode()
     _radio = new NRF24Radio();
     _lastPairRequestMillis = bcm2835_millis();
     
-    // TODO: Find alle kendte koder her!
+    // Find kendte noder (i home/pi/wasp.conf)
+    FILE *optionsFile;
+    optionsFile = fopen("/home/pi/wasp.conf", "a+");
+    if(optionsFile != NULL)
+    {
+        int nodeID = 0;
+    	while(fscanf(optionsFile, "%d", &nodeID) != EOF)
+    	{
+            printf("Kendt node: %d\n", nodeID);
+            Node::_receivedThisSession[nodeID] = false;
+        }
+    }
     
     printf("Done initializing.\n");
     fflush(stdout);

@@ -1,3 +1,5 @@
+#include <map>
+
 class iRadio;
 class Packet;
 
@@ -19,7 +21,7 @@ private:
     static unsigned int _lastPairRequestMillis;
     
     // Current 'session'
-    
+    static std::map<int, bool> _receivedThisSession;
     
     // misc.
     static iRadio *_radio;
