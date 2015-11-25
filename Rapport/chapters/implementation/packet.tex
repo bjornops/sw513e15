@@ -23,7 +23,31 @@ uint16_t checksum;
 These values cover everything in a packet; the type, the sender, the receiver, the origin of the packet, values and a checksum.
 Every packet has this format, and all values are filled out. With packets that might not require all these values, they will simply be zero. For example when sending a request, the sensor values and addressee will be zero.
 
-The datatype of the members of \textit{Packet} are all \textit{uint16\_t}. This is to ensure that the size of the class does not vary on different architectures. The \textit{uint16\_t} is always of size 2 bytes. The same size as two characters. Together, all members in the class gives a total size of 16 bytes. 
+\begin{table}[]
+\centering
+\begin{tabular}{|l|c|l|c|l|c|l|c|l|}
+\hline
+\textbf{Datatype} & \multicolumn{2}{c|}{Packettype}      & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{c|}{uint16\_t}       \\ \hline
+\textbf{Name}     & \multicolumn{2}{c|}{packetType}      & \multicolumn{2}{c|}{addresser}       & \multicolumn{2}{c|}{addressee}       & \multicolumn{2}{c|}{origin}          \\ \hline
+\textbf{Memory}   & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits \\ \hline
+\end{tabular}
+\caption{Dataoverview of first half of a packet. The packet can be directly converted to 16 characters.}
+\label{tab:packetTableFirst}
+\end{table}
+
+\begin{table}[]
+\centering
+\begin{tabular}{|l|c|l|c|l|c|l|c|l|}
+\hline
+\textbf{Datatype} & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{l|}{uint16\_t} & \multicolumn{2}{c|}{uint16\_t}       \\ \hline
+\textbf{Name}     & \multicolumn{2}{c|}{sensor1}         & \multicolumn{2}{c|}{sensor2}         & \multicolumn{2}{c|}{sensor3}   & \multicolumn{2}{c|}{checksum}        \\ \hline
+\textbf{Memory}   & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits & 8 bits         & 8 bits        & \multicolumn{1}{l|}{8 bits} & 8 bits \\ \hline
+\end{tabular}
+\caption{Dataoverview of second half of a packet.}
+\label{tab:packetTableSecond}
+\end{table}
+
+The datatype of the members of \textit{Packet} are all \textit{uint16\_t}. This is to ensure that the size of the class does not vary on different architectures. The \textit{uint16\_t} is always of size 2 bytes. The same size as two characters. Together, all members in the class gives a total size of 16 bytes. The final architecture of a packet can be seen on \ref{tab:packetTableFirst} and \ref{tab:packetTableSecond}.
 
 Only half of the space available in a transmission are occupied as the radio module used in this project supports transmissions of 32 byte at a time. As the solution is designed modular, and the radio module can be replaced with a potentially 'smaller' module in terms of transmission size, the solution would still support this 'smaller' module. Furthermore, a packetsize of 16 bytes is enough to contain the different data collected from the nodes.
 
