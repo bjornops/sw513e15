@@ -13,7 +13,7 @@ public:
     
     static void initializeNode();
     static void begin();
-    static void sendRequest(int, int);
+    static void sendRequest();
     
     
 private:
@@ -26,7 +26,6 @@ private:
     
     // misc.
     static iRadio *_radio;
-    static void sendRequest(int);
 
     static void nextExponentialBackoffDelay(int);
     static void crcInit();

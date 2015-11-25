@@ -11,7 +11,7 @@
 #define MAIN_NODE_ID 0
 #define REQUEST_GENERATE_ID_TIMER 5000
 
-void sigal(int);
+void signalHandler(int);
 void getAndSavePID();
 
 // Static declarations
@@ -24,7 +24,7 @@ std::map<int, int> Node::_receivedThisSession;
 
 int main(int argc, char* argv[])
 {
-    signal(SIGALRM, sigal);
+    signal(SIGUSR1, signalHandler);
     getAndSavePID();
 
     Node::initializeNode();
@@ -49,16 +49,13 @@ void getAndSavePID()
 }
 
 // Når vi får en 'alarm', send requests
-void sigal(int al)
+void signalHandler(int signum)
 {
-    printf("Signal alarm (Sender requests!)!\n");
+    printf("Signal modtaget (Sender requests!)!\n");
     fflush(stdout);
     
-    Node::sendRequest(1, 31); // Meget tilfældigt interval.
-    
-    signal(al, sigal);
-    
-    Node::begin();
+    Node::sendRequest(); //Mængde af forsøg defineret i funktion.
+    printf("Signal handling overstået\n");
 }
 
 // Sætter variabler op i Node
@@ -71,7 +68,7 @@ void Node::initializeNode()
     
     // Find kendte noder (i home/pi/wasp.conf)
     FILE *optionsFile;
-    optionsFile = fopen("/home/pi/wasp/wasp.conf", "a+");
+    optionsFile = fopen("/home/pi/wasp/wasp.conf", "a+"); 
     if(optionsFile != NULL)
     {
         int nodeID = 0;
@@ -92,17 +89,18 @@ void Node::initializeNode()
 // Starter hele lortet!
 void Node::begin()
 {
+    printf("Begynder at lytte efter pakker.\n");
+
     // Læser fra radio
+    char *res = (char *)malloc(32*sizeof(char));
     while(true)
-    {
-        printf("Begynder at lytte efter pakke!\n");
-        
-        char *res = _radio->listen();
+    {        
+        res = _radio->listen();
         Packet packet(res);
 
         Node::handlePacket(packet);
-
-        printf("Packet er handlet.\n");
+        
+        printf("Færdig med at handle packet");
         fflush(stdout);
     }
 }
@@ -113,7 +111,7 @@ void Node::handlePacket(Packet packet)
     {
         case Data: // Har modtaget data der skal gemmes!
         {
-            printf("Noden %d sender værdien %d.\n", packet.origin, packet.sensor1);
+            printf("Noden %d er værdien %d.\n", packet.origin, packet.sensor1);
             fflush(stdout);
             
             if(Node::_receivedThisSession[packet.origin] == -1)
@@ -161,8 +159,9 @@ void Node::handlePacket(Packet packet)
         case DataRequest:
         case ClearSignal:
         default:
-            //std::cout << "Hello? Yes, this is default.";
+            // Hello? Yes, this is default.
             // Hello default, this is broken!
+            // No, this is Patrick.
         break;
     }
 }
@@ -170,7 +169,7 @@ void Node::handlePacket(Packet packet)
 // Gemmer denne sessions resulteter
 void Node::saveSessionResults()
 {
-    FILE *resFile = fopen("/home/pi/results/test.txt", "w");
+    FILE *resFile = fopen("/home/pi/wasp/results/test.txt", "w");
 
     if(resFile != NULL) 
     {
@@ -213,7 +212,7 @@ bool Node::receivedFromAllNodes()
     return done;
 }
 
-void Node::sendRequest(int turn, int delay)
+void Node::sendRequest()
 {
     int attemptsToDo = 6;
     
@@ -246,7 +245,7 @@ void Node::nextExponentialBackoffDelay(int attemptNumber)
 void Node::crcInit()
 {
     unsigned short remainder; // 2 byte remainder (according to CRC16/CCITT standard)
-    unsigned short dividend; // What are you?
+    unsigned short dividend;  // What are you?
     int bit; // bit counter
 
     for(dividend = 0; dividend < 256; dividend++) //foreach value of 2 bytes/8 bits
