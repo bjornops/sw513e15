@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
         {
             sendRequest = 2;
         }
-        else
+        else // Filename, hopefully
         {
             sendRequest = 3;
             strcpy(openFileName, argv[1]);
