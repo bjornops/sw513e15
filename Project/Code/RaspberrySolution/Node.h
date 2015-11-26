@@ -1,15 +1,23 @@
-#include <map>
-
 class iRadio;
 class Packet;
 
 #ifndef NODE_H
 #define NODE_H
+#include <map>
+#include <time.h>
+#include "Packet.h"
+#include <stdint.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include "Radio.h"
 
 class Node
 {
 public:
     static unsigned short crcTable[256];
+    static volatile sig_atomic_t signalReceived;
     
     static void initializeNode();
     static void begin();
@@ -23,7 +31,7 @@ private:
     
     // Current 'session'
     static std::map<int, int> _receivedThisSession;
-    
+
     // misc.
     static iRadio *_radio;
 
@@ -31,6 +39,7 @@ private:
     static void crcInit();
     static void handlePacket(Packet);
     static bool receivedFromAllNodes();
+    static char *getResultFilename();
     static void saveSessionResults();
     static void clearSession();
 };

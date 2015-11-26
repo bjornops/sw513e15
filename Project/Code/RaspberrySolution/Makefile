@@ -13,8 +13,8 @@ RF24.o:
 Radio.o: iRadio.h Radio.h Radio.cpp
 	g++ -std=c++11 -c iRadio.h Radio.h Radio.cpp
 
-Node.o: Packet.o Packet.h Node.h Node.cpp
-	g++ -std=c++11 -c Packet.h Node.h Node.cpp
+Node.o: Packet.o Node.h Node.cpp
+	g++ -std=c++11 -c Node.h Node.cpp
 
 Packet.o: Packet.h Packet.cpp
 	g++ -std=c++11 -c Packet.h Packet.cpp

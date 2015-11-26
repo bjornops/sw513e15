@@ -3,7 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
-#include <dirent.h> 
+#include <dirent.h>
+
+void printNewline();
+void printNewlines(int);
 
 int main(int argc, char *argv[])
 {
@@ -53,7 +56,7 @@ int main(int argc, char *argv[])
     printf("<div id='nav'>");
     if(sendRequest == 0)
     {
-        printf("<input type='button' value='Request data' onclick=\"window.location='?request';\">");
+        printf("<input type='button' value='Hent data' onclick=\"window.location='?request';\">");
     }
 
     printf("<div style='float:right;'>");
@@ -79,13 +82,18 @@ int main(int argc, char *argv[])
     }
     else if(sendRequest == 2)
     {
-        printf("<p>Request sendt!</p>");
+        printf("<br /><center><img src='/loading.gif'/></center><br />");
     }
 
     // Resultater
     if(sendRequest != 3)
     {
-        printf("<br /><br /><b>Tidligere resultater:</b>");
+        if(sendRequest != 0 && sendRequest != 2)
+        {
+            printNewlines(2);
+        }
+
+        printf("<b>Tidligere resultater:</b><br />");
         DIR *d;
         struct dirent *dir;
         d = opendir("/home/pi/wasp/results");
@@ -99,7 +107,7 @@ int main(int argc, char *argv[])
                     printf("<li><p><a href='?%s'>%s</a></p></li>", dir->d_name, dir->d_name);
                 }
             }
-            printf("</ul>");
+            printf("</ul><br />");
 
             closedir(d);
         }
@@ -138,8 +146,26 @@ int main(int argc, char *argv[])
     printf("<p>WASP - SW513E15</p>");
     printf("</div>");
 
+    if(sendRequest == 2)
+    {
+        printf("<script>var interval = setInterval(testFile, 1000); function testFile() { var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function() { if (xhttp.readyState == 4 && xhttp.status == 200) { console.log('Fundet!'); } }; xhttp.open('GET', 'testfile.txt', true); xhttp.send(); } </script>");
+    }
+
     // Indhold slut (Lav footer fil)
     printf("</body></html>");
 
     return 0;
+}
+
+void printNewline()
+{
+    printf("<br />");
+}
+
+void printNewlines(int num)
+{
+    for(int n = 0; n < num; n++)
+    {
+        printf("<br />");
+    }
 }
