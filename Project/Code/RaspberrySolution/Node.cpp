@@ -181,7 +181,7 @@ void Node::handlePacket(Packet packet)
 void Node::saveSessionResults()
 {
     printf("Ikke mere data at indsamle, gemmer.\n");
-    char path[200] = "/home/pi/results/";
+    char path[200] = "/home/pi/wasp/results/";
     char *name = getResultFilename();
     strcat(path,name);
     FILE *resFile = fopen(path, "w");
@@ -199,6 +199,7 @@ void Node::saveSessionResults()
         
         //Lav ping-fil med information om skabt fil
         char pingPath[100] = "/var/www/html/ping.txt";
+
         FILE *pingFile = fopen(pingPath, "w");
         if(pingFile != NULL)
         {
@@ -206,8 +207,16 @@ void Node::saveSessionResults()
             fclose(pingFile);
             printf("%s successfuldt gemt!\n",pingPath);
         }
+        else
+        {
+            printf("Noget gik galt under skrivning til %s\n",pingPath);
+        }
     }
-    
+    else
+    {
+        printf("Noget gik galt under skrivning til %s\n",path);
+    }
+
     fflush(stdout);
 
     free(name);
