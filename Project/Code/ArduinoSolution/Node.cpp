@@ -79,11 +79,9 @@ void Node::begin()
 void Node::saveID(int16_t id)
 {
   char *val = (char *)&id;
+
   EEPROM.write(0, val[0]);
   EEPROM.write(1, val[1]);
-
-  //printf("%d\n",val[0]);
-  //printf("%d\n",val[1]);
 }
 
 int16_t Node::loadID()
