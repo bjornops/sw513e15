@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
 
     if(sendRequest == 2)
     {
-        printf("<script>var interval = setInterval(testFile, 1000); function testFile() { var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function() { if (xhttp.readyState == 4 && xhttp.status == 200) { console.log('Fundet!'); } }; xhttp.open('GET', 'testfile.txt', true); xhttp.send(); } </script>");
+        printf("<script>var interval = setInterval(testFile, 1000); function testFile() { var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function() { if (xhttp.readyState == 4 && xhttp.status == 200) { console.log('Fundet!'); } }; xhttp.open('GET', 'ping.txt', true); xhttp.send(); } </script>");
     }
 
     // Indhold slut (Lav footer fil)
