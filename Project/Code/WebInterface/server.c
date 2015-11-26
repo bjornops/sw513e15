@@ -5,7 +5,6 @@
 #include <signal.h>
 #include <dirent.h>
 
-void printNewline();
 void printNewlines(int);
 
 int main(int argc, char *argv[])
@@ -47,10 +46,7 @@ int main(int argc, char *argv[])
     printf("<html><head><link rel='stylesheet' type='text/css' href='/style.css'><title>WASP - Administration</title></head><body>");
 
     // Header
-    printf("<div id='head'>");
-    printf("<h2>WASP Administration</h2>");
-    printf("<p>Wireless Arduino Sensor Protocol</p>");
-    printf("</div>");
+    printf("<div id='head'><h2>WASP Administration</h2><p>Wireless Arduino Sensor Protocol</p></div>");
 
     // Nav
     printf("<div id='nav'>");
@@ -59,13 +55,11 @@ int main(int argc, char *argv[])
         printf("<input type='button' value='Hent data' onclick=\"window.location='?request';\">");
     }
 
-    printf("<div style='float:right;'>");
     // PID for solution
     if(solutionPID != -1)
     {
-        printf("<div style='margin-top:5px;margin-right:10px;'>Fundet solution med PID: %d</div>", solutionPID);
+        printf("<div style='float:right;'><div style='margin-top:5px;margin-right:10px;'>Fundet solution med PID: %d</div></div>", solutionPID);
     }
-    printf("</div>");
 
     printf("</div>");
 
@@ -77,7 +71,7 @@ int main(int argc, char *argv[])
     if(sendRequest == 1 && solutionPID != -1)
     {
         printf("<p>Sender requests!</p>");
-        kill(solutionPID, SIGUSR1);
+        kill(solutionPID, SIGUSR1); // Starts request!
         printf("<script>window.location='?success';</script>");
     }
     else if(sendRequest == 2)
@@ -85,10 +79,10 @@ int main(int argc, char *argv[])
         printf("<br /><center><img src='/loading.gif'/></center><br />");
     }
 
-    // Resultater
+    // Resultats
     if(sendRequest != 3)
     {
-        if(sendRequest != 0 && sendRequest != 2)
+        if(sendRequest != 0 && sendRequest != 2) // pwetty formatting
         {
             printNewlines(2);
         }
@@ -142,9 +136,7 @@ int main(int argc, char *argv[])
     printf("</div>");
 
     // Footer
-    printf("<div id='footer'>");
-    printf("<p>WASP - SW513E15</p>");
-    printf("</div>");
+    printf("<div id='footer'><p>WASP - SW513E15</p></div>");
 
     if(sendRequest == 2)
     {
@@ -157,11 +149,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void printNewline()
-{
-    printf("<br />");
-}
-
+// Important stuff.
 void printNewlines(int num)
 {
     for(int n = 0; n < num; n++)
