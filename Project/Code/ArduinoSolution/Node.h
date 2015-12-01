@@ -40,11 +40,12 @@ private:
     static void handlePacket(Packet);
     static void handleClearSignal(Packet);
     static void beginBroadcasting(Packet);
-    static int nextExponentialBackoff(int);
+    static int nextExponentialBackoff(unsigned int);
     static void sendRequests();
     static bool checkRejectArray(uint16_t);
     static void sendDataAcknowledgement(uint16_t);
     static void forwardData(Packet);
+    static void broadcastNewDataRequest();
 };
 
 #endif

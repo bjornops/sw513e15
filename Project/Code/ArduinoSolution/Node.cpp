@@ -111,6 +111,7 @@ void Node::handlePacket(Packet packet)
           printf("Har modtaget datarequest. Sender data tilbage!\n");
           parentID = packet.addresser;
           readPackSend();
+          broadcastNewDataRequest();
         }
       }
       break;
@@ -147,6 +148,28 @@ void Node::handlePacket(Packet packet)
       // Hello default, this is broken!
       break;
   }
+}
+
+void Node::broadcastNewDataRequest()
+{
+  int attemptsToDo = 6;
+    
+    //Byg pakke
+    Packet requestPacket(DataRequest, 0, nodeID, 0, 0, 0, 0);
+    char *enc = requestPacket.encode();
+
+    //Try it
+    for (int i = 1; i <= attemptsToDo; i++)
+    {
+        // Broadcast
+        _radio->broadcast(enc);
+        
+        // Backoff
+        delay(nextExponentialBackoff(i));
+    }
+    
+    //Ryd op
+    free(enc);
 }
 
 void Node::handleClearSignal(Packet packet)
@@ -194,7 +217,7 @@ void Node::beginBroadcasting(Packet packet)
    
 
   char *packetCoding = packet.encode();
-  int tmpWait = 200;
+  unsigned int tmpWait = 1;
   char *res;
   
   printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, tmpWait);
@@ -222,28 +245,19 @@ void Node::beginBroadcasting(Packet packet)
       }
     }
 
-    tmpWait = nextExponentialBackoff(tmpWait);
+    tmpWait += nextExponentialBackoff(tmpWait);
   }
 
   free(packetCoding);
 }
 
-int Node::nextExponentialBackoff(int cur)
-{
-  //printf("Foer: %d\n", cur);
-  int nextBackoff = cur;
-  int randAdd = 10; //random(1, 5);
-
-  nextBackoff += randAdd;
-  //printf("Efter: %d\n", nextBackoff);
-  /*
-    if(nextBackoff >= 1000)
-    {
-      nextBackoff = randAdd;
-    }
-  */
-  return nextBackoff;
+int Node::nextExponentialBackoff(unsigned int attemptNumber)
+{   
+    //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
+    unsigned int delay = random(1, (1<<(attemptNumber-1))+1);
+    return delay;
 }
+
 
 void Node::sendRequests()
 {
