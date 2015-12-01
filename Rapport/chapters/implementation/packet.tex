@@ -138,24 +138,26 @@ However, the main CRC function is the \texttt{getChecksum(unsigned char *message
 \begin{lstlisting}[language=C]
 uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
 {
-	unsigned int offset; // "bit" Equivalent 
-	unsigned char byte; // message byte placeholder
-	uint16_t remainder = INITIAL_REMAINDER; // checksum
-	
-	for (offset = 0; offset < nBytes; offset++){
-		byte = (remainder >> (WIDTH - 8)) ^ message[offset];
-		remainder = crcTable[byte] ^ (remainder << 8);
-	}
-	uint16_t result = remainder ^ FINAL_XOR_VALUE;
-	
-	char *toBeswapped = (char*)malloc(sizeof(char)*2);
-	memcpy(toBeswapped, (char*)&result, sizeof(char)*2);
-	char temp = toBeswapped[1];
-	toBeswapped[1] = toBeswapped[0];
-	toBeswapped[0] = temp;
-	
-	memcpy((char*)&result, toBeswapped, sizeof(char) * 2);
-	return result;
+    unsigned int offset;
+    unsigned char byte;
+    uint16_t remainder = INITIAL_REMAINDER;
+
+    for (offset = 0; offset < nBytes; offset++)
+    {
+        byte = (remainder >> (WIDTH - 8)) ^ message[offset];
+        remainder = Node::crcTable[byte] ^ (remainder << 8);
+    }
+    uint16_t result = remainder ^ FINAL_XOR_VALUE;
+
+    char *toBeSwapped = (char*)malloc(sizeof(char)*2);
+    memcpy(toBeSwapped, (char*)&result, sizeof(char)*2);
+    char temp = toBeSwapped[1];
+    toBeSwapped[1] = toBeSwapped[0];
+    toBeSwapped[0] = temp;
+
+    memcpy((char*)&result, toBeSwapped, sizeof(char) * 2);
+    free(toBeSwapped);
+    return result;
 }
 \end{lstlisting}
 
