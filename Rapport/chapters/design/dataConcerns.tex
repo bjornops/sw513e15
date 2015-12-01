@@ -1,17 +1,10 @@
-\section{Considerations}
-Considerations about collected data storage and power consumption for the final solution is elaborated in this section.
+\section{Data}
+The final solution will monitor the status of the determined properties of the golf course. The data observed should be stored and treated, to be usable to the greenkeeper in maintaining the golf course. Data from previous requests should be accessible later, making it necessary to save this data somewhere. To access this data, some kind of user interface is also necessary. The data should be presented in a way that greenkeepers can use it, without requiring them to read a manual or otherwise study the system. 
 
-\subsection*{Data concerns - We do not know version}\todo{purpose of this section?}
-The final solution will monitor the status of the determined properties of the golf course. The data observed should be stored and treated somehow.\todo{rephrase/elaborate}
+The saved data could be useful at some later date, for example in keeping  statistics of the properties being watched.
 
-The solution is supposed to assist the greenkeepers in their daily work. To actually reduce the greenkeepers workload, the final solution should have a main node that gather and presents the data, so that measures can be made to maintain the golf course.
+Because of the relatively small platforms being used in the sensor nodes, it is not possible to save all data on each node. This makes it the main nodes' job to save and present the collected data.
 
-%det ser skidt ud at dele linjer sådan, men det hjælper på commit fuck-ups :)
+The solution chosen for this, is that all data is saved on the main device, ordered by date and time, and then accessible through a user interface. The user interface is run as a website, and will be accessible from any platform by connecting to the main node.
 
-This\todo{what is "this"} also makes it unnecessary to keep long term data on the non-main nodes nodes.\todo{why?} 
-Each node should only have the responsibility\todo{synonym} of acquiring data from its sensor, transmit the data to the main node. 
-Storage and processing of the data should only be handled by the main node. 
-This way, each node\todo{Suggestion: "device in system" or "node in network"} in the system will require less processing power and will also be replaceable\todo{why is it replaceable?}, except for the main node.
-
-
-
+This means that nodes in the system will only have the task of acquiring data and relaying it towards the main node. All storage and processing of data will be handled on the main node.
