@@ -93,7 +93,7 @@ The readings of the moisture sensor have a resolution of 1024 values, and the re
 \begin{figure}[h!]
 	\centering
 	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth,trim={0 3cm 0 8cm},clip]{figures/dataalloc.png}}
-	\caption{Data allocation}
+	\caption{Data allocation in packets.}
 	\label{fig:dataalloc}
 \end{figure}
 
@@ -108,7 +108,18 @@ Generate checksum of message m and compare with received checksum r.
 The checksum of a correctly transferred packet $T$ is 0, because a package $T$, if correctly transferred, is some quotient $Q$ times the polynomial $G$, as seen in eqref[earlier]. If a division has a zero remainder, the packet was transferred correctly.
 
 \subsection{Overloaded nodes}
-Nodes near the root transfers data for a lot of sensors. Can they handle it? Battery problems? /todo{Hvad er det her for et afsnit?}
+Nodes near the root transfers data for a lot of sensors. Can they handle it? Battery problems? \todo{Hvad er det her for et afsnit?}
+
+\subsection{Interference}
+When using a flooding protocol, interference can become a problem, as explained in section \ref{cha:floodingSec}. This occurs even when using controlled flooding, but using a protocol can help reduce problems with interference.
+
+Interferences might cause packets to get mixed up, which makes it impossible to use the data received. Figure \ref{fig:prottree1} shows an example of possible interference. Nodes 5, 6, and 7 could send packets at the same time, causing node 3 to get scrambled data.
+
+To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. If the checksums match, the packet is accepted and can be relayed to the next node. This will cause the receiving node to send an acknowledgment to the node that sent the packet, which will then stop transmitting data.
+If the checksums do not match, the packet is ignored until a packet that have the same check sum makes its way to the node.
+
+To ensure that a packet with the correct check sum will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will get through to the receiver, without interference.
+This is possible, as time is not of the essence, and the delay between trying again is small.
 
 \subsection{Sequence}
 The protocol sequence is determined as the following. A flowchart can be seen in the appendix.\todo{add flowchart to appendix}

@@ -1,15 +1,4 @@
-\subsection{Interference}
-When using a flooding protocol, interference can become a problem, as explained in section \ref{cha:floodingSec}. This occurs even when using controlled flooding, but using a protocol can help reduce problems with interference.
-
-Interferences might cause packets to get mixed up, which makes it impossible to use the data received. Figure \ref{fig:prottree1} shows an example of possible interference. Nodes 5, 6, and 7 could send packets at the same time, causing node 3 to get scrambled data.
-
-To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. If the checksums match, the packet is accepted and can be relayed to the next node. This will cause the receiving node to send an acknowledgment to the node that sent the packet, which will then stop transmitting data.
-If the checksums do not match, the packet is ignored until a packet that have the same check sum makes its way to the node.
-
-To ensure that a packet with the correct check sum will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will get through to the receiver, without interference.
-This is possible, as time is not of the essence, and the delay between trying again is small.
-
-\subsection*{Exponential Backoff}\label{cha:expbackoff}
+\subsection{Exponential Backoff}\label{cha:expbackoff}
 The technique \textit{exponential backoff} is another method used for handling interference. This technique works by incrementing the interval between sending packets, which at some points means the packet will get transferred without any other node interfering. 
 
 For example, if node 1 and 2 are trying to relay data to the main node at the same time, the packet may get corrupt and are therefore not usable. This means that neither node 1 or 2 will get an acknowledgment, and they will both continue sending data. Though, instead of sending data right away, they will wait a small, random but increasing, amount of time before sending again.
