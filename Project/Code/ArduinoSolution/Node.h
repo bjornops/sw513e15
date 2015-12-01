@@ -36,10 +36,10 @@ private:
     static void saveID(int);
     static int loadID();
     static void crcInit();
-    static void readPackSend();
+    static bool readPackSend();
     static void handlePacket(Packet);
     static void handleClearSignal(Packet);
-    static void beginBroadcasting(Packet);
+    static bool beginBroadcasting(Packet);
     static int nextExponentialBackoff(unsigned int);
     static void sendRequests();
     static bool checkRejectArray(uint16_t);
