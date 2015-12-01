@@ -20,7 +20,7 @@ A random number is needed as the nodes needs different intervals. If both nodes 
 
 The used equation to calculate the back off interval, in milliseconds,  is the following:
 \begin{equation}
-E(c)={2^{c-1}
+E(c)=2^{c-1}
 \end{equation}
 Where c is the current attempt number.
 We will in addition add a range from 1 to the calculated back off, to ensure we have a  continuous increasing delay to further prevent a interference.
