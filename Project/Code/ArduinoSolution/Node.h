@@ -28,7 +28,6 @@ public:
 private:
     static iSensor *_sensor;
     static iRadio *_radio;
-    static bool _waitForAcknowledgement;
     static bool _readyToForward;
     static uint16_t _rejectArray[REJECTSIZE]; 
     static int _rejectCount;
@@ -41,7 +40,6 @@ private:
     static void handlePacket(Packet);
     static void beginBroadcasting(Packet);
     static int nextExponentialBackoff(int);
-    static void broadcast(Packet, int);
     static void sendRequests();
     static bool checkRejectArray(uint16_t);
     static void sendDataAcknowledgement(uint16_t);

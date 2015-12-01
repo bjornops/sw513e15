@@ -10,7 +10,6 @@
 
 // Static declarations
 // Private
-bool Node::_waitForAcknowledgement = false;
 bool Node::_readyToForward = false;
 
 uint16_t Node::_rejectArray[REJECTSIZE] = {0}; 
@@ -102,16 +101,7 @@ void Node::handlePacket(Packet packet)
   {
     case DataAcknowledgement: // Acknowledgement modtaget (Dvs. mit data er accepteret)
       {
-        if (_waitForAcknowledgement)
-        {
-          if (packet.addressee == Node::nodeID) // Checker om acknowledgement er relevant
-          {
-            printf("Modtaget acknowledgement fra %d\n", packet.addresser);
-            _waitForAcknowledgement = false;
-            _readyToForward = true;
-            shouldKeepSendingPacket = false;
-          }
-        }
+        //Dunno wut 2 do
       }
       break;
     case DataRequest: // Request modtaget
@@ -119,10 +109,8 @@ void Node::handlePacket(Packet packet)
         printf("Har modtaget datarequest. Sender data tilbage!\n");
         parentID = packet.addresser;
 
-        if (!_waitForAcknowledgement && !_readyToForward)
+        if (!_readyToForward)
         {
-          _waitForAcknowledgement = true;
-          shouldKeepSendingPacket = true;
           readPackSend();
         }
       }
@@ -148,6 +136,10 @@ void Node::handlePacket(Packet packet)
       }
       break;
     case PairRequest:
+    {
+      
+    }
+    break;
     default:
       //std::cout << "Hello? Yes, this is default.";
       // Hello default, this is broken!
@@ -176,23 +168,20 @@ void Node::sendPairRequest()
 }
 
 // Begynder at sende pakke indtil den bliver bedt om at stoppe! (Exponential backoff handler!)
+
+
 void Node::beginBroadcasting(Packet packet)
 {
-  int startingWait = 200; // 1 ms. start
   shouldKeepSendingPacket = true;
-
-  broadcast(packet, startingWait);
-}
-
-void Node::broadcast(Packet packet, int msWait)
-{
-  printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, msWait);
+   
 
   char *packetCoding = packet.encode();
-  int tmpWait = msWait;
+  int tmpWait = 200;
   char *res;
+  
+  printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, tmpWait);
 
-  while (true)
+  while (shouldKeepSendingPacket)
   {
     _radio->broadcast(packetCoding);
     res = _radio->listenFor(tmpWait);
@@ -202,17 +191,18 @@ void Node::broadcast(Packet packet, int msWait)
     {
       Packet receivedPacket(res);
 
-      if (receivedPacket.packetType != 0) // Ikke en error
+      if (receivedPacket.packetType == DataAcknowledgement)
       {
-        handlePacket(receivedPacket);
-        printf("Packet haandteret!\n");
+          if (packet.addressee == Node::nodeID) // Checker om acknowledgement er relevant
+          {
+            printf("Modtaget acknowledgement fra %d\n", packet.addresser);
+            _readyToForward = true;
+            shouldKeepSendingPacket = false;
+            //break??
+          }
       }
     }
 
-    if (!shouldKeepSendingPacket)
-    {
-      break;
-    }
     tmpWait = nextExponentialBackoff(tmpWait);
   }
 
@@ -254,8 +244,6 @@ void Node::readPackSend()
 void Node::forwardData(Packet packet)
 {
   bool originFound = checkRejectArray(packet.origin);
-
-  sendDataAcknowledgement(packet.addresser);
   
   if (!originFound)
   {
@@ -266,6 +254,7 @@ void Node::forwardData(Packet packet)
     packet.addressee = Node::parentID;
     packet.updateChecksum();
     beginBroadcasting(packet);
+    
   }
 }
 

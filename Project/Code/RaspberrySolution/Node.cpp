@@ -1,12 +1,5 @@
-#include <stdint.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
 #include "Node.h"
-#include "Packet.h"
-#include "Radio.h"
+
 
 #define MAIN_NODE_ID 0
 #define REQUEST_GENERATE_ID_TIMER 5000
@@ -21,6 +14,8 @@ iRadio *Node::_radio;
 int Node::_currentID = 0;
 unsigned int Node::_lastPairRequestMillis = 0;
 std::map<int, int> Node::_receivedThisSession;
+
+volatile sig_atomic_t Node::signalReceived = 0;
 
 int main(int argc, char* argv[])
 {
@@ -51,11 +46,20 @@ void getAndSavePID()
 // Når vi får en 'alarm', send requests
 void signalHandler(int signum)
 {
-    printf("Signal modtaget (Sender requests!)!\n");
-    fflush(stdout);
-    
-    Node::sendRequest(); //Mængde af forsøg defineret i funktion.
-    printf("Signal handling overstået\n");
+    Node::signalReceived = 1;
+}
+
+char *Node::getResultFilename()
+{
+    struct tm *timeinfo;
+    time_t rawtime;
+    char *strResponse = (char *)calloc(128,1);
+
+    rawtime = time(NULL);
+    timeinfo = localtime(&rawtime);  
+    strftime(strResponse,128,"%H:%M:%S %d-%b-%Y",timeinfo); 
+
+    return strResponse;
 }
 
 // Sætter variabler op i Node
@@ -72,9 +76,10 @@ void Node::initializeNode()
     if(optionsFile != NULL)
     {
         int nodeID = 0;
-    	while(fscanf(optionsFile, "%d", &nodeID) != EOF)
+        char nodeName[100];
+    	while(fscanf(optionsFile, "%d*%s", &nodeID, &nodeName) != EOF)
     	{
-            printf("Kendt node: %d\n", nodeID);
+            printf("Kendt node: %d, med navn: %s\n", nodeID, nodeName);
             Node::_receivedThisSession[nodeID] = -1;
         }
     }
@@ -90,29 +95,43 @@ void Node::initializeNode()
 void Node::begin()
 {
     printf("Begynder at lytte efter pakker.\n");
-
     // Læser fra radio
     char *res = (char *)malloc(32*sizeof(char));
     while(true)
-    {        
+    {    
+        //Skal der sendes requests?
+        if(Node::signalReceived)
+        {
+            printf("Signal modtaget! - Sender requests!\n");
+            Node::sendRequest(); //Mængde af forsøg defineret i funktion.
+            printf("Signal handling overstået! - Requests sendt!\n");
+            Node::signalReceived = 0;
+        }
+
+        //Vent og håndter kommende pakker. Listen() returnerer en fejlpakke ved signal.
         res = _radio->listen();
         Packet packet(res);
-
         Node::handlePacket(packet);
+
+        // Er vi færdige?
+        if(Node::receivedFromAllNodes())
+        {
+            Node::saveSessionResults();
+            printf("Alt done. Yay!\n");
+        }
         
-        printf("Færdig med at handle packet");
         fflush(stdout);
     }
 }
 
 void Node::handlePacket(Packet packet)
 {
+    printf("Handler packet...\n");
     switch(packet.packetType)
     {
         case Data: // Har modtaget data der skal gemmes!
         {
-            printf("Noden %d er værdien %d.\n", packet.origin, packet.sensor1);
-            fflush(stdout);
+            printf("Noden %d sendte værdien %d.\n", packet.origin, packet.sensor1);
             
             if(Node::_receivedThisSession[packet.origin] == -1)
             {
@@ -124,13 +143,6 @@ void Node::handlePacket(Packet packet)
                 char *enc = ackPacket.encode();
                 _radio->broadcast(enc);
                 free(enc);
-                
-                // Er vi færdige?
-                if(Node::receivedFromAllNodes())
-                {
-                    Node::saveSessionResults();
-                    printf("Alt done. Yay!");
-                }
             }
         }
         break;
@@ -169,19 +181,46 @@ void Node::handlePacket(Packet packet)
 // Gemmer denne sessions resulteter
 void Node::saveSessionResults()
 {
-    FILE *resFile = fopen("/home/pi/wasp/results/test.txt", "w");
-
+    printf("Ikke mere data at indsamle, gemmer.\n");
+    char path[200] = "/home/pi/wasp/results/";
+    char *name = getResultFilename();
+    strcat(path,name);
+    FILE *resFile = fopen(path, "w");
+    
+    //Lav fil med data
     if(resFile != NULL) 
     {
         std::map<int, int>::iterator it;
         for (it = Node::_receivedThisSession.begin(); it != Node::_receivedThisSession.end(); it++)
         {
             fprintf(resFile, "%d:%d\n", it->first, it->second);
+        }        
+        fclose(resFile);
+        printf("%s successfuldt gemt!\n",path);
+        
+        //Lav ping-fil med information om skabt fil
+        char pingPath[100] = "/var/www/html/ping.txt";
+
+        FILE *pingFile = fopen(pingPath, "w");
+        if(pingFile != NULL)
+        {
+            fprintf(pingFile,"%s",name);
+            fclose(pingFile);
+            printf("%s successfuldt gemt!\n",pingPath);
+        }
+        else
+        {
+            printf("Noget gik galt under skrivning til %s\n",pingPath);
         }
     }
-    
-    fclose(resFile);
+    else
+    {
+        printf("Noget gik galt under skrivning til %s\n",path);
+    }
 
+    fflush(stdout);
+
+    free(name);
     Node::clearSession();
 }
 

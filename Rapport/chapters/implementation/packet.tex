@@ -31,7 +31,7 @@ Every packet has this format, and all values are filled out. With packets that m
 \textbf{Name}     & \multicolumn{2}{c|}{packetType}      & \multicolumn{2}{c|}{addresser}       & \multicolumn{2}{c|}{addressee}       & \multicolumn{2}{c|}{origin}          \\ \hline
 \textbf{Memory}   & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits \\ \hline
 \end{tabular}
-\caption{Dataoverview of first half of a packet. The packet can be directly converted to 16 characters.}
+\caption{Overview of first half of a packet. The packet can be directly converted to 16 characters.}
 \label{tab:packetTableFirst}
 \end{table}
 
@@ -43,7 +43,7 @@ Every packet has this format, and all values are filled out. With packets that m
 \textbf{Name}     & \multicolumn{2}{c|}{sensor1}         & \multicolumn{2}{c|}{sensor2}         & \multicolumn{2}{c|}{sensor3}   & \multicolumn{2}{c|}{checksum}        \\ \hline
 \textbf{Memory}   & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits & 8 bits         & 8 bits        & \multicolumn{1}{l|}{8 bits} & 8 bits \\ \hline
 \end{tabular}
-\caption{Dataoverview of second half of a packet.}
+\caption{Overview of second half of a packet.}
 \label{tab:packetTableSecond}
 \end{table}
 
@@ -54,8 +54,9 @@ Only half of the space available in a transmission are occupied as the radio mod
 \textit{PacketType} is defined as follows:
 \begin{lstlisting}
 enum PacketType : uint16_t {
-    Acknowledgement,
-    Request,
+    Error,
+    DataAcknowledgement,
+    DataRequest,
     Data,
     PairRequest,
     PairRequestAcknowledgement,
@@ -89,7 +90,7 @@ char *Packet::encode()
 The \textit{encode} function allocates the size necessary for a \textit{Packet}, but as a \textit{char *} and uses \textit{memcpy} to set the contents of the array to the contents of the current \textit{Packet} and then returning the array. The char array can be seen as a format of the packet object, that can be directly transmitted by the radio module without further operations to the array.
 
 \subsubsection{Checksum}
-\texttt{Packet} objects contains a checksum, used to verify the content's integrity. \todo{Bjørn indsæt CRC implementering her.} The checksum uses two functions: \texttt{crcInit()} and \texttt{crcCompute(unsigned char *message, unsigned int nBytes)}. The checksum implementation is based on the description in \textit{Programming Embedded Systems in C and C++} \cite{crcCode}.
+\texttt{Packet} objects contains a checksum, used to verify the content's integrity. The checksum uses two functions: \texttt{crcInit()} and \texttt{crcCompute(unsigned char *message, unsigned int nBytes)}. The checksum implementation is based on the description in \textit{Programming Embedded Systems in C and C++} \cite{crcCode}.
 
 The CRC functions share the following data, and this data should be implemented so that it is usable by the functions without instantiating them multiple times and use more memory than necessary.
 

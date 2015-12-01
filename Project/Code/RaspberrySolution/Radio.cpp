@@ -1,5 +1,4 @@
 #include "Radio.h"
-#include <stdlib.h>
 
 //Sætter hardware op.
 NRF24Radio::NRF24Radio()
@@ -14,6 +13,8 @@ NRF24Radio::NRF24Radio()
     _radio->openReadingPipe(_readingPipe, _rxAddr);
     
     _radio->startListening();
+
+    printf("%d",defaultMessage[0]);
 }  
 
 // Sender pakke ud som string.
@@ -53,17 +54,25 @@ char *NRF24Radio::listenFor(unsigned long ms)
 
 // Lyt indtil en pakke er klar (Blokerer)
 char *NRF24Radio::listen(void)
-{
+{        
     _radio->startListening();
-    
+
     while(true)
     {
+        //er der data?
         if (_radio->available()) // Læs og returner data
         {
             memset(lastMessage, 0, 32);
             _radio->read(&lastMessage, 32*sizeof(char));
-            
             return lastMessage;
+        }
+        
+        //er der modtaget signal hos noden?
+        if (Node::signalReceived)
+        {   
+            printf("Listening interrupted by signal...\n");
+            fflush(stdout);
+            return {defaultMessage};
         }
     }
 }

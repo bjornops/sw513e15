@@ -1,6 +1,8 @@
 #include "iRadio.h"
 #include "spi.h"
 #include "RF24.h"
+#include "Node.h"
+#include <stdlib.h>
 
 #ifndef RADIO_H
 #define RADIO_H
@@ -17,6 +19,8 @@ private:
     //RPI
     const int _cePin = 22;
     const int _csPin = 0;
+
+    char defaultMessage[32];
     
 public:
     char lastMessage[32];
