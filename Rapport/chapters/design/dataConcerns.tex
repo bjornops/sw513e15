@@ -13,5 +13,10 @@ Each node should only have the responsibility\todo{synonym} of acquiring data fr
 Storage and processing of the data should only be handled by the main node. 
 This way, each node\todo{Suggestion: "device in system" or "node in network"} in the system will require less processing power and will also be replaceable\todo{why is it replaceable?}, except for the main node.
 
+\subsection{Transfer speed}
+Faster transfer speed uses more energy, but in a shorter amount of time. Slower transfer speed uses less energy, but over longer time for the nRF24L01. The slower data transfer rate has a significantly longer reach for the nRF24L01, and will therefore be implemented. 
 
-
+\subsection{Pairing}
+In order to add a new node to the network, the node is first needed to be paired up with the main node.
+This way, a node could have assigned a unique identity to be able to recognize its sensor readings from other sensors. 
+The protocol is described more indepth in \ref{cha:floodingSec}

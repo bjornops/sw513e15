@@ -44,10 +44,7 @@ The child will then repeat the request signal, and be the parent of nodes hearin
 The topology of the network will effectively be a tree, although prone to changes in branches.
 Any node receiving a request signal will then be able to respond to its parent, causing all nodes to have a single identifier for the routing towards the destination node, the main node.
 
-\subsection{Pairing}
-In order to add a new node to the network, the node is first needed to be paired up with the main node.
-This way, a node could have assigned a unique identity to be able to recognize its sensor readings from other sensors. 
-The protocol is described more indepth in \ref{cha:floodingSec}
+
 
 \subsection{Data and allocation}
 This section will contain elaborations regarding the data to be used in the protocol.
@@ -55,57 +52,52 @@ This section will contain elaborations regarding the data to be used in the prot
 There are multiple types of data needed to make a functioning protocol. The nRF24L01 supports data payloads up to 32 bytes, and is accordingly the limit of data to transfer in each packet.
 Although, a decrease in amount of data can enable the protocol to be implemented on more limited hardware in addition to use less energy on broadcast.
 
+\subsubsection{Packet types}
 There are five types of packages: pair request, data request, data response, acknowledgment and flush?
 These are used to tell the receiver what kind of data the packet contains, so that the receiving node can decide how to handle the received packet. 1 byte will be sufficient to store the packet type.
-Following are the five packets described.
+The five packet types are described followingly.
 
-\begin{itemize}
-\item Pair request
-\end{itemize}
+\textit{Pair request}\newline
 A pair request is a packet send from the main node, the raspberry pi.
 The packet will be read by a single sensor node set to be paired with the network.
 When the two nodes, main and sensor node, are paired, the sensor node knows what networks it belongs to, and can then be deployed in the field as a park of the network. 
 
-\begin{itemize}
-\item Data request
-\end{itemize}
+\textit{Data request}\newline
 A data request is a packet which the main node transmits to all sensor nodes within range.
 Each sensor node then relay the data request out though the network.
 The packet contains the ID of the previous node transmitting it, so each sensor node receiving the packet, knows where it comes from.
 
-
-\begin{itemize}
-\item Data response
-\end{itemize}
+\textit{Data response}\newline
 A data response is a response to the data request.
 A sensor node which receive a data request will transmit a packet with data back to its parent.
 The parent is whom the data request came from.
 
-\begin{itemize}
-\item Acknowledgment
-\end{itemize}
-A Acknowledgment packet is a packet which is expected to be received after a data response packet have been delivered.
+\textit{Acknowledgment}\newline
+An acknowledgment packet is a packet which is expected to be received after a data response packet have been delivered.
 The packet is only to make sure the recorded date from the sensor nodes reach another node, and is not lost.
 
-\begin{itemize}
-\item Flush
-\end{itemize}
+\textit{Flush}\newline
 Flush is used to reset every node in the network, this will happen when all data is collected.
 The flush packet let every node in the network know that it should forget any previous information stored, such as parent information.
 
+\subsubsection{Other data}
 There has to be an addresser and an addressee. These are the 'from' and 'to' parts of the packet, and specifies which node the packet is for, and which node the packet is sent from.
 Since the data sent with the package not necessarily originates from the same node from which it is sent, because of relaying in the network, there also needs to be data allocated to identify the origin.
 The limitation of the network size is 1000 nodes, the identifier data fields needs to support 1000 unique addresses, which requires 9 bits. The allocated size for the addresses are accordingly 2 bytes(16 bits) each to maintain usage of whole bytes. This is done because it is more efficient to manipulate a byte instead of a bit.\cite{bytevsbit} The addresses utilize 6 bytes in total.
 
-To verify the correctness of the received package, a Cyclic redundancy check (CRC16) is appended. CRC16 uses 2 bytes to distinguish a successfully transfered packet from an erroneous one. 
+To verify the integrity of the received package, a Cyclic redundancy check (CRC16) is appended. CRC16 uses 2 bytes to distinguish a successfully transfered packet from an erroneous one. 
 
-To support multiple sensors per node there are three fields allocated for sensor data.
+To support multiple sensors per node, there are three fields allocated for sensor data.
 The readings of the moisture sensor have a resolution of 1024, and the required size allocated for the sensor reading data is 10 bits. The allocated data size in the transfer is therefore 2 bytes.
 
-The sizes of the different data to transfer sums up to 16 bytes. The distribution is displayed in figure \todo{missingfigure}.
+\begin{figure}[h!]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth,trim={0 3cm 0 8cm},clip]{figures/dataalloc.png}}
+	\caption{Data allocation}
+	\label{fig:dataalloc}
+\end{figure}
 
-\subsection{Transfer speed}
-Faster transfer speed uses more energy, but in a shorter amount of time. Slower transfer speed uses less energy, but over longer time for the nRF24L01. The slower data transfer rate has a significantly longer reach for the nRF24L01, and will therefore be implemented. 
+The sizes of the different data to transfer sums up to 16 bytes. The distribution is displayed in \figref{dataalloc}, where the abbreviations are accordingly for packet type, addresser, addressee, origin address, sensor data 1 through 3, and checksum.
 
 \subsection{Interference}
 When using a flooding protocol, interference can become a problem, as explained in section \ref{cha:floodingSec}. This occurs even when using controlled flooding, but using a protocol can help reduce problems with interference.
