@@ -89,15 +89,25 @@ char *Packet::encode()
 The \textit{encode} function allocates the size necessary for a \textit{Packet}, but as a \textit{char *} and uses \textit{memcpy} to set the contents of the array to the contents of the current \textit{Packet} and then returning the array. The char array can be seen as a format of the packet object, that can be directly transmitted by the radio module without further operations to the array.
 
 \subsubsection{Checksum}
-\textit{Packet} objects contains a checksum, used to verify the content's integrity. \todo{Bjørn indsæt CRC implementering her.} The checksum uses two functions: \texttt{crcInit()} and \texttt{crcCompute(unsigned char *message, unsigned int nBytes)}. The checksum implementation is based on the description in \textit{Programming Embedded Systems in C and C++} \cite{crcCode}.
+\texttt{Packet} objects contains a checksum, used to verify the content's integrity. The checksum uses two functions: \texttt{crcInit()} and \texttt{crcCompute(unsigned char *message, unsigned int nBytes)}. The checksum implementation is based on the description in \textit{Programming Embedded Systems in C and C++} \cite{crcCode}.
 
-The \texttt{crcInit()} should be run first to generate a table of remainders to expedite the computation of the checksum. The computation is accelerated because the remainder can be calculated byte-wise instead of bit-wise, by the cost of $256 * 2 \text{ bytes} = 512$ bytes. 
+The CRC functions share the following data, and this data should be implemented so that it is usable by the functions without instantiating them multiple times and use more memory than necessary.
+
+\begin{description}
+	\item[POLYNOMIAL] the generator polynomial by which the message is divided.
+	\item[INITIAL\_REMAINDER] the remainder initially appended onto the message before calculating the checksum.
+	\item[FINAL\_XOR\_VALUE] the value by which the transfer message is inverted.
+	\item[WIDTH] the width of the checksum, which in CRC-16 is 16 bits.
+	\item[TOPBIT] is the most significant bit set to 1.
+\end{description}
+
+The \texttt{crcInit()} should be run initially to instantiate a table of remainders to expedite the computation of the checksum. The computation is accelerated because the remainder can be calculated byte-wise instead of bit-wise, by the cost of 256 bytes in the memory.  
 
 \begin{lstlisting}[language=C]
 void Node::crcInit()
 {
-    unsigned short remainder; // 2 byte remainder
-    unsigned short dividend; // What are you?
+    unsigned short remainder; // 1 byte remainder
+    unsigned short dividend; // Message byte simulation
     int bit; // bit counter
 
     for(dividend = 0; dividend < 256; dividend++) //foreach value of 2 bytes/8 bits
@@ -119,3 +129,36 @@ void Node::crcInit()
     }
 }
 \end{lstlisting}
+
+The function iterates over all binary combinations of the 16 bits for the dividend. Within this iteration each remainder is initially instantiated by shifting the dividend by 8 bits, as the purpose is to generate 1 byte values. For each of the 8 bits, if the remainders most significant bit is 1, the remainder is divided by the \texttt{POLYNOMIAL} and left shifted one bit. If the most significant bit is 0, the remainder is only left shifted one bit. When all 8 bit computations are finished, the remainder is saved to the \texttt{crcTable} in the current \texttt{dividend}'s position.
+
+However, the main CRC function is the \texttt{getChecksum(unsigned char *message, unsigned int nBytes)}. It utilizes the \texttt{crcTable} and computes and returns the transfer message based on the arguments \texttt{unsigned char *message} and the size of the message \texttt{unsigned int nBytes}.
+
+\begin{lstlisting}[language=C]
+uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
+{
+	unsigned int offset; // "bit" Equivalent 
+	unsigned char byte; // message byte placeholder
+	uint16_t remainder = INITIAL_REMAINDER; // checksum
+	
+	for (offset = 0; offset < nBytes; offset++){
+		byte = (remainder >> (WIDTH - 8)) ^ message[offset];
+		remainder = crcTable[byte] ^ (remainder << 8);
+	}
+	uint16_t result = remainder ^ FINAL_XOR_VALUE;
+	
+	char *toBeswapped = (char*)malloc(sizeof(char)*2);
+	memcpy(toBeswapped, (char*)&result, sizeof(char)*2);
+	char temp = toBeswapped[1];
+	toBeswapped[1] = toBeswapped[0];
+	toBeswapped[0] = temp;
+	
+	memcpy((char*)&result, toBeswapped, sizeof(char) * 2);
+	return result;
+}
+\end{lstlisting}
+
+
+\texttt{getChecksum} uses an \texttt{int offset} to keep track of the progress through the message, a \texttt{char byte} to contain a byte of the \texttt{message} and a \texttt{uint16\_t remainder} instantiated by the \texttt{INITIAL\_REMAINDER} value. 
+
+The function iterates over each byte in the \texttt{message}. The current \texttt{byte} is the remainder right shifted by 8 then XOR'ed with the \texttt{message}'s offset byte. The \texttt{remainder} is then calculated by XOR'ing the value already stored in \texttt{crcTable} at the current byte, with the remainder left shifted by 8. This is hard to explain and understand \todo{retry..}
