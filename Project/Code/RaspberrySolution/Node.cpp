@@ -76,9 +76,10 @@ void Node::initializeNode()
     if(optionsFile != NULL)
     {
         int nodeID = 0;
-    	while(fscanf(optionsFile, "%d", &nodeID) != EOF)
+        char nodeName[100];
+    	while(fscanf(optionsFile, "%d*%s", &nodeID, &nodeName) != EOF)
     	{
-            printf("Kendt node: %d\n", nodeID);
+            printf("Kendt node: %d, med navn: %s\n", nodeID, nodeName);
             Node::_receivedThisSession[nodeID] = -1;
         }
     }
@@ -203,7 +204,7 @@ void Node::saveSessionResults()
         FILE *pingFile = fopen(pingPath, "w");
         if(pingFile != NULL)
         {
-            fprintf(pingFile,"%s",path);
+            fprintf(pingFile,"%s",name);
             fclose(pingFile);
             printf("%s successfuldt gemt!\n",pingPath);
         }
