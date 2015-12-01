@@ -31,7 +31,7 @@ Every packet has this format, and all values are filled out. With packets that m
 \textbf{Name}     & \multicolumn{2}{c|}{packetType}      & \multicolumn{2}{c|}{addresser}       & \multicolumn{2}{c|}{addressee}       & \multicolumn{2}{c|}{origin}          \\ \hline
 \textbf{Memory}   & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits \\ \hline
 \end{tabular}
-\caption{Dataoverview of first half of a packet. The packet can be directly converted to 16 characters.}
+\caption{Overview of first half of a packet. The packet can be directly converted to 16 characters.}
 \label{tab:packetTableFirst}
 \end{table}
 
@@ -43,7 +43,7 @@ Every packet has this format, and all values are filled out. With packets that m
 \textbf{Name}     & \multicolumn{2}{c|}{sensor1}         & \multicolumn{2}{c|}{sensor2}         & \multicolumn{2}{c|}{sensor3}   & \multicolumn{2}{c|}{checksum}        \\ \hline
 \textbf{Memory}   & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits & 8 bits         & 8 bits        & \multicolumn{1}{l|}{8 bits} & 8 bits \\ \hline
 \end{tabular}
-\caption{Dataoverview of second half of a packet.}
+\caption{Overview of second half of a packet.}
 \label{tab:packetTableSecond}
 \end{table}
 
@@ -54,8 +54,9 @@ Only half of the space available in a transmission are occupied as the radio mod
 \textit{PacketType} is defined as follows:
 \begin{lstlisting}
 enum PacketType : uint16_t {
-    Acknowledgement,
-    Request,
+    Error,
+    DataAcknowledgement,
+    DataRequest,
     Data,
     PairRequest,
     PairRequestAcknowledgement,
@@ -137,24 +138,26 @@ However, the main CRC function is the \texttt{getChecksum(unsigned char *message
 \begin{lstlisting}[language=C]
 uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
 {
-	unsigned int offset; // "bit" Equivalent 
-	unsigned char byte; // message byte placeholder
-	uint16_t remainder = INITIAL_REMAINDER; // checksum
-	
-	for (offset = 0; offset < nBytes; offset++){
-		byte = (remainder >> (WIDTH - 8)) ^ message[offset];
-		remainder = crcTable[byte] ^ (remainder << 8);
-	}
-	uint16_t result = remainder ^ FINAL_XOR_VALUE;
-	
-	char *toBeswapped = (char*)malloc(sizeof(char)*2);
-	memcpy(toBeswapped, (char*)&result, sizeof(char)*2);
-	char temp = toBeswapped[1];
-	toBeswapped[1] = toBeswapped[0];
-	toBeswapped[0] = temp;
-	
-	memcpy((char*)&result, toBeswapped, sizeof(char) * 2);
-	return result;
+    unsigned int offset;
+    unsigned char byte;
+    uint16_t remainder = INITIAL_REMAINDER;
+
+    for (offset = 0; offset < nBytes; offset++)
+    {
+        byte = (remainder >> (WIDTH - 8)) ^ message[offset];
+        remainder = Node::crcTable[byte] ^ (remainder << 8);
+    }
+    uint16_t result = remainder ^ FINAL_XOR_VALUE;
+
+    char *toBeSwapped = (char*)malloc(sizeof(char)*2);
+    memcpy(toBeSwapped, (char*)&result, sizeof(char)*2);
+    char temp = toBeSwapped[1];
+    toBeSwapped[1] = toBeSwapped[0];
+    toBeSwapped[0] = temp;
+
+    memcpy((char*)&result, toBeSwapped, sizeof(char) * 2);
+    free(toBeSwapped);
+    return result;
 }
 \end{lstlisting}
 

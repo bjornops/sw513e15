@@ -1,4 +1,3 @@
-\todo{Agree upon packet terminology}
 \section{Data verification}
 %Why checksum
 Wireless communication is prone to noise and shit\cite{source}. To be able to discern correct packets from incorrect packets, a detection method is necessary. There are multiple ways to verify a packet's integrity and this section will contain a description of some methods and the reasoning behind the selected solution.
@@ -6,13 +5,10 @@ Wireless communication is prone to noise and shit\cite{source}. To be able to di
 \subsection{Definition and types}
 %What is a checksum
 A checksum is a unique value that can be used to verify that a message is received correctly \cite{datapakke}. The checksum is based on all parts of the message and unique to the resolution of the checksum. 
-A single bit checksum can only distinguish between two messages, and is not able to verify with more than 50\% accuracy, as an error could affect the transferred message so that the checksum calculation still produces the same checksum.
-
-%What kind of checksum
-Checksums can variate by multiple properties, either by how it is calculated or by its length. \todo{A little short?}
+A single bit checksum can only distinguish between two messages, and is not able to verify with more than 50\% accuracy, as an error could affect the transferred message so that the checksum calculation still produces the same checksum. Checksums can variate by multiple properties, for example by how it is calculated or by its length. 
 
 \subsection*{Digit sum} \todo{Source? Example?}
-A simple algorithm for producing a checksum is to use the digit sum and store it in a byte. This algorithm is efficient, but has multiple flaws, therein the uniqueness of the checksum of only 256 values and that two bit flips could cancel each other out and cause the same checksum. The error detection level is regarded as too small, and the this algorithm will not be used in the protocol.
+A simple algorithm for producing a checksum is to use the digit sum and store it in a byte. This algorithm is efficient, but has several flaws, therein the uniqueness of the checksum of only 256 values and that two bit flips could cancel each other out and cause the same checksum. The error detection level is regarded as too small, and the this algorithm will not be used in the protocol.
 
 \subsection*{MD5}
 MD5 is a widespread checksum algorithm. It produces a 128 bit checksum, which is 16 bytes. MD5 is designed to run efficiently on 32 bit processors, which is a disadvantage on the Arduino boards used in the solution, since these posses an 8 bit processor. The 16 byte checksum uses half of the possible payload of the nRF24L01, and makes the protocol less scalable to other systems. \todo{how?} The MD5 algorithm is therefore discarded as the checksum generator for this project. \cite[p.~308]{boyles2010ccna}.
@@ -113,13 +109,3 @@ $Mx^r / G = R$
 $Mx^r - R = T$
 \fi
 % /notes
-
-
-
-\subsection{Verification of a message}
-%Verification of a message
-The received message is verified by doing one of the two following methods. 
-
-Generate checksum of message m and compare with received checksum r.
-The checksum of a correctly transferred packet $T$ is 0, because a package $T$, if correctly transferred, is some quotient $Q$ times the polynomial $G$, as seen in eqref[earlier]. If a division has a zero remainder, the packet was transferred correctly.
-
