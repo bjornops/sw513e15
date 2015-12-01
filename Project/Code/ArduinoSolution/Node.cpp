@@ -106,11 +106,10 @@ void Node::handlePacket(Packet packet)
       break;
     case DataRequest: // Request modtaget
       {
-        printf("Har modtaget datarequest. Sender data tilbage!\n");
-        parentID = packet.addresser;
-
-        if (!_readyToForward)
+        if (!_readyToForward && parentID == -1)
         {
+          printf("Har modtaget datarequest. Sender data tilbage!\n");
+          parentID = packet.addresser;
           readPackSend();
         }
       }
@@ -132,7 +131,10 @@ void Node::handlePacket(Packet packet)
       break;
     case ClearSignal: // Slet alt!
       {
-        // I had nothing to do with it!
+        if (_readyToForward || parentID != -1)
+        {
+          handleClearSignal(packet);
+        }
       }
       break;
     case PairRequest:
@@ -145,6 +147,22 @@ void Node::handlePacket(Packet packet)
       // Hello default, this is broken!
       break;
   }
+}
+
+void Node::handleClearSignal(Packet packet)
+{
+  char *encoded = packet.encode();
+
+  for(int i = 0; i < 5; i++)
+  {
+    _radio->broadcast(encoded);
+  }
+  free(encoded);
+  
+  _readyToForward = false;
+  parentID = -1;
+  shouldKeepSendingPacket = false;
+  printf("Clearsignal handled!!!!!");
 }
 
 void Node::receivedPairRequestAcknowledgement(int newID)
@@ -191,15 +209,16 @@ void Node::beginBroadcasting(Packet packet)
     {
       Packet receivedPacket(res);
 
-      if (receivedPacket.packetType == DataAcknowledgement)
+      if (receivedPacket.packetType == DataAcknowledgement && receivedPacket.addressee == Node::nodeID)
       {
-          if (packet.addressee == Node::nodeID) // Checker om acknowledgement er relevant
-          {
-            printf("Modtaget acknowledgement fra %d\n", packet.addresser);
-            _readyToForward = true;
-            shouldKeepSendingPacket = false;
-            //break??
-          }
+        printf("Modtaget acknowledgement fra %d\n", packet.addresser);
+        _readyToForward = true;
+        shouldKeepSendingPacket = false;
+        //break??
+      }
+      else if(receivedPacket.packetType == ClearSignal)
+      {
+        handleClearSignal(receivedPacket);
       }
     }
 
@@ -211,12 +230,12 @@ void Node::beginBroadcasting(Packet packet)
 
 int Node::nextExponentialBackoff(int cur)
 {
-  printf("Foer: %d\n", cur);
+  //printf("Foer: %d\n", cur);
   int nextBackoff = cur;
   int randAdd = 10; //random(1, 5);
 
   nextBackoff += randAdd;
-  printf("Efter: %d\n", nextBackoff);
+  //printf("Efter: %d\n", nextBackoff);
   /*
     if(nextBackoff >= 1000)
     {

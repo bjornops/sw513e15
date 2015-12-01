@@ -38,6 +38,7 @@ private:
     static void crcInit();
     static void readPackSend();
     static void handlePacket(Packet);
+    static void handleClearSignal(Packet);
     static void beginBroadcasting(Packet);
     static int nextExponentialBackoff(int);
     static void sendRequests();
