@@ -1,0 +1,11 @@
+\section{System design}
+This section contains the description of the intended system. \todo{elaborate}
+
+\begin{enumerate}
+	\item The system user will use an interface to demand readings from the sensors in the network.
+	\item The main node responds to the demand by sending a request packet in the network
+	\item The nodes receiving the signal gathers data from its sensors and sends it back to its parent
+	\item When the sent packet is acknowledged, the node retransmits the recently received request signal and awaits data.
+	\item Step 3 and 4 is repeated throughout the network, so that every node within reach of the network will transmit or relay data to its parent.
+	\item The main node collects all data and append each reading to the respective node in a data sheet available to the user
+\end{enumerate}

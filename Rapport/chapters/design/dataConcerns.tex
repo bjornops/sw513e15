@@ -8,3 +8,11 @@ Because of the relatively small platforms being used in the sensor nodes, it is 
 The solution chosen for this, is that all data is saved on the main device, ordered by date and time, and then accessible through a user interface. The user interface is run as a website, and will be accessible from any platform by connecting to the main node.
 
 This means that nodes in the system will only have the task of acquiring data and relaying it towards the main node. All storage and processing of data will be handled on the main node.
+
+\subsection{Transfer speed}
+Faster transfer speed uses more energy, but in a shorter amount of time. Slower transfer speed uses less energy, but over longer time for the nRF24L01. The slower data transfer rate has a significantly longer reach for the nRF24L01, and will therefore be implemented. 
+
+\subsection{Pairing}
+In order to add a new node to the network, the node is first needed to be paired up with the main node.
+This way, a node could have assigned a unique identity to be able to recognize its sensor readings from other sensors. 
+The protocol is described more indepth in \ref{cha:floodingSec}
