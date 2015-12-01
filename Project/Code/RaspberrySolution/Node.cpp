@@ -3,6 +3,7 @@
 
 #define MAIN_NODE_ID 0
 #define REQUEST_GENERATE_ID_TIMER 5000
+#define FILE_SAVE_TIMER 10000
 
 void signalHandler(int);
 void getAndSavePID();
@@ -13,6 +14,7 @@ unsigned short Node::crcTable[256];
 iRadio *Node::_radio;
 int Node::_currentID = 0;
 unsigned int Node::_lastPairRequestMillis = 0;
+unsigned int Node::_lastSavedFile = 0;
 std::map<int, int> Node::_receivedThisSession;
 
 volatile sig_atomic_t Node::signalReceived = 0;
@@ -57,7 +59,7 @@ char *Node::getResultFilename()
 
     rawtime = time(NULL);
     timeinfo = localtime(&rawtime);  
-    strftime(strResponse,128,"%H:%M:%S %d-%b-%Y",timeinfo); 
+    strftime(strResponse,128,"%d-%b-%Y %H:%M:%S",timeinfo); 
 
     return strResponse;
 }
@@ -69,6 +71,7 @@ void Node::initializeNode()
     
     Node::_radio = new NRF24Radio();
     Node::_lastPairRequestMillis = bcm2835_millis();
+    Node::_lastSavedFile = bcm2835_millis();
     
     // Find kendte noder (i home/pi/wasp.conf)
     FILE *optionsFile;
@@ -137,13 +140,13 @@ void Node::handlePacket(Packet packet)
             {
                 // Ikke modtaget før, så gem værdi!
                 Node::_receivedThisSession[packet.origin] = packet.sensor1;
-                
-                // Send acknowledgement
-                Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
-                char *enc = ackPacket.encode();
-                _radio->broadcast(enc);
-                free(enc);
             }
+            
+            // Send acknowledgement
+            Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
+            char *enc = ackPacket.encode();
+            _radio->broadcast(enc);
+            free(enc);
         }
         break;
         
@@ -166,14 +169,18 @@ void Node::handlePacket(Packet packet)
         }
         break;
         
+        case ClearSignal:
+        break;
+        
         case PairRequestAcknowledgement:
         case DataAcknowledgement:
         case DataRequest:
-        case ClearSignal:
         default:
             // Hello? Yes, this is default.
             // Hello default, this is broken!
             // No, this is Patrick.
+            // Hello Patrick. Fuck off Jonathan
+            printf("Har fået default pakke fra %d med typen: %d\n", packet.addresser, packet.packetType);
         break;
     }
 }
@@ -181,7 +188,17 @@ void Node::handlePacket(Packet packet)
 // Gemmer denne sessions resulteter
 void Node::saveSessionResults()
 {
+	unsigned int currentMillis = bcm2835_millis();
+	if(currentMillis - Node::_lastSavedFile <= FILE_SAVE_TIMER)
+	{
+		Node::_lastSavedFile = currentMillis;
+		Node::clearSession();
+		
+		return;
+	}
+	
     printf("Ikke mere data at indsamle, gemmer.\n");
+    
     char path[200] = "/home/pi/wasp/results/";
     char *name = getResultFilename();
     strcat(path,name);
@@ -227,11 +244,33 @@ void Node::saveSessionResults()
 // Renser section
 void Node::clearSession()
 {
+	printf("Clearer session!\n");
     std::map<int, int>::iterator it;
     for (it = Node::_receivedThisSession.begin(); it != Node::_receivedThisSession.end(); it++)
     {
         Node::_receivedThisSession[it->first] = -1;
     }
+
+    // Clear request!
+    int attemptsToDo = 6;
+    
+    //Byg pakke
+    Packet requestPacket(ClearSignal, 0, MAIN_NODE_ID, 0, 0, 0, 0);
+    char *enc = requestPacket.encode();
+
+    //Try it
+    for (int i = 1; i <= attemptsToDo; i++)
+    {
+	    printf("Sender clear\n");
+        // Broadcast
+        _radio->broadcast(enc);
+        
+        // Backoff
+        nextExponentialBackoffDelay(i);
+    }
+    
+    //Ryd op
+    free(enc);
 }
 
 bool Node::receivedFromAllNodes()

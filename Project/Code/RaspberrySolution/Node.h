@@ -28,6 +28,7 @@ private:
     // ID generating
     static int _currentID;
     static unsigned int _lastPairRequestMillis;
+    static unsigned int _lastSavedFile;
     
     // Current 'session'
     static std::map<int, int> _receivedThisSession;

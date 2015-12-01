@@ -13,8 +13,6 @@ NRF24Radio::NRF24Radio()
     _radio->openReadingPipe(_readingPipe, _rxAddr);
     
     _radio->startListening();
-
-    printf("%d",defaultMessage[0]);
 }  
 
 // Sender pakke ud som string.
