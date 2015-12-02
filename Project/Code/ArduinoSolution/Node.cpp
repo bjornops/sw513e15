@@ -69,6 +69,7 @@ void Node::begin()
     {
       // Laeser fra radio og laver til pakke
       long remainingTimeToClear = (_lastPacketTime + TIMEOUT) - millis();
+      Serial.println(remainingTimeToClear);
       char *res = _radio->listenFor((remainingTimeToClear > 0) ? remainingTimeToClear : 0);
       Packet packet(res);
       handlePacket(packet);   
@@ -162,6 +163,12 @@ void Node::handlePacket(Packet packet)
         if( parentID != -1 && (_lastPacketTime + TIMEOUT) - millis() > 0)
         {
           parentID = -1;
+          printf("Timeout now\n");
+          _lastPacketTime = millis();
+        }
+        else if(parentID == -1)
+        {
+           _lastPacketTime = millis();
         }
       }
       break;
