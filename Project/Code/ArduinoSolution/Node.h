@@ -5,6 +5,8 @@ class Packet;
 #ifndef NODE_H
 #define NODE_H
 #define REJECTSIZE 10
+#define TIMEOUT 600000
+#define REQUEST_AND_CLEAR_ATTEMPTS 5
 
 enum NodeState
 {
@@ -28,7 +30,6 @@ public:
 private:
     static iSensor *_sensor;
     static iRadio *_radio;
-    static bool _readyToForward;
     static uint16_t _rejectArray[REJECTSIZE]; 
     static int _rejectCount;
 
@@ -36,15 +37,16 @@ private:
     static void saveID(int);
     static int loadID();
     static void crcInit();
-    static void readPackSend();
+    static bool readPackSend();
     static void handlePacket(Packet);
     static void handleClearSignal(Packet);
-    static void beginBroadcasting(Packet);
-    static int nextExponentialBackoff(int);
+    static bool beginBroadcasting(Packet);
+    static int nextExponentialBackoff(unsigned int);
     static void sendRequests();
     static bool checkRejectArray(uint16_t);
     static void sendDataAcknowledgement(uint16_t);
     static void forwardData(Packet);
+    static void broadcastNewDataRequest();
 };
 
 #endif
