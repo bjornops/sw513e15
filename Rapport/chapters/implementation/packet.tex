@@ -52,7 +52,7 @@ The datatype of the members of \textit{Packet} are all \textit{uint16\_t}. This 
 Only half of the space available in a transmission are occupied as the radio module used in this project supports transmissions of 32 byte at a time. As the solution is designed modular, and the radio module can be replaced with a potentially 'smaller' module in terms of transmission size, the solution would still support this 'smaller' module. Furthermore, a packetsize of 16 bytes is enough to contain the different data collected from the nodes.
 
 \textit{PacketType} is defined as follows:
-\begin{lstlisting}
+\begin{lstlisting}[language=C]
 enum PacketType : uint16_t {
     Error,
     DataAcknowledgement,
@@ -66,7 +66,7 @@ enum PacketType : uint16_t {
 
 
 When a \textit{Packet} is instantiated using the constructor with the \textit{char *input} as parameter, these values are found using the function \textit{memcpy}, in the \textit{decode} function:
-\begin{lstlisting}
+\begin{lstlisting}[language=C]
 void Packet::decode(char *input)
 {
     memcpy(this, input, sizeof(Packet));
