@@ -10,7 +10,6 @@
 
 // Static declarations
 // Private
-bool Node::_readyToForward = false;
 
 uint16_t Node::_rejectArray[REJECTSIZE] = {0};
 int      Node::_rejectCount = 0;
@@ -25,7 +24,6 @@ int Node::parentID = -1;
 
 
 // Andre declarations
-static bool shouldKeepSendingPacket = false;
 static PacketType currentHandlingPacketType;
 
 // Sætter variabler op i Node
@@ -107,7 +105,7 @@ void Node::handlePacket(Packet packet)
       break;
     case DataRequest: // Request modtaget
       {
-        if (!_readyToForward && parentID == -1)
+        if (parentID == -1)
         {
           printf("Har modtaget datarequest fra %d\n", packet.addresser);
           parentID = packet.addresser;
@@ -122,7 +120,7 @@ void Node::handlePacket(Packet packet)
       break;
     case Data: // Har modtaget data der skal videresendes
       {
-        if (_readyToForward)
+        if (parentID != -1)
         {
           sendDataAcknowledgement(packet.addressee);
           forwardData(packet);
@@ -152,21 +150,21 @@ void Node::handlePacket(Packet packet)
     default:
       //std::cout << "Hello? Yes, this is default.";
       // Hello default, this is broken!
+      //Nope its not - its just an error package you dumb fuck!.
       break;
   }
 }
 
 void Node::broadcastNewDataRequest()
 {
-  int attemptsToDo = 6;
   char *res;
+
 
   //Byg pakke
   Packet requestPacket(DataRequest, nodeID, 0, 0, 0, 0, 0);
   char *enc = requestPacket.encode();
-
-  //Try it
-  for (int i = 1; i <= attemptsToDo; i++)
+  
+  for (int i = 1; i <= REQUEST_AND_CLEAR_ATTEMPTS; i++)
   {
     // Broadcast
     _radio->broadcast(enc);
@@ -190,16 +188,14 @@ void Node::broadcastNewDataRequest()
 
 void Node::handleClearSignal(Packet packet)
 {
-  _readyToForward = false;
   parentID = -1;
-  shouldKeepSendingPacket = false;
   
   char *encoded = packet.encode();
 
-  for (int i = 0; i < 5; i++)
+  for (int i = 1; i <= REQUEST_AND_CLEAR_ATTEMPTS; i++)
   {
     _radio->broadcast(encoded);
-    delay(100);
+    delay(nextExponentialBackoff(i));
   }
   free(encoded);
   printf("Clearsignal handled!!!!! (Venter 1 sec)\n");
@@ -214,7 +210,6 @@ void Node::receivedPairRequestAcknowledgement(int newID)
     printf("Har nu faaet ID: %d\n", newID);
 
     saveID(newID);
-    shouldKeepSendingPacket = false;
   }
 }
 // Sender pair request
@@ -231,29 +226,28 @@ void Node::sendPairRequest()
 
 bool Node::beginBroadcasting(Packet packet)
 {
-  shouldKeepSendingPacket = true;
 
 
   char *packetCoding = packet.encode();
-  unsigned int attempt = 1;
   char *res;
 
-  printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, nextExponentialBackoff(attempt));
 
-  while (shouldKeepSendingPacket)
+  unsigned int attempt = 1;
+  unsigned int attemptTime = nextExponentialBackoff(attempt);
+  unsigned long totalTime = attemptTime;
+
+  printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, attemptTime);
+  while (totalTime < TIMEOUT)
   {
     _radio->broadcast(packetCoding);
     
-    res = _radio->listenFor(nextExponentialBackoff(attempt));
-    attempt++;
+    res = _radio->listenFor(attemptTime);
     Packet receivedPacket(res);
     printf("Packet: %d - %d - %d - %d \n", receivedPacket.packetType , receivedPacket.addresser, receivedPacket.addressee, receivedPacket.origin);
 
     if (receivedPacket.packetType == DataAcknowledgement && receivedPacket.addressee == nodeID)
     {
       printf("Modtaget acknowledgement fra %d\n", packet.addressee);
-      _readyToForward = true;
-      shouldKeepSendingPacket = false;
       return true;
     }
     else if (receivedPacket.packetType == ClearSignal)
@@ -262,6 +256,9 @@ bool Node::beginBroadcasting(Packet packet)
       handleClearSignal(receivedPacket);
       return false;
     }
+    attempt++;
+    attemptTime = nextExponentialBackoff(attempt);
+    totalTime += attemptTime;
   }
   free(packetCoding);
 }
