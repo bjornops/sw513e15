@@ -46,8 +46,8 @@ Any node receiving a request signal will then be able to respond to its parent, 
 
 
 
-\subsection{Data and allocation}
-This section will contain elaborations regarding the data to be used in the protocol.
+\subsection{Packet data and allocation}
+This section will contain elaborations regarding the data to be used in the protocol.\todo{explain "packet" somewhere earlier?}
 
 There are multiple types of data needed to make a functioning protocol. The nRF24L01 supports data payloads up to 32 bytes, and is accordingly the limit of data to transfer in each packet.
 Although, a decrease in amount of data can enable the protocol to be implemented on more limited hardware in addition to use less energy on broadcast.
@@ -81,9 +81,9 @@ Flush is used to reset every node in the network, this will happen when all data
 The flush packet let every node in the network know that it should forget any previous information stored, such as parent information.
 
 \subsubsection{Other data}
-There has to be an addresser and an addressee. These are the 'from' and 'to' parts of the packet, and specifies which node the packet is for, and which node the packet is sent from.
+There has to be an addresser and an addressee.\todo{why?} These are the 'from' and 'to' parts of the packet, and specifies which node the packet is for, and which node the packet is sent from.
 Since the data sent with the package not necessarily originates from the same node from which it is sent, because of relaying in the network, there also needs to be data allocated to identify the origin.
-The limitation of the network size is 1000 nodes, the identifier data fields needs to support 1000 unique addresses, which requires 9 bits. The allocated size for the addresses are accordingly 2 bytes(16 bits) each to maintain usage of whole bytes. This is done because it is more efficient to manipulate a byte instead of a bit.\cite{bytevsbit} The addresses utilize 6 bytes in total.
+The limitation of the network size is 1000 nodes, the identifier data fields needs to support 1000 unique addresses, which requires 9 bits. The allocated size for the addresses are accordingly 2 bytes(16 bits) each to maintain usage of whole bytes. This is done because it is more efficient to manipulate a byte instead of a bit \cite{bytevsbit}. The addresses requires 6 bytes in total.
 
 To verify the integrity of the received package, a Cyclic redundancy check (CRC16) is appended. CRC16 uses 2 bytes to distinguish a successfully transfered packet from an erroneous one. 
 
@@ -108,21 +108,23 @@ Generate checksum of message m and compare with received checksum r.
 The checksum of a correctly transferred packet $T$ is 0, because a package $T$, if correctly transferred, is some quotient $Q$ times the polynomial $G$, as seen in eqref[earlier]. If a division has a zero remainder, the packet was transferred correctly.
 
 \subsection{Overloaded nodes}
-Nodes near the root transfers data for a lot of sensors. Can they handle it? Battery problems? \todo{Hvad er det her for et afsnit?}
+Nodes near the root transfers data for a lot of sensors. Can they handle it? Battery problems? \todo{elaborate regarding stressed nodes near the root of the tree(high throughput problems?)}
 
 \subsection{Interference}
-When using a flooding protocol, interference can become a problem, as explained in section \ref{cha:floodingSec}. This occurs even when using controlled flooding, but using a protocol can help reduce problems with interference.
+When using a flooding protocol, interference can become a problem\todo{or any wireless communication?}, as explained in section \ref{cha:floodingSec}. This occurs even when using controlled flooding, but using a protocol can help reduce problems with interference.
 
-Interferences might cause packets to get mixed up, which makes it impossible to use the data received. Figure \ref{fig:prottree1} shows an example of possible interference. Nodes 5, 6, and 7 could send packets at the same time, causing node 3 to get scrambled data.
+Interferences might cause packets to get mixed up, which makes it impossible to use the data received. Figure \ref{fig:prottree1} shows an example of a possible interference scenario, where nodes 5, 6, and 7 could send packets at the same time, causing node 3 to receive scrambled data.
 
 To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. If the checksums match, the packet is accepted and can be relayed to the next node. This will cause the receiving node to send an acknowledgment to the node that sent the packet, which will then stop transmitting data.
-If the checksums do not match, the packet is ignored until a packet that have the same check sum makes its way to the node.
+If the checksums do not match, the packet is ignored until a packet that have the same checksum makes its way to the node. \todo{move to checksum/data verification}
 
-To ensure that a packet with the correct check sum will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will get through to the receiver, without interference.
-This is possible, as time is not of the essence, and the delay between trying again is small.
+To ensure that a packet with the correct checksum will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will get through to the receiver, without interference.
+This is possible, as time is not essential, and the delay between trying again is short.
 
 \subsection{Sequence}
 The protocol sequence is determined as the following. A flowchart can be seen in the appendix.\todo{add flowchart to appendix}
+
+This is the operation structure for each individual node in the system.
 \begin{enumerate}
 	\item Receive data request (Wireless request for nodes, user input at the main node)
 		\subitem Ignore if (already received or not recipient of package)

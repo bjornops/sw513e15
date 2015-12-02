@@ -2,7 +2,7 @@
 This section contains information about other potential issues that have not been directly encountered through the analysis, but still could be relevant for the final system.
 
 \subsection{Power consumption contra range consideration} \label{cha:batcons}
-To be able to transmit data wirelessly, from all areas of a golf course to a main node, there has to be considerations about the wireless range of the devices.
+To be able to transmit data wirelessly, from all areas of a golf course to a main node, there has to be considerations\todo{adequate synonym} about the wireless range of the devices.
 
 Modules with a long range usually requires more power than a short range module, which would require more of a power supply. Furthermore the modules could physically become larger, because of a bigger antenna, which would increase the amount of work in burying the devices in the ground. Because of the risk of being hit, and destroyed, by either a stray golfball, or a lawn mower, it is not an option to place the entire the device above ground. Using big antennas would make it easier to establish a direct wireless connection to the main node which would be optimal communication wise.
 
@@ -13,7 +13,7 @@ In software systems it can be important to evaluate the security to avoid unauth
 
 The main functions of the system is to transmit data wirelessly through a network. Since the data is sent wirelessly, it can easily be manipulated or interfered resulting in incorrect data.
 
-Another view is the process of connecting a new device to the network. If a device is connected too easy, it could become a problem if a neighbouring network is using the same protocol which could result in the two networks exchanging data unintentionally. Another point is that a malicious device could easily inject data into the system.
+Another view is the process of connecting a new device to the network. If a device is connected too easy\todo{jesus fucking christ no}, it could become a problem if a neighbouring network is using the same protocol which could result in the two networks exchanging data unintentionally. Another point is that a malicious device could easily inject data into the system.
 
 Considering the hardware design of a measuring device, it would also be relevant to analyze if a device can be physically reconstructed to intentionally transmit malicious data to the network. Though being more a question of physical security, by preventing access to the device, this could still be relevant.
 
