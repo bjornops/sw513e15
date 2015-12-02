@@ -1,0 +1,10 @@
+\begin{table}[]
+\centering
+\caption{Dataoverview of a packet. The packet can be directly converted to 16 characters.}
+\label{packetTable}
+\begin{tabular}{lllllllllllllllll}
+\textbf{Datatype}  & \multicolumn{2}{c}{Packettype} & \multicolumn{2}{l}{uint16\_t} & \multicolumn{2}{l}{uint16\_t} & \multicolumn{2}{l}{uint16\_t} & \multicolumn{2}{l}{uint16\_t} & \multicolumn{2}{l}{uint16\_t} & \multicolumn{2}{l}{uint16\_t} & \multicolumn{2}{l}{uint16\_t} \\
+\textbf{valuename} & \multicolumn{2}{l}{packetType} & \multicolumn{2}{l}{addresser} & \multicolumn{2}{l}{addressee} & \multicolumn{2}{l}{origin}    & \multicolumn{2}{l}{sensor1}   & \multicolumn{2}{l}{sensor2}   & \multicolumn{2}{l}{sensor3}   & \multicolumn{2}{l}{checksum}  \\
+\textbf{memory}    & 8 bits         & 8 bits        & 8 bits        & 8 bits        & 8 bits        & 8 bits        & 8 bits        & 8 bits        & 8 bits        & 8 bits        & 8 bits        & 8 bits        & 8 bits        & 8 bits        & 8 bits        & 8 bits       
+\end{tabular}
+\end{table}
