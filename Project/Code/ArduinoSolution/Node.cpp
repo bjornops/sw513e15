@@ -13,6 +13,7 @@
 
 uint16_t Node::_rejectArray[REJECTSIZE] = {0};
 int      Node::_rejectCount = 0;
+unsigned long Node::_lastPacketTime;
 
 iSensor *Node::_sensor;
 iRadio  *Node::_radio;
@@ -63,12 +64,15 @@ void Node::begin()
   }
   else
   {
+    _lastPacketTime = millis();
     while (true)
     {
       // Laeser fra radio og laver til pakke
-      char *res = _radio->listen();
+      long remainingTimeToClear = (_lastPacketTime + TIMEOUT) - millis();
+      Serial.println(remainingTimeToClear);
+      char *res = _radio->listenFor((remainingTimeToClear > 0) ? remainingTimeToClear : 0);
       Packet packet(res);
-      handlePacket(packet);
+      handlePacket(packet);   
     }
   }
 }
@@ -95,35 +99,36 @@ int16_t Node::loadID()
 
 void Node::handlePacket(Packet packet)
 {
+  //Pakke modtaget, håndter pakker der kan starte "forløb"
   printf("Packet i switch: %d - %d - %d - %d \n", packet.packetType , packet.addresser, packet.addressee, packet.origin);
   switch (packet.packetType)
   {
-    case DataAcknowledgement: // Acknowledgement modtaget (Dvs. mit data er accepteret)
+    case DataRequest:
       {
-        //Dunno wut 2 do
-      }
-      break;
-    case DataRequest: // Request modtaget
-      {
+        //Kender vi parent skipper vi.
         if (parentID == -1)
         {
           printf("Har modtaget datarequest fra %d\n", packet.addresser);
+          //Vi kender nu parent.
           parentID = packet.addresser;
           
           //Prøver at sende data fra sensor. Hvis der modtages acknowledgement returneres true
           if(readPackSend())
           {
             broadcastNewDataRequest();
+            _lastPacketTime = millis();
           }
         }
       }
       break;
+      
     case Data: // Har modtaget data der skal videresendes
       {
         if (parentID != -1)
         {
           sendDataAcknowledgement(packet.addressee);
           forwardData(packet);
+          _lastPacketTime = millis();
         }
       }
       break;
@@ -133,24 +138,39 @@ void Node::handlePacket(Packet packet)
         receivedPairRequestAcknowledgement(packet.addressee);
       }
       break;
+      
     case ClearSignal: // Slet alt!
       {
         if (parentID != -1)
         {
           printf("Clearsignal mainswitch\n");
           handleClearSignal(packet);
+          _lastPacketTime = millis();
         }
       }
       break;
+      
     case PairRequest:
       {
 
       }
       break;
+    
+    //Hvis pakken er Error, DataAcknowledgement, PairRequest. Primær funktion er at levere nulstilling efter ydre listenFor() har kørt den fulde tid uden at modtage en brugbar pakke.
     default:
-      //std::cout << "Hello? Yes, this is default.";
-      // Hello default, this is broken!
-      //Nope its not - its just an error package you dumb fuck!.
+      {
+        //Hvis vi har en parent og der er timeout nu
+        if( parentID != -1 && (_lastPacketTime + TIMEOUT) - millis() > 0)
+        {
+          parentID = -1;
+          printf("Timeout now\n");
+          _lastPacketTime = millis();
+        }
+        else if(parentID == -1)
+        {
+           _lastPacketTime = millis();
+        }
+      }
       break;
   }
 }
@@ -233,7 +253,7 @@ bool Node::beginBroadcasting(Packet packet)
 
 
   unsigned int attempt = 1;
-  unsigned int attemptTime = nextExponentialBackoff(attempt);
+  unsigned long attemptTime = nextExponentialBackoff(attempt);
   unsigned long totalTime = attemptTime;
 
   printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, attemptTime);
@@ -241,26 +261,39 @@ bool Node::beginBroadcasting(Packet packet)
   {
     _radio->broadcast(packetCoding);
     
-    res = _radio->listenFor(attemptTime);
-    Packet receivedPacket(res);
-    printf("Packet: %d - %d - %d - %d \n", receivedPacket.packetType , receivedPacket.addresser, receivedPacket.addressee, receivedPacket.origin);
-
-    if (receivedPacket.packetType == DataAcknowledgement && receivedPacket.addressee == nodeID)
+    long startTime = millis();
+    long remainingTime = attemptTime;
+    while(remainingTime > 0)
     {
-      printf("Modtaget acknowledgement fra %d\n", packet.addressee);
-      return true;
-    }
-    else if (receivedPacket.packetType == ClearSignal)
-    {
-      printf("Clearsignal beginbroadcasting\n");
-      handleClearSignal(receivedPacket);
-      return false;
-    }
+      res = _radio->listenFor(remainingTime);
+      Packet receivedPacket(res);
+      printf("Packet: %d - %d - %d - %d \n", receivedPacket.packetType , receivedPacket.addresser, receivedPacket.addressee, receivedPacket.origin);
+  
+      if (receivedPacket.packetType == DataAcknowledgement && receivedPacket.addressee == nodeID)
+      {
+        printf("Modtaget acknowledgement fra %d\n", packet.addressee);
+        free(packetCoding);
+        return true;
+      }
+      
+      else if (receivedPacket.packetType == ClearSignal)
+      {
+        printf("Clearsignal beginbroadcasting\n");
+        handleClearSignal(receivedPacket);
+        free(packetCoding);
+        return false;
+      }
+      
+      remainingTime = (startTime + attemptTime) - millis();
+   }
+    
+    //fix tid.
     attempt++;
     attemptTime = nextExponentialBackoff(attempt);
     totalTime += attemptTime;
   }
   free(packetCoding);
+  return false;
 }
 
 int Node::nextExponentialBackoff(unsigned int attemptNumber)

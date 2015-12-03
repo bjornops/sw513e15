@@ -32,6 +32,7 @@ private:
     static iRadio *_radio;
     static uint16_t _rejectArray[REJECTSIZE]; 
     static int _rejectCount;
+    static unsigned long _lastPacketTime;
 
     static void receivedPairRequestAcknowledgement(int);
     static void saveID(int);
