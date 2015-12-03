@@ -8,8 +8,6 @@
 void signalHandler(int);
 void getAndSavePID();
 
-
-
 iRadio *Node::_radio;
 int Node::_currentID = 0;
 unsigned int Node::_lastPairRequestMillis = 0;
@@ -20,8 +18,10 @@ volatile sig_atomic_t Node::signalReceived = 0;
 
 int main(int argc, char* argv[])
 {
+    printf("Initializing process ...");
     signal(SIGUSR1, signalHandler);
     getAndSavePID();
+    printf("Done!\n")
 
     Node::initializeNode();
     Node::begin();
@@ -58,7 +58,7 @@ char *Node::getResultFilename()
 
     rawtime = time(NULL);
     timeinfo = localtime(&rawtime);
-    strftime(strResponse,128,"%d-%b-%Y %H:%M:%S",timeinfo); 
+    strftime(strResponse,128,"%d-%b-%Y %H:%M:%S",timeinfo);
 
     return strResponse;
 }
@@ -66,6 +66,7 @@ char *Node::getResultFilename()
 // Sætter variabler op i Node
 void Node::initializeNode()
 {
+    printf("Initializing node ... ");
     Packet::crcInit();
 
     Node::_radio = new NRF24Radio();
@@ -74,13 +75,13 @@ void Node::initializeNode()
 
     // Find kendte noder (i home/pi/wasp.conf)
     FILE *optionsFile;
-    optionsFile = fopen("/home/pi/wasp/wasp.conf", "a+"); 
+    optionsFile = fopen("/home/pi/wasp/wasp.conf", "a+");
     if(optionsFile != NULL)
     {
         int nodeID = 0;
         char nodeName[100];
-    	while(fscanf(optionsFile, "%d*%s", &nodeID, &nodeName) != EOF)
-    	{
+    	  while(fscanf(optionsFile, "%d*%s", &nodeID, &nodeName) != EOF)
+    	  {
             printf("Kendt node: %d, med navn: %s\n", nodeID, nodeName);
             Node::_receivedThisSession[nodeID] = -1;
         }
@@ -89,7 +90,7 @@ void Node::initializeNode()
     //setup rand() til brug i exponential backoff
     srand(time(NULL));
 
-    printf("Done initializing.\n");
+    printf("Done!\n");
     fflush(stdout);
 }
 
@@ -101,26 +102,34 @@ void Node::begin()
     char *res = (char *)malloc(32*sizeof(char));
     while(true)
     {
-        //Skal der sendes requests?
+        //Er flate sat så vi skal sende requests?
         if(Node::signalReceived)
         {
-            printf("Signal modtaget! - Sender requests!\n");
+            printf("Signal modtaget, sender requests ...");
             Node::sendRequest(); //Mængde af forsøg defineret i funktion.
-            printf("Signal handling overstået! - Requests sendt!\n");
+            printf("Done!\n");
             Node::signalReceived = 0;
         }
 
-        //Vent og håndter kommende pakker. Listen() returnerer en fejlpakke ved signal.
+        //Har vi modtaget fra alle noder?
+        if(Node::receivedFromAllNodes())
+        {
+            Node::saveSessionResults();
+            printf("All nodes have returned a value!\n");
+        }
+
+        //Er vi løbet tøt for tid? (TODO :p)
+        if(false)
+        {
+            Node::saveSessionResults();
+            printf("Timelimit reached!\n");
+        }
+
+        //Vent og håndter kommende pakker. listenFor() i stedet?
         res = _radio->listen();
         Packet packet(res);
         Node::handlePacket(packet);
 
-        // Er vi færdige?
-        if(Node::receivedFromAllNodes())
-        {
-            Node::saveSessionResults();
-            printf("Alt done. Yay!\n");
-        }
         fflush(stdout);
     }
 }
@@ -134,19 +143,23 @@ void Node::handlePacket(Packet packet)
             //If statement added for at sikre sig at data er tiltænkt main, og ikke en anden. Er egentligt overflødig, men bruges under debugging.
             if(packet.addressee == MAIN_NODE_ID)
             {
-                printf("Noden %d sendte node %d's værdi, som er %d.\n", packet.addresser, packet.origin, packet.sensor1);
-
                 if(Node::_receivedThisSession[packet.origin] == -1 && bcm2835_millis() - AFTER_SAVE_TIMEOUT >= Node::_lastSavedFile)
                 {
+                    printf("Received node %d's value %d from node %d\n", packet.origin, packet.sensor1, packet.addresser);
+
                     // Ikke modtaget før, så gem værdi!
                     Node::_receivedThisSession[packet.origin] = packet.sensor1;
-                }
 
-                // Send acknowledgement
-                Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
-                char *enc = ackPacket.encode();
-                _radio->broadcast(enc);
-                free(enc);
+                    // Send acknowledgement
+                    Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
+                    char *enc = ackPacket.encode();
+                    _radio->broadcast(enc);
+                    free(enc);
+                }
+                else
+                {
+                  printf("Received data from somewhere, but is not ready to handle it yet.");
+                }
             }
         }
         break;
@@ -185,12 +198,12 @@ void Node::handlePacket(Packet packet)
         case DataRequest:
             //Ignoring this, as there is no reason for this to handle realyed datarequests from subnodes.
         break;
+
         default: //Pretty much only catches error.
             // Hello? Yes, this is default.
             // Hello default, this is broken!
             // No, this is Patrick.
             // Hello Patrick. Fuck off Jonathan
-            printf("Har fået en skipable packet fra %d med typen: %d\n", packet.addresser, packet.packetType);
         break;
     }
 }
@@ -200,14 +213,12 @@ void Node::saveSessionResults()
 {
     Node::_lastSavedFile = bcm2835_millis();
 
-    printf("Ikke mere data at indsamle, gemmer.\n");
-
     char path[200] = "/home/pi/wasp/results/";
     char *name = getResultFilename();
     strcat(path,name);
     FILE *resFile = fopen(path, "w");
 
-    //Lav fil med data
+    printf("Saving results ... ");
     if(resFile != NULL)
     {
         std::map<int, int>::iterator it;
@@ -216,31 +227,32 @@ void Node::saveSessionResults()
             fprintf(resFile, "%d:%d\n", it->first, it->second);
         }
         fclose(resFile);
-        printf("%s successfuldt gemt!\n",path);
+        printf("Done! (%s)\n",path);
 
         //Lav ping-fil med information om skabt fil
         char pingPath[100] = "/var/www/html/ping.txt";
 
         FILE *pingFile = fopen(pingPath, "w");
+
+        printf("Saving ping-file ... ");
         if(pingFile != NULL)
         {
             fprintf(pingFile,"%s",name);
             fclose(pingFile);
-            printf("%s successfuldt gemt!\n",pingPath);
+            printf("Done! (%s)\n",pingPath);
         }
         else
         {
-            printf("Noget gik galt under skrivning til %s\n",pingPath);
+            printf("ERROR");
         }
     }
     else
     {
-        printf("Noget gik galt under skrivning til %s\n",path);
+        printf("ERROR");
     }
-
     fflush(stdout);
-
     free(name);
+
     Node::clearSession();
 }
 
@@ -269,7 +281,7 @@ void Node::clearSession()
         _radio->broadcast(enc);
 
         // Backoff
-        nextExponentialBackoffDelay(i);
+        bcm2835_delay(nextExponentialBackoffDelay(i));
     }
     printf("Done\n");
 
@@ -279,19 +291,19 @@ void Node::clearSession()
 
 bool Node::receivedFromAllNodes()
 {
-    bool done = true;
+    bool isDone = true;
 
     std::map<int, int>::iterator it;
     for (it = Node::_receivedThisSession.begin(); it != Node::_receivedThisSession.end(); it++)
     {
         if(it->second == -1)
         {
-            done = false;
+            isDone = false;
             break;
         }
     }
 
-    return done;
+    return isDone;
 }
 
 void Node::sendRequest()
@@ -302,6 +314,9 @@ void Node::sendRequest()
     Packet requestPacket(DataRequest, 0, MAIN_NODE_ID, 0, (int)_receivedThisSession.size(), 0, 0);
     char *enc = requestPacket.encode();
 
+    //temp packet
+    char *res = (char *)malloc(32*sizeof(char));
+
     //Try it
     for (int i = 1; i <= attemptsToDo; i++)
     {
@@ -309,16 +324,20 @@ void Node::sendRequest()
         _radio->broadcast(enc);
 
         // Backoff
-        nextExponentialBackoffDelay(i);
+        res = _radio->listenFor(nextExponentialBackoffDelay(i));
+        Packet packet(res);
+        Node::handlePacket(packet);
     }
 
     //Ryd op
     free(enc);
+    free(res);
 }
 
-void Node::nextExponentialBackoffDelay(int attemptNumber)
+unsigned int Node::nextExponentialBackoffDelay(int attemptNumber)
 {
     //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
-    int delay = (rand() % (1<<(attemptNumber-1))) + 1;
-    bcm2835_delay(delay);
+    return (unsigned int) ( ( rand() % ( 1 << ( attemptNumber - 1 ) ) ) + 1 );
+    /*int delay = (rand() % (1<<(attemptNumber-1))) + 1;
+    bcm2835_delay(delay);*/
 }

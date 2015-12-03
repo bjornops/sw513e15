@@ -17,25 +17,25 @@ class Node
 {
 public:
     static volatile sig_atomic_t signalReceived;
-    
+
     static void initializeNode();
     static void begin();
     static void sendRequest();
-    
-    
+
+
 private:
     // ID generating
     static int _currentID;
     static unsigned int _lastPairRequestMillis;
     static unsigned int _lastSavedFile;
-    
+
     // Current 'session'
     static std::map<int, int> _receivedThisSession;
 
     // misc.
     static iRadio *_radio;
 
-    static void nextExponentialBackoffDelay(int);
+    static unsigned int nextExponentialBackoffDelay(int);
     static void handlePacket(Packet);
     static bool receivedFromAllNodes();
     static char *getResultFilename();
