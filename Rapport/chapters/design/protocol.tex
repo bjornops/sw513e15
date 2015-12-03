@@ -33,9 +33,17 @@ Flooding will only handle one packet, but the nodes can receive the same packet 
 
 The controlled flooding has a low memory impact and thus best suited for the solution. The flooding protocol will create a tree which can be utilized to create a return path for the nodes' sensor readings.
 
-The tree created in each request broadcast can be different, based on interference, removed or faulty nodes or by other occurrences. 
-This will effectively solve the requirement of respond appropriately to a disconnecting node as well as including new nodes in the network. 
-It will also use the shortest paths to every node, due to each node connecting to its immediate neighbors. 
+\begin{figure}[h!]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[scale=0.4]{chapters/design/figures/branchExample.png}}
+	\caption{The trees structure can vary depending on the node that connects to the main node first.}
+	\label{fig:treeVariation}
+\end{figure}
+
+The tree created in each request broadcast can vary in its structure, depending on interference, removal of nodes or faulty nodes or by other occurrences. \figref{treeVariation} shows an example of how the tree can vary: first the main node will broadcast "request 1", which is received by both "node 1" and "node 2". An external node in the system will always handle its own sensor data before it starts relaying data from other nodes. If the main node receives data from "node 1" first, then the resulting tree will match the tree seen to the left if \figref{treeVariation}. If "node 2" connects to the main node first, then the tree will match the tree on the right.
+This will effectively solve the requirement of respond appropriately to a disconnecting node as well as including new nodes in the network, since a new tree is constructed with each wave of requests from the main node.
+It will also use the shortest paths to every node, due to each node connecting to its immediate neighbors.
+
 
 The tree instantiated by the flood, can be used to create a path from each node to the main node.
 The receiver of a request signal can use the sender as the parent when data is to be returned.
