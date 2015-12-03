@@ -1,4 +1,4 @@
-\section{Protocol design}\label{cha:protocolDesign}
+\section{Protocol communication}\label{cha:protocolDesign}
 \todo{be more humble, analytic and include possibilities or explain why omitted}
 To transmit the data from the nodes to the main node, a protocol must be implemented.
 The protocol must support the utilized hardware components and be designed to work within their limitations. 
@@ -44,7 +44,6 @@ The tree created in each request broadcast can vary in its structure, depending 
 This will effectively solve the requirement of respond appropriately to a disconnecting node as well as including new nodes in the network, since a new tree is constructed with each wave of requests from the main node.
 It will also use the shortest paths to every node, due to each node connecting to its immediate neighbors.
 
-
 The tree instantiated by the flood, can be used to create a path from each node to the main node.
 The receiver of a request signal can use the sender as the parent when data is to be returned.
 The child will then repeat the request signal, and be the parent of nodes hearing it.
@@ -52,15 +51,70 @@ The child will then repeat the request signal, and be the parent of nodes hearin
 The topology of the network will effectively be a tree, although prone to changes in branches.
 Any node receiving a request signal will then be able to respond to its parent, causing all nodes to have a single identifier for the routing towards the destination node, the main node.
 
+\subsection{Sequence}
+The protocol sequence is determined as the following. A flowchart can be seen in the appendix.\todo{add flowchart to appendix}
+
+This is the operation structure for each individual node in the system.
+\begin{enumerate}
+	\item Receive data request (Wireless request for nodes, user input at the main node)
+	\subitem Ignore if (already received or not recipient of package)
+	\item Remember parent (MN skip)
+	\item Acquire sensor data
+	\item Send sensor data to parent (if silence?)
+	\item Receive acknowledgment of sent package
+	\item Send data request to all
+	\item Receive data from children
+	\item If no response or acknowledgment within 10 min: (deep) sleep?
+\end{enumerate}
+
+\subsection{Interference handling} \label{cha:crcDesign}
+When using a flooding protocol, interference can become a problem\todo{or any wireless communication?}, as explained in section \ref{cha:floodingSec}. This occurs even when using controlled flooding, but using a protocol can help reduce problems with interference.
+
+Interference might scramble packets, which makes it impossible to use the data received. Figure \ref{fig:prottree1} shows an example of a possible interference scenario, where nodes 5, 6, and 7 could send packets at the same time, causing node 3 to receive scrambled data.
+
+To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. If the checksums match, the packet is accepted and can be relayed to the next node. This will cause the receiving node to send an acknowledgment to the node that sent the packet, which will then stop transmitting data.
+If the checksums do not match, the packet is ignored until a packet that have the same checksum makes its way to the node. \todo{move to checksum/data verification}
+
+To ensure that a packet with the correct checksum will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will be transmitted to the receiver without interference.
+This is possible, as time is not essential, and the delay between trying again is short.
 
 
-\subsection{Packet data and allocation}
-This section will contain elaborations regarding the data to be used in the protocol.\todo{explain "packet" somewhere earlier?}
+\subsection*{Example}
+The protocol uses flooding to distribute the data request through the network. 
+When data is requested by the user, the main node sends a packet containing a sensor reading request. 
+The nodes that receive this packet directly from the main node is the first level of nodes in the tree, as seen in figure \ref{fig:prottree1}. 
+These nodes then read the moisture values from their sensors and transmit these back to the main node. 
 
+The first level nodes then request data from the nodes within their range. 
+The nodes receiving this request firstly verifies that it is a new request, then registers the node that requested data as its parent. 
+These nodes are second level nodes. The second level nodes read from the sensors, and sends data back to their parents. The parents then relay the data to the main node. 
+This procedure continues until all reachable sensors have relayed data back to the main node.
+An illustration showing an example of a tree is seen on Figure \ref{fig:prottree1}.
+
+For each new data request from the main node the tree structure and node levels are assessed again as they might have changed, due to new or disconnected nodes.
+
+\begin{figure}[!h]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth]{chapters/design/figures/prottree1.png}}
+	\caption{Example of a tree.}
+	\label{fig:prottree1}
+\end{figure}
+
+
+
+
+
+
+
+
+\section{Protocol packet}
+This section covers the descriptions and decisions regarding the packets in the system.
+
+
+\subsubsection{Packet types}
 There are multiple types of data needed to make a functioning protocol. The nRF24L01 supports data payloads up to 32 bytes, and is accordingly the limit of data to transfer in each packet.
 Although, a decrease in amount of data can enable the protocol to be implemented on more limited hardware in addition to use less energy on broadcast.
 
-\subsubsection{Packet types}
 There are five types of packages: pair request, data request, data response, acknowledgment and flush?
 These are used to tell the receiver what kind of data the packet contains, so that the receiving node can decide how to handle the received packet. 1 byte will be sufficient to store the packet type.
 The five packet types are described followingly.
@@ -108,6 +162,12 @@ The readings of the moisture sensor have a resolution of 1024 values, and the re
 The sizes of the different data to transfer sums up to 16 bytes and the distribution is displayed in \figref{dataalloc}.
 
 
+\subsection{Packet data and allocation}
+This section will contain elaborations regarding the data to be used in the protocol.\todo{explain "packet" somewhere earlier?}
+
+
+
+
 \subsection{Verification of a message}
 %Verification of a message
 The received message is verified by doing one of the two following methods. 
@@ -115,56 +175,8 @@ The received message is verified by doing one of the two following methods.
 Generate checksum of message m and compare with received checksum r.
 The checksum of a correctly transferred packet $T$ is 0, because a package $T$, if correctly transferred, is some quotient $Q$ times the polynomial $G$, as seen in eqref[earlier]. If a division has a zero remainder, the packet was transferred correctly.
 
-\subsection{Overloaded nodes}
-Nodes near the root transfers data for a lot of sensors. Can they handle it? Battery problems? \todo{elaborate regarding stressed nodes near the root of the tree(high throughput problems?)}
 
-\subsection{Interference} \label{cha:crcDesign}
-When using a flooding protocol, interference can become a problem\todo{or any wireless communication?}, as explained in section \ref{cha:floodingSec}. This occurs even when using controlled flooding, but using a protocol can help reduce problems with interference.
 
-Interference might scramble packets, which makes it impossible to use the data received. Figure \ref{fig:prottree1} shows an example of a possible interference scenario, where nodes 5, 6, and 7 could send packets at the same time, causing node 3 to receive scrambled data.
-
-To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. If the checksums match, the packet is accepted and can be relayed to the next node. This will cause the receiving node to send an acknowledgment to the node that sent the packet, which will then stop transmitting data.
-If the checksums do not match, the packet is ignored until a packet that have the same checksum makes its way to the node. \todo{move to checksum/data verification}
-
-To ensure that a packet with the correct checksum will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will be transmitted to the receiver without interference.
-This is possible, as time is not essential, and the delay between trying again is short.
-
-\subsection{Sequence}
-The protocol sequence is determined as the following. A flowchart can be seen in the appendix.\todo{add flowchart to appendix}
-
-This is the operation structure for each individual node in the system.
-\begin{enumerate}
-	\item Receive data request (Wireless request for nodes, user input at the main node)
-		\subitem Ignore if (already received or not recipient of package)
-	\item Remember parent (MN skip)
-	\item Acquire sensor data
-	\item Send sensor data to parent (if silence?)
-	\item Receive acknowledgment of sent package
-	\item Send data request to all
-	\item Receive data from children
-	\item If no response or acknowledgment within 10 min: (deep) sleep?
-\end{enumerate}
-
-\subsection*{Example}
-The protocol uses flooding to distribute the data request through the network. 
-When data is requested by the user, the main node sends a packet containing a sensor reading request. 
-The nodes that receive this packet directly from the main node is the first level of nodes in the tree, as seen in figure \ref{fig:prottree1}. 
-These nodes then read the moisture values from their sensors and transmit these back to the main node. 
-
-The first level nodes then request data from the nodes within their range. 
-The nodes receiving this request firstly verifies that it is a new request, then registers the node that requested data as its parent. 
-These nodes are second level nodes. The second level nodes read from the sensors, and sends data back to their parents. The parents then relay the data to the main node. 
-This procedure continues until all reachable sensors have relayed data back to the main node.
-An illustration showing an example of a tree is seen on Figure \ref{fig:prottree1}.
-
-For each new data request from the main node the tree structure and node levels are assessed again as they might have changed, due to new or disconnected nodes.
-
-\begin{figure}[!h]
-	\centering
-	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth]{chapters/design/figures/prottree1.png}}
-	\caption{Example of a tree.}
-	\label{fig:prottree1}
-\end{figure}
 
 \subsection{Adding and removing nodes}
 If a new node is to be added to the network, it needs an identifier in the system so that its sensor reading can be recognized. The identifier is permanent as long as it is in the network.
