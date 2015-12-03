@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Node.h"
 
 #ifndef PACKET_H
 #define PACKET_H
@@ -26,6 +25,7 @@ enum PacketType : uint16_t {
 class Packet
 {
 public:
+    //fields
     PacketType packetType;
     uint16_t addresser;
     uint16_t addressee;
@@ -34,11 +34,17 @@ public:
     uint16_t sensor2;
     uint16_t sensor3;
     uint16_t checksum;
-    
+   
+    //crc 
+    static unsigned short crcTable[256];
+    static void crcInit();
+
+    //methods
     char *encode();
     bool verified();
     void updateChecksum();
     
+    //constructors
     Packet(char *);
     Packet(PacketType, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t);
 
