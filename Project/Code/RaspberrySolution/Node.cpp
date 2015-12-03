@@ -67,11 +67,11 @@ char *Node::getResultFilename()
 void Node::initializeNode()
 {
     Node::crcInit();
-    
+
     Node::_radio = new NRF24Radio();
     Node::_lastPairRequestMillis = bcm2835_millis();
     Node::_lastSavedFile = bcm2835_millis();
-    
+
     // Find kendte noder (i home/pi/wasp.conf)
     FILE *optionsFile;
     optionsFile = fopen("/home/pi/wasp/wasp.conf", "a+"); 
@@ -88,7 +88,7 @@ void Node::initializeNode()
 
     //setup rand() til brug i exponential backoff
     srand(time(NULL));
-    
+
     printf("Done initializing.\n");
     fflush(stdout);
 }
@@ -100,7 +100,7 @@ void Node::begin()
     // Læser fra radio
     char *res = (char *)malloc(32*sizeof(char));
     while(true)
-    {    
+    {
         //Skal der sendes requests?
         if(Node::signalReceived)
         {
@@ -121,7 +121,6 @@ void Node::begin()
             Node::saveSessionResults();
             printf("Alt done. Yay!\n");
         }
-        
         fflush(stdout);
     }
 }
@@ -134,13 +133,13 @@ void Node::handlePacket(Packet packet)
         case Data: // Har modtaget data der skal gemmes!
         {
             printf("Noden %d sendte værdien %d.\n", packet.origin, packet.sensor1);
-            
+
             if(Node::_receivedThisSession[packet.origin] == -1)
             {
                 // Ikke modtaget før, så gem værdi!
                 Node::_receivedThisSession[packet.origin] = packet.sensor1;
             }
-            
+
             // Send acknowledgement
             Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
             char *enc = ackPacket.encode();
@@ -148,7 +147,7 @@ void Node::handlePacket(Packet packet)
             free(enc);
         }
         break;
-        
+
         case PairRequest: // En eller anden stakkel vil gerne have et ID.
         {
             // Skal der genereres et nyt ID?
@@ -159,7 +158,7 @@ void Node::handlePacket(Packet packet)
                 printf("Genererer nyt ID til node: %d\n", _currentID);
                 fflush(stdout);
             }
-                
+
             _lastPairRequestMillis = bcm2835_millis();
             Packet ackPacket(PairRequestAcknowledgement, 0, _currentID, 0, 0, 0, 0);
             char *enc = ackPacket.encode();
@@ -167,10 +166,11 @@ void Node::handlePacket(Packet packet)
             free(enc);
         }
         break;
-        
+
         case ClearSignal:
+            //This is here to do nothing on received clearsignals, relayed by the subnodes.
         break;
-        
+
         case PairRequestAcknowledgement:
         case DataAcknowledgement:
         case DataRequest:
@@ -192,28 +192,27 @@ void Node::saveSessionResults()
 	{
 		Node::_lastSavedFile = currentMillis;
 		Node::clearSession();
-		
+
 		return;
 	}
-	
     printf("Ikke mere data at indsamle, gemmer.\n");
-    
+
     char path[200] = "/home/pi/wasp/results/";
     char *name = getResultFilename();
     strcat(path,name);
     FILE *resFile = fopen(path, "w");
-    
+
     //Lav fil med data
-    if(resFile != NULL) 
+    if(resFile != NULL)
     {
         std::map<int, int>::iterator it;
         for (it = Node::_receivedThisSession.begin(); it != Node::_receivedThisSession.end(); it++)
         {
             fprintf(resFile, "%d:%d\n", it->first, it->second);
-        }        
+        }
         fclose(resFile);
         printf("%s successfuldt gemt!\n",path);
-        
+
         //Lav ping-fil med information om skabt fil
         char pingPath[100] = "/var/www/html/ping.txt";
 
@@ -251,8 +250,8 @@ void Node::clearSession()
     }
 
     // Clear request!
-    int attemptsToDo = 6;
-    
+    int attemptsToDo = 12; //Magisk udvalgt på baggrund af... stuff. 6 er i hvert fald for lidt.
+
     //Byg pakke
     Packet clearPacket(ClearSignal, 0, MAIN_NODE_ID, 0, 0, 0, 0);
     char *enc = clearPacket.encode();
@@ -263,11 +262,11 @@ void Node::clearSession()
 	    printf("Sender clear\n");
         // Broadcast
         _radio->broadcast(enc);
-        
+
         // Backoff
         nextExponentialBackoffDelay(i);
     }
-    
+
     //Ryd op
     free(enc);
 }
@@ -275,7 +274,7 @@ void Node::clearSession()
 bool Node::receivedFromAllNodes()
 {
     bool done = true;
-    
+
     std::map<int, int>::iterator it;
     for (it = Node::_receivedThisSession.begin(); it != Node::_receivedThisSession.end(); it++)
     {
@@ -285,14 +284,14 @@ bool Node::receivedFromAllNodes()
             break;
         }
     }
-    
+
     return done;
 }
 
 void Node::sendRequest()
 {
     int attemptsToDo = 6;
-    
+
     //Byg pakke
     Packet requestPacket(DataRequest, 0, MAIN_NODE_ID, (int)_receivedThisSession.size(), 0, 0, 0);
     char *enc = requestPacket.encode();
@@ -302,17 +301,17 @@ void Node::sendRequest()
     {
         // Broadcast
         _radio->broadcast(enc);
-        
+
         // Backoff
         nextExponentialBackoffDelay(i);
     }
-    
+
     //Ryd op
     free(enc);
 }
 
 void Node::nextExponentialBackoffDelay(int attemptNumber)
-{   
+{
     //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
     int delay = (rand() % (1<<(attemptNumber-1))) + 1;
     bcm2835_delay(delay);
