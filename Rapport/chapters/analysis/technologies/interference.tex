@@ -1,9 +1,9 @@
-\subsection{Exponential Backoff}\label{cha:expbackoff}
+\section{Exponential Backoff}\label{cha:expbackoff}
 The technique \textit{exponential backoff} is a method used for handling interference or collisions. This technique works by incrementing the interval between sending packets, which at some points means the packet will get transferred without any other node interfering. 
 
 For example, if node 1 and 2 are trying to relay data to the main node at the same time, the packet may get corrupt and are therefore not usable. This means that neither node 1 or 2 will get an acknowledgment, and they will both continue sending data. Though, instead of sending data right away, they will wait a small, random but increasing, amount of time before sending again.\todo{move to protocol design}
 
-A sequence of intervals on a node could be the following: Initial packet sent, wait 1 ms., next package sent, wait 2 ms.,  next package sent, wait 4 ms., next package sent, wait 6 ms. and so on. This continues until the node receives an acknowledgement.
+A sequence of intervals on a node could be the following: Initial packet sent, wait 1 ms., next package sent, wait 2 ms.,  next package sent, wait 4 ms., next package sent, wait 6 ms. and so on. This continues until the node receives an acknowledgement.\todo{fix mundtlig sprog}
 
 A random number is needed as the nodes need different intervals. If both nodes have the same interval each time, the packets will continue colliding and the data will never transmit correctly. The random number greatly improve\todo{source for greatly, plox ;)} the chances that, at some point, one of the sensors will send when the other is waiting. Resulting in the packet being readable.\todo{incomplete sentence}
 

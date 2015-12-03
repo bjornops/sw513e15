@@ -16,7 +16,6 @@ class Packet;
 class Node
 {
 public:
-    static unsigned short crcTable[256];
     static volatile sig_atomic_t signalReceived;
     
     static void initializeNode();
@@ -37,7 +36,6 @@ private:
     static iRadio *_radio;
 
     static void nextExponentialBackoffDelay(int);
-    static void crcInit();
     static void handlePacket(Packet);
     static bool receivedFromAllNodes();
     static char *getResultFilename();
