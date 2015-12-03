@@ -1,7 +1,7 @@
 #include "Packet.h"
 
 // Static declarations
-unsigned short Node::crcTable[256];
+unsigned short Packet::crcTable[256];
 
 Packet::Packet(char *input)
 {
@@ -49,7 +49,7 @@ bool Packet::verified()
         free(encoded);
         return true;
     }
-    
+
     free(encoded);
 
     this->packetType = Error;
@@ -86,7 +86,7 @@ uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
 }
 
 // Fill crcTable with values
-void Node::crcInit()
+void Packet::crcInit()
 {
     unsigned short remainder; // 2 byte remainder (according to CRC16/CCITT standard)
     unsigned short dividend;  // What are you?
@@ -107,6 +107,6 @@ void Node::crcInit()
 		        remainder = remainder << 1;//scooch and do nothing (MSB = 0, move along)
 	        }
 	    }
-    	crcTable[dividend] = remainder;//save current crc value in crcTable
+    	Packet::crcTable[dividend] = remainder;//save current crc value in crcTable
     }
 }
