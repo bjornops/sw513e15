@@ -47,7 +47,7 @@ private:
     static bool checkRejectArray(uint16_t);
     static void sendDataAcknowledgement(uint16_t);
     static void forwardData(Packet);
-    static void broadcastNewDataRequest();
+    static void broadcastNewDataRequest(int);
 };
 
 #endif

@@ -6,6 +6,7 @@
 Packet::Packet(char *input)
 {
     decode(input);
+    printf("Packet string constructor: %d - %d - %d - %d \n", this->packetType , this->addresser, this->addressee, this->origin);
     verified();
 }
 
@@ -22,6 +23,8 @@ Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t add
     unsigned char *temp = (unsigned char *)encode();
     this->checksum = getChecksum(temp, 14);
     free(temp);
+    
+    printf("Packet constructor: %d - %d - %d - %d \n", this->packetType , this->addresser, this->addressee, this->origin);
 }
 
 char *Packet::encode()

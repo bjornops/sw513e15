@@ -100,13 +100,13 @@ int16_t Node::loadID()
 void Node::handlePacket(Packet packet)
 {
   //Pakke modtaget, håndter pakker der kan starte "forløb"
-  printf("Packet i switch: %d - %d - %d - %d \n", packet.packetType , packet.addresser, packet.addressee, packet.origin);
+  //printf("Packet i switch: %d - %d - %d - %d \n", packet.packetType , packet.addresser, packet.addressee, packet.origin);
   switch (packet.packetType)
   {
     case DataRequest:
       {
-        //Kender vi parent skipper vi.
-        if (parentID == -1)
+        //Kender vi parent skipper vi. Er lifespan på en request 0 eller mindre skipper vi også.
+        if (parentID == -1 && packet.sensor1 > 0 /*&& packet.addresser != 0*/)
         {
           printf("Har modtaget datarequest fra %d\n", packet.addresser);
           //Vi kender nu parent.
@@ -115,7 +115,7 @@ void Node::handlePacket(Packet packet)
           //Prøver at sende data fra sensor. Hvis der modtages acknowledgement returneres true
           if(readPackSend())
           {
-            broadcastNewDataRequest();
+            broadcastNewDataRequest((packet.sensor1 - 1));
             _lastPacketTime = millis();
           }
         }
@@ -175,31 +175,47 @@ void Node::handlePacket(Packet packet)
   }
 }
 
-void Node::broadcastNewDataRequest()
+void Node::broadcastNewDataRequest(int remainingLifespan)
 {
   char *res;
 
 
   //Byg pakke
-  Packet requestPacket(DataRequest, nodeID, 0, 0, 0, 0, 0);
+  Packet requestPacket(DataRequest, nodeID, 0, 0, remainingLifespan, 0, 0);
   char *enc = requestPacket.encode();
+  unsigned int attempt = 1;
+  unsigned long attemptTime = nextExponentialBackoff(attempt++);
+  unsigned long totalTime = attemptTime;
   
   for (int i = 1; i <= REQUEST_AND_CLEAR_ATTEMPTS; i++)
   {
     // Broadcast
     _radio->broadcast(enc);
-
-    // Backoff
-    res = _radio->listenFor(nextExponentialBackoff(i));
-    Packet receivedPacket(res);
-
-    printf("Packet i newdatarequest: %d - %d - %d - %d \n", receivedPacket.packetType , receivedPacket.addresser, receivedPacket.addressee, receivedPacket.origin);
-    if (receivedPacket.packetType == ClearSignal)
+    
+    long startTime = millis();
+    long remainingTime = attemptTime;
+    while(remainingTime > 0)
     {
-      printf("Clearsignal newdatarequest\n");
-      handleClearSignal(receivedPacket);
-      break;
+      res = _radio->listenFor(remainingTime);
+
+      // Backoff
+      res = _radio->listenFor(nextExponentialBackoff(i));
+      Packet receivedPacket(res);
+  
+      //printf("Packet i newdatarequest: %d - %d - %d - %d \n", receivedPacket.packetType , receivedPacket.addresser, receivedPacket.addressee, receivedPacket.origin);
+      if (receivedPacket.packetType == ClearSignal)
+      {
+        printf("Clearsignal newdatarequest\n");
+        handleClearSignal(receivedPacket);
+        break;
+      }
+      remainingTime = (startTime + attemptTime) - millis();
     }
+    
+    
+    //fix tid.
+    attemptTime = nextExponentialBackoff(attempt++);
+    totalTime += attemptTime;
   }
 
   //Ryd op
@@ -267,7 +283,7 @@ bool Node::beginBroadcasting(Packet packet)
     {
       res = _radio->listenFor(remainingTime);
       Packet receivedPacket(res);
-      printf("Packet: %d - %d - %d - %d \n", receivedPacket.packetType , receivedPacket.addresser, receivedPacket.addressee, receivedPacket.origin);
+      //printf("Packet: %d - %d - %d - %d \n", receivedPacket.packetType , receivedPacket.addresser, receivedPacket.addressee, receivedPacket.origin);
   
       if (receivedPacket.packetType == DataAcknowledgement && receivedPacket.addressee == nodeID)
       {
