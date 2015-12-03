@@ -3,9 +3,12 @@
 #define MAIN_NODE_ID 0
 #define REQUEST_GENERATE_ID_TIMER 5000
 #define FILE_SAVE_TIMER 10000
+#define AFTER_SAVE_TIMEOUT 10000 //3sec for lulz
 
 void signalHandler(int);
 void getAndSavePID();
+
+
 
 iRadio *Node::_radio;
 int Node::_currentID = 0;
@@ -54,7 +57,7 @@ char *Node::getResultFilename()
     char *strResponse = (char *)calloc(128,1);
 
     rawtime = time(NULL);
-    timeinfo = localtime(&rawtime);  
+    timeinfo = localtime(&rawtime);
     strftime(strResponse,128,"%d-%b-%Y %H:%M:%S",timeinfo); 
 
     return strResponse;
@@ -124,24 +127,27 @@ void Node::begin()
 
 void Node::handlePacket(Packet packet)
 {
-    printf("Handler packet...\n");
     switch(packet.packetType)
     {
         case Data: // Har modtaget data der skal gemmes!
         {
-            printf("Noden %d sendte værdien %d.\n", packet.origin, packet.sensor1);
-
-            if(Node::_receivedThisSession[packet.origin] == -1)
+            //If statement added for at sikre sig at data er tiltænkt main, og ikke en anden. Er egentligt overflødig, men bruges under debugging.
+            if(packet.addressee == MAIN_NODE_ID)
             {
-                // Ikke modtaget før, så gem værdi!
-                Node::_receivedThisSession[packet.origin] = packet.sensor1;
-            }
+                printf("Noden %d sendte node %d's værdi, som er %d.\n", packet.addresser, packet.origin, packet.sensor1);
 
-            // Send acknowledgement
-            Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
-            char *enc = ackPacket.encode();
-            _radio->broadcast(enc);
-            free(enc);
+                if(Node::_receivedThisSession[packet.origin] == -1 && bcm2835_millis() - AFTER_SAVE_TIMEOUT >= Node::_lastSavedFile)
+                {
+                    // Ikke modtaget før, så gem værdi!
+                    Node::_receivedThisSession[packet.origin] = packet.sensor1;
+                }
+
+                // Send acknowledgement
+                Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
+                char *enc = ackPacket.encode();
+                _radio->broadcast(enc);
+                free(enc);
+            }
         }
         break;
 
@@ -169,14 +175,22 @@ void Node::handlePacket(Packet packet)
         break;
 
         case PairRequestAcknowledgement:
+            //Should not happen as only this node sends these.
+        break;
+
         case DataAcknowledgement:
+            //No acknowledgements are aimed at this node, as this node never sends data to get acknowledged. Acknowledgements for other nodes are ignored.
+        break;
+
         case DataRequest:
-        default:
+            //Ignoring this, as there is no reason for this to handle realyed datarequests from subnodes.
+        break;
+        default: //Pretty much only catches error.
             // Hello? Yes, this is default.
             // Hello default, this is broken!
             // No, this is Patrick.
             // Hello Patrick. Fuck off Jonathan
-            printf("Har fået default pakke fra %d med typen: %d\n", packet.addresser, packet.packetType);
+            printf("Har fået en skipable packet fra %d med typen: %d\n", packet.addresser, packet.packetType);
         break;
     }
 }
@@ -184,14 +198,8 @@ void Node::handlePacket(Packet packet)
 // Gemmer denne sessions resulteter
 void Node::saveSessionResults()
 {
-	unsigned int currentMillis = bcm2835_millis();
-	if(currentMillis - Node::_lastSavedFile <= FILE_SAVE_TIMER)
-	{
-		Node::_lastSavedFile = currentMillis;
-		Node::clearSession();
+    Node::_lastSavedFile = bcm2835_millis();
 
-		return;
-	}
     printf("Ikke mere data at indsamle, gemmer.\n");
 
     char path[200] = "/home/pi/wasp/results/";
@@ -239,7 +247,7 @@ void Node::saveSessionResults()
 // Renser section
 void Node::clearSession()
 {
-	printf("Clearer session!\n");
+	printf("Rydder data!\n");
     std::map<int, int>::iterator it;
     for (it = Node::_receivedThisSession.begin(); it != Node::_receivedThisSession.end(); it++)
     {
@@ -253,16 +261,17 @@ void Node::clearSession()
     Packet clearPacket(ClearSignal, 0, MAIN_NODE_ID, 0, 0, 0, 0);
     char *enc = clearPacket.encode();
 
+    printf("Sender clear packets .. ");
     //Try it
     for (int i = 1; i <= attemptsToDo; i++)
     {
-	    printf("Sender clear\n");
         // Broadcast
         _radio->broadcast(enc);
 
         // Backoff
         nextExponentialBackoffDelay(i);
     }
+    printf("Done\n");
 
     //Ryd op
     free(enc);
