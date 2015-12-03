@@ -11,13 +11,13 @@ Packet::Packet(char *input)
 This class is passed around in \textit{Node}, where it is used to determine actions based on the type, or being relayed with some new data. 
 The class itself contains the variables:
 \begin{lstlisting}
-PacketType packetType;
-uint16_t addresser;
-uint16_t addressee;
-uint16_t origin;
-uint16_t sensor1;
-uint16_t sensor2;
-uint16_t sensor3;
+PacketType packetType; // The type of the packet
+uint16_t addresser; // The sender of the packet (node ID)
+uint16_t addressee; // The receiver of the packet (node ID)
+uint16_t origin; // The original sender of the packet
+uint16_t sensor1; // Sensor 1 value 
+uint16_t sensor2; // Sensor 2 value
+uint16_t sensor3; // Sensor 3 value
 uint16_t checksum;
 \end{lstlisting}
 These values cover everything in a packet; the type, the sender, the receiver, the origin of the packet, values and a checksum.
