@@ -293,7 +293,7 @@ void Node::sendRequest()
     int attemptsToDo = 6;
 
     //Byg pakke
-    Packet requestPacket(DataRequest, 0, MAIN_NODE_ID, (int)_receivedThisSession.size(), 0, 0, 0);
+    Packet requestPacket(DataRequest, 0, MAIN_NODE_ID, 0, (int)_receivedThisSession.size(), 0, 0);
     char *enc = requestPacket.encode();
 
     //Try it
