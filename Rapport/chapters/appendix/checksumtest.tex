@@ -1,0 +1,73 @@
+\chapter{Checksum test code} \label{cha:checksumtest}
+\begin{lstlisting}[language=C]
+// Create packet
+Packet checkPacket(Data, 1, 2, 3, 4, 5, 6);
+
+if(checkPacket.checksumMatches())
+{
+    std::cout << "Packet is valid after initializing" << std::endl;
+}
+
+// Change values and check if packet is still correct
+// PacketType
+checkPacket.packetType = DataRequest;
+if(!checkPacket.checksumMatches())
+{
+    std::cout << "Packet is incorrect after changing packetType" << std::endl;
+}
+checkPacket.packetType = Data;
+
+// Addresser
+checkPacket.addresser = 2;
+if(!checkPacket.checksumMatches())
+{
+    std::cout << "Packet is incorrect after changing addresser" << std::endl;
+}
+checkPacket.addresser = 1;
+
+// Addressee
+checkPacket.addressee = 1;
+if(!checkPacket.checksumMatches())
+{
+    std::cout << "Packet is incorrect after changing addressee" << std::endl;
+}
+checkPacket.addressee = 2;
+
+// Origin
+checkPacket.origin = 1;
+if(!checkPacket.checksumMatches())
+{
+    std::cout << "Packet is incorrect after changing origin" << std::endl;
+}
+checkPacket.origin = 3;
+
+// Sensor 1
+checkPacket.sensor1 = 1;
+if(!checkPacket.checksumMatches())
+{
+    std::cout << "Packet is incorrect after changing sensor1" << std::endl;
+}
+checkPacket.sensor1 = 4;
+
+// Sensor 2
+checkPacket.sensor2 = 1;
+if(!checkPacket.checksumMatches())
+{
+    std::cout << "Packet is incorrect after changing sensor2" << std::endl;
+}
+checkPacket.sensor2 = 5;
+
+// Sensor 3
+checkPacket.sensor3 = 1;
+if(!checkPacket.checksumMatches())
+{
+    std::cout << "Packet is incorrect after changing sensor3" << std::endl;
+}
+checkPacket.sensor3 = 6;
+
+// Test again with default values
+if(checkPacket.checksumMatches())
+{
+    std::cout << "Packet is correct with default values" << std::endl;
+}
+\end{lstlisting}
