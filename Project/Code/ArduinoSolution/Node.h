@@ -19,7 +19,6 @@ enum NodeState
 class Node
 {
 public:
-    static unsigned short crcTable[256];
     static int nodeID, parentID;
     
     static void initializeNode(iSensor *, iRadio *);
@@ -37,7 +36,6 @@ private:
     static void receivedPairRequestAcknowledgement(int);
     static void saveID(int);
     static int loadID();
-    static void crcInit();
     static bool readPackSend();
     static void handlePacket(Packet);
     static void handleClearSignal(Packet);
@@ -47,7 +45,7 @@ private:
     static bool checkRejectArray(uint16_t);
     static void sendDataAcknowledgement(uint16_t);
     static void forwardData(Packet);
-    static void broadcastNewDataRequest();
+    static void broadcastNewDataRequest(int);
 };
 
 #endif
