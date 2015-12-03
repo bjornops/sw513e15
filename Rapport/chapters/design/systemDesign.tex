@@ -1,6 +1,7 @@
-\section{System workflow}
+\section{Design intention}
 This section contains the description of the system's intended workflow. \todo{elaborate. Use described protocols}
 
+\subsection{User-system workflow}
 As the solution's purpose is to \todo{complete..}
 
 \begin{enumerate}
@@ -11,3 +12,14 @@ As the solution's purpose is to \todo{complete..}
 	\item Step 3 and 4 is repeated throughout the network, so that every node within reach of the network will transmit or relay data to its parent.
 	\item The main node collects all data and append each reading to the respective node in a data sheet available to the user.
 \end{enumerate}
+
+\subsection{Monitored data}\todo{make sensible title}
+The final solution will monitor the status of the determined properties of the golf course. The data observed should be stored and treated, to be usable to the greenkeeper in maintaining the golf course. Data from previous requests should be accessible later, making it necessary to save this data somewhere. To access this data, some kind of user interface is also necessary. The data should be presented in a way that greenkeepers can use it, without requiring them to read a manual or otherwise study the system. 
+
+The saved data could be useful at some later date, for example in keeping  statistics of the properties being watched.
+
+Because of the relatively small platforms being used in the sensor nodes, it is not possible to save all data on each node. This makes it the main nodes' job to save and present the collected data.
+
+The solution chosen for this, is that all data is saved on the main device, ordered by date and time, and then accessible through a user interface. The user interface is run as a website, and will be accessible from any platform by connecting to the main node.
+
+This means that nodes in the system will only have the task of acquiring data and relaying it towards the main node. All storage and processing of data will be handled on the main node.
