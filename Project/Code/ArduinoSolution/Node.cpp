@@ -99,7 +99,7 @@ int16_t Node::loadID()
 void Node::handlePacket(Packet packet)
 {
   //Pakke modtaget, håndter pakker der kan starte "forløb"
-  //printf("Packet i switch: %d - %d - %d - %d \n", packet.packetType , packet.addresser, packet.addressee, packet.origin);
+  printf("Packet i switch: %d - %d - %d - %d \n", packet.packetType , packet.addresser, packet.addressee, packet.origin);
   switch (packet.packetType)
   {
     case DataRequest:
@@ -125,7 +125,7 @@ void Node::handlePacket(Packet packet)
       {
         if (parentID != -1)
         {
-          sendDataAcknowledgement(packet.addressee);
+          sendDataAcknowledgement(packet.addresser);
           forwardData(packet);
           _lastPacketTime = millis();
         }
@@ -162,6 +162,7 @@ void Node::handlePacket(Packet packet)
         if( parentID != -1 && (_lastPacketTime + TIMEOUT) - millis() > 0)
         {
           parentID = -1;
+          memset(_rejectArray, 0, REJECTSIZE);
           printf("Timeout now\n");
           _lastPacketTime = millis();
         }
@@ -195,7 +196,7 @@ void Node::broadcastNewDataRequest(int remainingLifespan)
     long remainingTime = attemptTime;
     while(remainingTime > 0)
     {
-      res = _radio->listenFor(remainingTime);
+      res = _radio->listenFor((remainingTime > 0) ? remainingTime : 0);
 
       // Backoff
       res = _radio->listenFor(nextExponentialBackoff(i));
@@ -224,6 +225,7 @@ void Node::broadcastNewDataRequest(int remainingLifespan)
 void Node::handleClearSignal(Packet packet)
 {
   parentID = -1;
+  memset(_rejectArray, 0, REJECTSIZE);
   
   char *encoded = packet.encode();
 
@@ -271,9 +273,9 @@ bool Node::beginBroadcasting(Packet packet)
   unsigned long attemptTime = nextExponentialBackoff(attempt);
   unsigned long totalTime = attemptTime;
 
-  printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, attemptTime);
   while (totalTime < TIMEOUT)
   {
+    printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, attemptTime);
     _radio->broadcast(packetCoding);
     
     long startTime = millis();
@@ -311,10 +313,11 @@ bool Node::beginBroadcasting(Packet packet)
   return false;
 }
 
-int Node::nextExponentialBackoff(unsigned int attemptNumber)
+int Node::nextExponentialBackoff(int attemptNumber)
 {
   //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
-  unsigned int delay = random(1, (1 << (attemptNumber - 1)) + 1);
+  unsigned long delay = random(1, (1 << (attemptNumber - 1)) + 1);
+  printf("delay: %d", delay);
   return delay;
 }
 
@@ -341,6 +344,7 @@ void Node::forwardData(Packet packet)
 
   if (!originFound)
   {
+    printf("trying to relay now");
     _rejectArray[_rejectCount] = packet.origin;
     _rejectCount = (_rejectCount + 1) % REJECTSIZE;
 

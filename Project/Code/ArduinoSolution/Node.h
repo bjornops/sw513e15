@@ -40,7 +40,7 @@ private:
     static void handlePacket(Packet);
     static void handleClearSignal(Packet);
     static bool beginBroadcasting(Packet);
-    static int nextExponentialBackoff(unsigned int);
+    static int nextExponentialBackoff(int);
     static void sendRequests();
     static bool checkRejectArray(uint16_t);
     static void sendDataAcknowledgement(uint16_t);
