@@ -110,7 +110,7 @@ The checksum of a correctly transferred packet $T$ is 0, because a package $T$, 
 \subsection{Overloaded nodes}
 Nodes near the root transfers data for a lot of sensors. Can they handle it? Battery problems? \todo{elaborate regarding stressed nodes near the root of the tree(high throughput problems?)}
 
-\subsection{Interference}
+\subsection{Interference} \label{cha:crcDesign}
 When using a flooding protocol, interference can become a problem\todo{or any wireless communication?}, as explained in section \ref{cha:floodingSec}. This occurs even when using controlled flooding, but using a protocol can help reduce problems with interference.
 
 Interferences might cause packets to get mixed up, which makes it impossible to use the data received. Figure \ref{fig:prottree1} shows an example of a possible interference scenario, where nodes 5, 6, and 7 could send packets at the same time, causing node 3 to receive scrambled data.
