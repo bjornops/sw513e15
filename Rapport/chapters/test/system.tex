@@ -1,2 +1,29 @@
 \section{System}
-This section contains tests performed on the complete system, after the code was deemed complete. 
+This section contains tests performed on the complete system, after the code was deemed complete. To test the entire system, multiple nodes have to be setup and ready. The tests explained in this chapter were performed with a main node, and two sensor nodes. \todo{Overvej tre nodes}
+
+The main node and sensor nodes have different tasks in the system, so the test parameters are different. Below is the tasks that were performed during the testing, for both node types. 
+
+\textbf{Sensor nodes} \\
+\begin{itemize}
+\item Send pair request if an ID is not found on the EEPROM.
+\item Save node ID on EEPROM when an ID is received from main node.
+\item When receiving a request, save the sender ID as parent, and send data back to this node. If a parent is already known, ignore this request.
+\item When receiving acknowledgement of data from parent node, stop sending data and send requests. 
+\item When receiving data from a subnode, send acknowledgement to this subnode.
+\item After sending acknowledgement, relay data to parent node until acknowledgement is received.
+\item When a clear signal is received, clear parent and stop all actions. Relay clear to other nodes in the vicinity.
+\end{itemize}
+
+
+\subsubsection*{Main node}
+\begin{itemize}
+\item When receiving pair request, generate ID and send this to the node.
+\item When user requests data in interface, send data requests.
+\item When receiving data from subnode, save data and send acknowledgement to sender.
+\item If all nodes have now sent data, save data in file and show user results of request. Send clear when file is saved to stop any action in the network.
+\end{itemize}
+
+The tests above covers the basic functionality of both main node and sensor nodes. In that order, they describe what the nodes should do when a signal is received.
+Testing these tasks can be done by observing a node that is part of the system, and test whether it does what it is supposed to. This requires multiple tests, as all nodes have to be observed at some point to determine wether the nodes do what they are supposed to do.
+
+\subsubsection*{Results}
