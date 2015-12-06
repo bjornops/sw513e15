@@ -1,18 +1,17 @@
 \section{Exponential Backoff}\label{cha:expbackoff}
-The technique \textit{exponential backoff} is a method used for handling interference or collisions. This technique works by incrementing the interval between sending packets, which at some points means the packet will get transferred without any other node interfering. 
+The technique \textit{exponential back off} is a method used for handling interference or collisions. This technique works by incrementing the interval between sending packets, which at some points means the packet will get transferred without any other node interfering. 
 
-For example, if node 1 and 2 are trying to relay data to the main node at the same time, the packet may get corrupt and are therefore not usable. This means that neither node 1 or 2 will get an acknowledgment, and they will both continue sending data. Though, instead of sending data right away, they will wait a small, random but increasing, amount of time before sending again.\todo{move to protocol design}
+For example, if node 1 and 2 are trying to relay data to the main node at the same time, the packet may get corrupt and are therefore not usable. This means that neither node 1 or 2 will get an acknowledgment, and they will both continue sending data. Though, instead of sending data right away, they will wait a small, random but increasing, amount of time before sending again.\todo{move to protocol design - why? It is an example of E-Backoff}
 
-A sequence of intervals on a node could be the following: Initial packet sent, wait 1 ms., next package sent, wait 2 ms.,  next package sent, wait 4 ms., next package sent, wait 6 ms. and so on. This continues until the node receives an acknowledgement.\todo{fix mundtlig sprog}
+A random interval is needed as the nodes need different intervals. If both nodes have the same interval each time, the packets will continue colliding and the data will never transmit correctly. The random interval will improve the chances that, at some point, one of the sensors will send while the other is waiting. 
+Without the random interval the two nodes could collide on the first back off, and both nodes will then back off with the same amount. Resulting in another collision. This can keep occurring since the two nodes keeps backing off with the same interval.
 
-A random number is needed as the nodes need different intervals. If both nodes have the same interval each time, the packets will continue colliding and the data will never transmit correctly. The random number greatly improve\todo{source for greatly, plox ;)} the chances that, at some point, one of the sensors will send when the other is waiting. Resulting in the packet being readable.\todo{incomplete sentence}
-
-The equation used to calculate the backoff interval in milliseconds, is the following:
+The equation used to calculate the maximum back off interval in milliseconds, is the following:
 \begin{equation}
 E(c)=2^{c-1}
 \end{equation}
-Where c is the current attempt number.\todo{what is attempt number}
-We will in addition add a range from 1 to the calculated backoff, to ensure we have a  continuous increasing delay to further prevent a interference.
+Where c is the current number of attempts to back off.
+There will be add a range from 1 to the calculated maximum back off, to ensure we have a range to pick a random number from.
 
 Using this equation to calculate the back off, the delays can be seen on table \ref{cha:expbackoff}.
 
