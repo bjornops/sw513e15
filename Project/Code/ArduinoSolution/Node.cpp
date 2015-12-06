@@ -261,40 +261,39 @@ bool Node::beginBroadcasting(Packet packet)
     char *packetCoding = packet.encode();
     char *res;
   
-  
     unsigned int attempt = 1;
     unsigned long attemptTime = nextExponentialBackoff(attempt);
     unsigned long totalTime = attemptTime;
   
     while (totalTime < TIMEOUT)
     {
-      printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, attemptTime);
-      _radio->broadcast(packetCoding);
-      
-      long startTime = millis();
-      long remainingTime = attemptTime;
-      while(remainingTime > 0)
-      {
-          res = _radio->listenFor(remainingTime);
-          Packet receivedPacket(res);
-          //printf("Packet: %d - %d - %d - %d \n", receivedPacket.packetType , receivedPacket.addresser, receivedPacket.addressee, receivedPacket.origin);
-      
-          if (receivedPacket.packetType == DataAcknowledgement && receivedPacket.addressee == nodeID)
-          {
-            printf("Modtaget acknowledgement fra %d\n", packet.addressee);
-            free(packetCoding);
-            return true;
-          }
-          else if (receivedPacket.packetType == ClearSignal)
-          {
-            printf("Clearsignal beginbroadcasting\n");
-            handleClearSignal(receivedPacket);
-            free(packetCoding);
-            return false;
-          }
-          
-          remainingTime = (startTime + attemptTime) - millis();
-       }
+        printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, attemptTime);
+        _radio->broadcast(packetCoding);
+        
+        long startTime = millis();
+        long remainingTime = attemptTime;
+        while(remainingTime > 0)
+        {
+            res = _radio->listenFor(remainingTime);
+            Packet receivedPacket(res);
+            //printf("Packet: %d - %d - %d - %d \n", receivedPacket.packetType , receivedPacket.addresser, receivedPacket.addressee, receivedPacket.origin);
+        
+            if (receivedPacket.packetType == DataAcknowledgement && receivedPacket.addressee == nodeID)
+            {
+                printf("Modtaget acknowledgement fra %d\n", packet.addressee);
+                free(packetCoding);
+                return true;
+            }
+            else if (receivedPacket.packetType == ClearSignal)
+            {
+                printf("Clearsignal beginbroadcasting\n");
+                handleClearSignal(receivedPacket);
+                free(packetCoding);
+                return false;
+            }
+            
+            remainingTime = (startTime + attemptTime) - millis();
+        }
       
         //fix tid.
         attempt++;
