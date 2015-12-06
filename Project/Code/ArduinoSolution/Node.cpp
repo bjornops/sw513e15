@@ -66,9 +66,10 @@ void Node::begin()
         _lastPacketTime = millis();
         while (true)
         {
-            // Laeser fra radio og laver til pakke
+            
             long remainingTimeToClear = (_lastPacketTime + TIMEOUT) - millis();
-            Serial.println(remainingTimeToClear);
+            
+            // Laeser fra radio i maksimum tiden til timeout. Kommer der en pakke afbrydes listenfor og pakken haandteres
             char *res = _radio->listenFor((remainingTimeToClear > 0) ? remainingTimeToClear : 0);
             Packet packet(res);
             handlePacket(packet);   
@@ -116,6 +117,7 @@ void Node::handlePacket(Packet packet)
                 //Prøver at sende data fra sensor. Hvis der modtages acknowledgement returneres true
                 if(readPackSend())
                 {
+                    //Videresender request, men med mindre lifespan end modtaget. Dette umuliggør uendelig videresending af request
                     broadcastNewDataRequest((packet.sensor1 - 1));
                     _lastPacketTime = millis();
                 }
@@ -233,7 +235,7 @@ void Node::handleClearSignal(Packet packet)
         delay(nextExponentialBackoff(i));
     }
     free(encoded);
-    printf("Clearsignal handled!!!!! (Venter 1 sec)\n");
+    printf("Clearsignal handled - klar igen om 1 sekund\n");
     delay(1000);
 }
 
@@ -272,6 +274,8 @@ bool Node::beginBroadcasting(Packet packet)
         
         long startTime = millis();
         long remainingTime = attemptTime;
+        //Så længe der er remainingTime i det pågældende attempt fortsætter vi med at lytte uden at broadcaste. 
+        //Nødvendigt fordi vi kun lytter indtil vi modtager en pakke - om den er relevant eller ej er lige meget.
         while(remainingTime > 0)
         {
             res = _radio->listenFor(remainingTime);
@@ -295,7 +299,7 @@ bool Node::beginBroadcasting(Packet packet)
             remainingTime = (startTime + attemptTime) - millis();
         }
       
-        //fix tid.
+        //Opdater tiden for næste attemt
         attempt++;
         attemptTime = nextExponentialBackoff(attempt);
         totalTime += attemptTime;
@@ -308,12 +312,12 @@ bool Node::beginBroadcasting(Packet packet)
 int Node::nextExponentialBackoff(int attemptNumber)
 {
     //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
-    unsigned long delay = random(1, (1 << (attemptNumber - 1)) + 1);
+    unsigned long delay = random((unsigned long)1, (unsigned long)(1 << (attemptNumber - 1)) + 1);
     printf("delay: %d", delay);
     return delay;
 }
 
-// Request modtager. Send data hjem, og request videre
+// Laes data fra sensor og send disse til parent
 bool Node::readPackSend()
 {
     int sensorData = random(10, 1000); // _sensor->read(); // Read
@@ -323,11 +327,12 @@ bool Node::readPackSend()
 }
 
 
-// Send data videre til min forlaeldr!
+// Send data videre til parent!
 void Node::forwardData(Packet packet)
 {
     bool originFound = checkRejectArray(packet.origin);
   
+    //Tjek om data allerede er hørt. Kan ske hvis et barn ikke hørte acknowledgement
     if (!originFound)
     {
         printf("trying to relay now");
@@ -341,7 +346,7 @@ void Node::forwardData(Packet packet)
     }
 }
 
-// TODO: Wat is dis?
+//Tjekker om en origin findes i vores rejectarray (origins vi allerede har modtaget fra siden sidste request)
 bool Node::checkRejectArray(uint16_t origin)
 {
     for (int i = 0; i < REJECTSIZE; i++)
@@ -356,9 +361,8 @@ bool Node::checkRejectArray(uint16_t origin)
 
 void Node::sendDataAcknowledgement(uint16_t addressee)
 {
-    // Send acknowledgement til sender af data
+  //Opret og send data acknowledgement til en node
     Packet acknowledgement(DataAcknowledgement, nodeID, addressee, nodeID, 0, 0, 0);
-    // TODO: Following should be in another reuseable function.
     char *encoded = acknowledgement.encode();
     _radio->broadcast(encoded);
     free(encoded);
