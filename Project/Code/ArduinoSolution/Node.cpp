@@ -24,7 +24,7 @@ int Node::parentID = -1;
 
 
 // Andre declarations
-static PacketType currentHandlingPacketType;
+static PacketType currentHandlingPacketType; // TODO: Fjern evt. denne variabel
 
 // Sætter variabler op i Node
 void Node::initializeNode(iSensor *sensor, iRadio *radio)
@@ -76,6 +76,7 @@ void Node::begin()
     }
 }
 
+// Gem ID i EEPROM
 void Node::saveID(int16_t id)
 {
     char *val = (char *)&id;
@@ -84,6 +85,7 @@ void Node::saveID(int16_t id)
     EEPROM.write(1, val[1]);
 }
 
+// Hent ID fra EEPROM
 int16_t Node::loadID()
 {
     char *val = (char *)malloc(2);
@@ -253,9 +255,7 @@ void Node::sendPairRequest()
     beginBroadcasting(requestPacket);
 }
 
-// Begynder at sende pakke indtil den bliver bedt om at stoppe! (Exponential backoff handler!)
-
-
+// Begynder at sende pakke indtil den bliver bedt om at stoppe!
 bool Node::beginBroadcasting(Packet packet)
 {
     char *packetCoding = packet.encode();
@@ -304,18 +304,13 @@ bool Node::beginBroadcasting(Packet packet)
     return false;
 }
 
+// Udregner exp. backoff delay
 int Node::nextExponentialBackoff(int attemptNumber)
 {
     //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
     unsigned long delay = random(1, (1 << (attemptNumber - 1)) + 1);
     printf("delay: %d", delay);
     return delay;
-}
-
-
-void Node::sendRequests() // Hvorfor findes denne?
-{
-
 }
 
 // Request modtager. Send data hjem, og request videre
@@ -346,6 +341,7 @@ void Node::forwardData(Packet packet)
     }
 }
 
+// TODO: Wat is dis?
 bool Node::checkRejectArray(uint16_t origin)
 {
     for (int i = 0; i < REJECTSIZE; i++)

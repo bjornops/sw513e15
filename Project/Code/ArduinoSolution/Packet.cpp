@@ -104,9 +104,9 @@ void Packet::crcInit()
             }
             else
             {
-		        remainder = remainder << 1;//scooch and do nothing (MSB = 0, move along)
-	        }
+                remainder = remainder << 1;//scooch and do nothing (MSB = 0, move along)
 	    }
+        }
     	Packet::crcTable[dividend] = remainder;//save current crc value in crcTable
     }
 }
