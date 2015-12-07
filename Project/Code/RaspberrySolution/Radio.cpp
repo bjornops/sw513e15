@@ -44,7 +44,7 @@ char *NRF24Radio::listenFor(unsigned long ms)
         unsigned long thisMs = millis();
         if(thisMs-firstMs > ms)
         {
-            return {(char)0};
+            return {defaultMessage};
         }
     }
 }

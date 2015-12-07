@@ -31,6 +31,8 @@ private:
 
     // Current 'session'
     static std::map<int, int> _receivedThisSession;
+    static bool _requested;
+    static unsigned int _requestTime;
 
     // misc.
     static iRadio *_radio;

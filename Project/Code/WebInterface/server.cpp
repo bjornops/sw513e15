@@ -45,8 +45,8 @@ int main(int argc, char *argv[])
     // Header
     printf("Content-Type: text/html\n\n");
 
-    // Indhold start
-    printf("<html><head><link rel='stylesheet' type='text/css' href='/style.css'><title>WASP - Administration</title></head><body>");
+    // Indhold start 
+    printf("<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/><link rel='stylesheet' type='text/css' href='/style.css'><title>WASP - Administration</title></head><body>");
 
 	// Læs navne fra wasp.conf!
 	FILE *optionsFile;
@@ -154,6 +154,7 @@ int main(int argc, char *argv[])
             int even = 0;
             while(fscanf(resFile, "%d:%d", &node, &value) != EOF)
             {
+	            // Farve på row i tabel
                 char *style;
                 if(even == 0)
                 {
@@ -166,7 +167,20 @@ int main(int argc, char *argv[])
                     even = 0;
                 }
                 
-                printf("<tr><td%s>%s</td><td%s>%d</td></tr>", style, nodeMapping[node], style, value);
+                // Value!
+                char *val;
+                val = (char *)malloc(15*sizeof(char));
+                
+                if(value == -1)
+                {
+	                val = "Ingen modtaget";
+                }
+                else
+                {
+	                sprintf(val, "%d", value);
+                }
+                
+                printf("<tr><td%s>%s</td><td%s>%s</td></tr>", style, nodeMapping[node], style, val);
             }
             printf("</table>");
 

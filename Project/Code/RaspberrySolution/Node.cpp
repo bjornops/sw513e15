@@ -2,8 +2,8 @@
 
 #define MAIN_NODE_ID 0
 #define REQUEST_GENERATE_ID_TIMER 5000
-#define FILE_SAVE_TIMER 10000
-#define AFTER_SAVE_TIMEOUT 10000 //3sec for lulz
+#define AFTER_SAVE_TIMEOUT 10000
+#define REQUEST_TIMEOUT 10000
 
 void signalHandler(int);
 void getAndSavePID();
@@ -12,16 +12,18 @@ iRadio *Node::_radio;
 int Node::_currentID = 0;
 unsigned int Node::_lastPairRequestMillis = 0;
 unsigned int Node::_lastSavedFile = 0;
+bool Node::_requested = false;
+unsigned int Node::_requestTime = 0;
 std::map<int, int> Node::_receivedThisSession;
 
 volatile sig_atomic_t Node::signalReceived = 0;
 
 int main(int argc, char* argv[])
 {
-    printf("Initializing process ...");
+    printf("Initializing process ... ");
     signal(SIGUSR1, signalHandler);
     getAndSavePID();
-    printf("Done!\n")
+    printf("Done!\n");
 
     Node::initializeNode();
     Node::begin();
@@ -66,7 +68,6 @@ char *Node::getResultFilename()
 // Sætter variabler op i Node
 void Node::initializeNode()
 {
-    printf("Initializing node ... ");
     Packet::crcInit();
 
     Node::_radio = new NRF24Radio();
@@ -90,22 +91,22 @@ void Node::initializeNode()
     //setup rand() til brug i exponential backoff
     srand(time(NULL));
 
-    printf("Done!\n");
     fflush(stdout);
 }
 
 // Starter hele lortet!
 void Node::begin()
 {
-    printf("Begynder at lytte efter pakker.\n");
-    // Læser fra radio
+    printf("Entering main listening loop!\n");
+    fflush(stdout);
+
     char *res = (char *)malloc(32*sizeof(char));
     while(true)
     {
-        //Er flate sat så vi skal sende requests?
+        //Er flaget sat så vi skal sende requests?
         if(Node::signalReceived)
         {
-            printf("Signal modtaget, sender requests ...");
+            printf("Signal received, sending requests ... ");
             Node::sendRequest(); //Mængde af forsøg defineret i funktion.
             printf("Done!\n");
             Node::signalReceived = 0;
@@ -114,15 +115,17 @@ void Node::begin()
         //Har vi modtaget fra alle noder?
         if(Node::receivedFromAllNodes())
         {
-            Node::saveSessionResults();
             printf("All nodes have returned a value!\n");
+            Node::saveSessionResults();
         }
 
         //Er vi løbet tøt for tid? (TODO :p)
-        if(false)
+        printf("%d\n",Node::_requestTime - bcm2835_millis());
+        if(Node::_requested && Node::_requestTime + REQUEST_TIMEOUT < bcm2835_millis())
         {
-            Node::saveSessionResults();
             printf("Timelimit reached!\n");
+            Node::_requested = false;
+            Node::saveSessionResults();
         }
 
         //Vent og håndter kommende pakker. listenFor() i stedet?
@@ -158,7 +161,7 @@ void Node::handlePacket(Packet packet)
                 }
                 else
                 {
-                  printf("Received data from somewhere, but is not ready to handle it yet.");
+                  printf("Received data from somewhere, but is not ready to handle it yet.\n");
                 }
             }
         }
@@ -310,19 +313,22 @@ void Node::sendRequest()
 {
     int attemptsToDo = 6;
 
+    //sæt flag
+    _requested = true;
+    _requestTime = bcm2835_millis();
+
     //Byg pakke
     Packet requestPacket(DataRequest, 0, MAIN_NODE_ID, 0, (int)_receivedThisSession.size(), 0, 0);
     char *enc = requestPacket.encode();
 
     //temp packet
-    char *res = (char *)malloc(32*sizeof(char));
+    char *res;
 
     //Try it
     for (int i = 1; i <= attemptsToDo; i++)
     {
         // Broadcast
         _radio->broadcast(enc);
-
         // Backoff
         res = _radio->listenFor(nextExponentialBackoffDelay(i));
         Packet packet(res);
@@ -331,13 +337,17 @@ void Node::sendRequest()
 
     //Ryd op
     free(enc);
-    free(res);
 }
 
 unsigned int Node::nextExponentialBackoffDelay(int attemptNumber)
 {
     //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
-    return (unsigned int) ( ( rand() % ( 1 << ( attemptNumber - 1 ) ) ) + 1 );
+    unsigned int min = 1;
+    unsigned int max = (unsigned int) 1 << (attemptNumber -1);
+    unsigned int ans = ( (unsigned int) rand() ) % max + min;
+    return ans;
+
+    //return (unsigned int) ( ( rand() % ( 1 << ( attemptNumber - 1 ) ) ) + 1 );
     /*int delay = (rand() % (1<<(attemptNumber-1))) + 1;
     bcm2835_delay(delay);*/
 }
