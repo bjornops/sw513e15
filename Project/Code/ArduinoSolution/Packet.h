@@ -36,7 +36,6 @@ public:
     uint16_t checksum;
    
     //crc 
-    static unsigned short crcTable[256];
     static void crcInit();
 
     //methods
@@ -49,6 +48,8 @@ public:
     Packet(PacketType, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t);
 
 private:
+    static unsigned short _crcTable[256];
+    
     void decode(char *);
     uint16_t getChecksum(unsigned char *, unsigned int);
 };

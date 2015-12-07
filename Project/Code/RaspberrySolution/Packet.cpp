@@ -1,7 +1,7 @@
 #include "Packet.h"
 
 // Static declarations
-unsigned short Packet::crcTable[256];
+unsigned short Packet::_crcTable[256];
 
 Packet::Packet(char *input)
 {
@@ -70,7 +70,7 @@ uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
     for (offset = 0; offset < nBytes; offset++)
     {
         byte = (remainder >> (WIDTH - 8)) ^ message[offset];
-        remainder = Packet::crcTable[byte] ^ (remainder << 8);
+        remainder = Packet::_crcTable[byte] ^ (remainder << 8);
     }
     uint16_t result = remainder ^ FINAL_XOR_VALUE;
 
@@ -107,6 +107,6 @@ void Packet::crcInit()
 		        remainder = remainder << 1;//scooch and do nothing (MSB = 0, move along)
 	        }
         }
-    	Packet::crcTable[dividend] = remainder;//save current crc value in crcTable
+    	Packet::_crcTable[dividend] = remainder;//save current crc value in crcTable
     }
 }
