@@ -1,9 +1,11 @@
-\section{Sensors}
-To acquire relevant data from the golf course, and to enable processing of this data in a digital domain, there has to be sensors.
-The sensors must be capable of gathering data, and returning a value, either as a digital or analog signal than can be processed by a computation unit.
+\section{Sensors} \label{cha:sensorChapter}
+%Explain the need for sensors
+To acquire relevant data from the golf course, and to enable processing of this data in a digital domain, a sensor is needed.
+The sensors must be capable of gathering data, and returning a value, either as a digital or analog signal that can be processed by a computation unit.
 As multiple sensors are needed, the price point is considered relevant, as it will cause the overall cost of the solution to grow.
 
-Prices mentioned in this section is based on results of online searches, and might be different at the time of reading this.
+%Explain the prices are relative?
+Prices mentioned in this section is based on results of online searches, and they might be different at the time of reading this.
 They don't serve to make accurate calculations, but rather to get a general idea of the expenses required to include them in a solution.
 
 There exist several kind of sensors, such as soil pH sensor, soil density sensor, temperature sensor and many more. In this project only the soil moisture sensor will be covered, since adding a different sensor would be trivial.
@@ -15,8 +17,7 @@ Sensors for monitoring moisture can be acquired for prices at about 1\$.
 The moisture sensor used in this project is a Arduino Soil Hygrometer Detection Module Soil Moisture Sensor.
 The sensor is a sensor with a operating voltage of 3.3V to 5V.
 It have dual output, both digital and analog, whit analog being the most accurate.
-The digital output is in the form low(0) and high(1), while the analog is a number between low(0) and high(1)\cite{moisture}.
-while the analoug output lays between low(0) and high(1023).
+The digital output is in the form low(0) and high(1), while the analoug output lays between low(0) and high(1023) \cite{moisture}.
 
 When the output is high, the moisture content of the soil is high, while a low output means a low moisture content.
 The sensor comes with a small converter which can swap between the two outputs, and calibrate the sensor when using analog.
