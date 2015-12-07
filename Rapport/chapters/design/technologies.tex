@@ -10,7 +10,7 @@ The data to be monitored with sensors in the solution, is the moisture in the gr
 
 The communication device chosen for this project is the nRF24L01, as it is sufficient, and because of its documentation, price, and low power consumption. The shorter range is not a problem, as the nodes is used in a relay network. The transfer speed of the module is also good enough for the requirements, which makes this module good for the solution described in the report.
 
-With the components chosen and the data sheet for the nRF24L01 examined \cite{RF24DataSheet}, the nodes will be connected as seen on Figure \ref{fig:compsketch}.
+With the components chosen and the data sheet for the nRF24L01 examined \cite{nf24datasheet}, the nodes will be connected as seen on Figure \ref{fig:compsketch}.
 
 \begin{figure}[!h]
 	\centering
@@ -20,7 +20,7 @@ With the components chosen and the data sheet for the nRF24L01 examined \cite{RF
 \end{figure}
 
 \subsection{nRF24L01 Transceiver}
-The chosen radio transceiver module contains multiple features to make up for\todo{kompensere for pakketab?!} packets loss. These includes checking hashes and sending acknowledgements\cite{nf24datasheet}.
+The chosen radio transceiver module contains multiple features for detecting packets loss. These includes checking hashes and sending acknowledgments\cite{nf24datasheet}.
 These features makes it harder to replace the radio modules in the nodes, as they are platform specific to the nRF24L01. The analysis examined the possibility of using different radio modules in case some requirements changes, which is not possible if using platform specific features. These features also causes more battery to be used, which is a problem in devices being buried, as discussed in Chapter \ref{cha:batcons}.
 
 Because of this, these features have been disabled. This means that the radio packets does not contain a hash, nor does it send acknowledgements when packets arrives. The speed and power have also been turned down, so the device will transfer slower, and use less battery power.
