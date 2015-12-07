@@ -23,3 +23,12 @@ The chosen radio transceiver module contains multiple features for detecting pac
 These features makes it harder to replace the radio modules in the nodes, as they are platform specific to the nRF24L01. The analysis examined the possibility of using different radio modules in case some requirements changes, which is not possible if using platform specific features. These features also causes more battery to be used, which is a problem in devices being buried, as discussed in Chapter \ref{cha:batcons}.
 
 Because of this, these features have been disabled. This means that the radio packets does not contain a hash, nor does it send acknowledgements when packets arrives. The speed and power have also been turned down, so the device will transfer slower, and use less battery power.
+
+\figref{raspbuinoTree}.
+
+\begin{figure}[!h]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth]{figures/Raspberry-Arduino-Tree.png}}
+	\caption{Raspberrry Pi main node and Arduino Uno sensor nodes wirelessly connected in a tree.}
+	\label{fig:raspbuinoTree}
+\end{figure}
