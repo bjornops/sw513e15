@@ -148,10 +148,10 @@ void Node::handlePacket(Packet packet)
             {
                 if(Node::_receivedThisSession[packet.origin] == -1 && bcm2835_millis() - AFTER_SAVE_TIMEOUT >= Node::_lastSavedFile)
                 {
-                    printf("Received node %d's value %d from node %d\n", packet.origin, packet.sensor1, packet.addresser);
+                    printf("Received node %d's value %d from node %d\n", packet.origin, packet.value1, packet.addresser);
 
                     // Ikke modtaget før, så gem værdi!
-                    Node::_receivedThisSession[packet.origin] = packet.sensor1;
+                    Node::_receivedThisSession[packet.origin] = packet.value1;
 
                     // Send acknowledgement
                     Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
