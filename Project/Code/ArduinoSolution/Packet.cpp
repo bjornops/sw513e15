@@ -9,16 +9,16 @@ Packet::Packet(char *input)
     verified();
 }
 
-Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input,
-	uint16_t sensor2Input, uint16_t sensor3Input)
+Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t value1Input,
+	uint16_t value2Input, uint16_t value3Input)
 {
     this->packetType = packetTypeInput;
     this->addresser = addresserInput;
     this->addressee = addresseeInput;
     this->origin = originInput;
-    this->sensor1 = sensor1Input;
-    this->sensor2 = sensor2Input;
-    this->sensor3 = sensor3Input;
+    this->value1 = value1Input;
+    this->value2 = value2Input;
+    this->value3 = value3Input;
     unsigned char *temp = (unsigned char *)encode();
     this->checksum = getChecksum(temp, 14);
     free(temp);
@@ -104,8 +104,8 @@ void Packet::crcInit()
             }
             else
             {
-                remainder = remainder << 1;//scooch and do nothing (MSB = 0, move along)
-	    }
+		        remainder = remainder << 1;//scooch and do nothing (MSB = 0, move along)
+	        }
         }
     	Packet::crcTable[dividend] = remainder;//save current crc value in crcTable
     }
