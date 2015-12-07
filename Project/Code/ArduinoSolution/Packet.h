@@ -30,9 +30,9 @@ public:
     uint16_t addresser;
     uint16_t addressee;
     uint16_t origin;
-    uint16_t sensor1;
-    uint16_t sensor2;
-    uint16_t sensor3;
+    uint16_t value1;
+    uint16_t value2;
+    uint16_t value3;
     uint16_t checksum;
    
     //crc 

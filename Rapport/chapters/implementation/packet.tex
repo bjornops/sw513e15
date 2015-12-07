@@ -15,9 +15,9 @@ PacketType packetType; // The type of the packet
 uint16_t addresser; // The sender of the packet (node ID)
 uint16_t addressee; // The receiver of the packet (node ID)
 uint16_t origin; // The original sender of the packet
-uint16_t sensor1; // Sensor 1 value 
-uint16_t sensor2; // Sensor 2 value
-uint16_t sensor3; // Sensor 3 value
+uint16_t value1; // Value 1
+uint16_t value2; // Value 2
+uint16_t value3; // Value 3
 uint16_t checksum; // Checksum value
 \end{lstlisting}
 These values cover everything in a packet; the type, the sender, the receiver, the origin of the packet, values and a checksum.
@@ -40,7 +40,7 @@ Every packet has this format, and all values are filled out. With packets that m
 \begin{tabular}{|l|c|l|c|l|c|l|c|l|}
 \hline
 \textbf{Datatype} & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{l|}{uint16\_t} & \multicolumn{2}{c|}{uint16\_t}       \\ \hline
-\textbf{Name}     & \multicolumn{2}{c|}{sensor1}         & \multicolumn{2}{c|}{sensor2}         & \multicolumn{2}{c|}{sensor3}   & \multicolumn{2}{c|}{checksum}        \\ \hline
+\textbf{Name}     & \multicolumn{2}{c|}{value1}         & \multicolumn{2}{c|}{value2}         & \multicolumn{2}{c|}{value3}   & \multicolumn{2}{c|}{checksum}        \\ \hline
 \textbf{Memory}   & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits & 8 bits         & 8 bits        & \multicolumn{1}{l|}{8 bits} & 8 bits \\ \hline
 \end{tabular}
 \caption{Overview of second half of a packet.}
