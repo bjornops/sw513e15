@@ -18,13 +18,11 @@ unsigned long Node::_lastPacketTime;
 iSensor *Node::_sensor;
 iRadio  *Node::_radio;
 
+
 // Public
 int Node::nodeID = -1;
 int Node::parentID = -1;
 
-
-// Andre declarations
-static PacketType currentHandlingPacketType; // TODO: Fjern evt. denne variabel
 
 // Sætter variabler op i Node
 void Node::initializeNode(iSensor *sensor, iRadio *radio)
@@ -253,7 +251,6 @@ void Node::receivedPairRequestAcknowledgement(int newID)
 void Node::sendPairRequest()
 {
     Packet requestPacket(PairRequest, 0, 0, 0, 0, 0, 0); // Data does not matter, only need 'type'.
-    currentHandlingPacketType = PairRequest;
 
     beginBroadcasting(requestPacket);
 }
