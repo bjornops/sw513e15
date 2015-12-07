@@ -64,15 +64,16 @@ void Node::begin()
     else
     {
         _lastPacketTime = millis();
+        int attempt = 1;
         while (true)
         {
-            
-            long remainingTimeToClear = (_lastPacketTime + TIMEOUT) - millis();
+            delay(nextExponentialBackoff(attempt++));
+            /*long remainingTimeToClear = (_lastPacketTime + TIMEOUT) - millis();
             
             // Laeser fra radio i maksimum tiden til timeout. Kommer der en pakke afbrydes listenfor og pakken haandteres
             char *res = _radio->listenFor((remainingTimeToClear > 0) ? remainingTimeToClear : 0);
             Packet packet(res);
-            handlePacket(packet);   
+            handlePacket(packet);*/   
         }
     }
 }
@@ -309,11 +310,15 @@ bool Node::beginBroadcasting(Packet packet)
 }
 
 // Udregner exp. backoff delay
-int Node::nextExponentialBackoff(int attemptNumber)
+int Node::nextExponentialBackoff(unsigned int attemptNumber)
 {
+  //Sikkerhedstjek så vi ikke ender i overflow hvor 1ms returneres
+    attemptNumber = (attemptNumber < 32) ? attemptNumber : 32;
+    
+    
     //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
-    unsigned long delay = random((unsigned long)1, (unsigned long)(1 << (attemptNumber - 1)) + 1);
-    printf("delay: %d", delay);
+    unsigned long potentialyBiggest = ((unsigned long)1 << (attemptNumber - 1)) + 1;
+    unsigned long delay = random(1, potentialyBiggest);
     return delay;
 }
 
