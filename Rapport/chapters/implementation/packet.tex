@@ -1,8 +1,8 @@
 \subsection{Packet}
 The \textit{Packet} class contains the data from a packet received from the radio module. It can be instantiated with a string, or with every part of the packet as a parameter, using the constructors:
 \begin{lstlisting}
-Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t sensor1Input,
-	uint16_t sensor2Input, uint16_t sensor3Input)
+Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t value1Input,
+	uint16_t value2Input, uint16_t value3Input)
 	
 Packet::Packet(char *input)
 \end{lstlisting}

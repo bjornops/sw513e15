@@ -1,5 +1,5 @@
 \subsection{Node}
-The \textit{Node} class is used as a static class, which means that only one instance of it exists. This class determines the action to take when a packet is received, which happens in the function \textit{void handlePacket(Packet packet)}, where a \textit{switch} statement is used based on the packet type.
+The \textit{Node} class is used as a static class, which means that only one instance of it exists. This class determines the action to take when a packet is received, which takes place in the function \textit{void handlePacket(Packet packet)}, where a \textit{switch} statement is used based on the packet type.
 
 \textit{Node} also makes sure that packets are transferrered correctly. This means sending packets until an acknowledgement or other confirmation has arrived. To ensure this, exponential backoff is used, as explained in Chapter \ref{cha:expbackoff}.
 

@@ -41,29 +41,29 @@ if(!checkPacket.checksumMatches())
 }
 checkPacket.origin = 3;
 
-// Sensor 1
-checkPacket.sensor1 = 1;
+// Value 1
+checkPacket.value1 = 1;
 if(!checkPacket.checksumMatches())
 {
-    std::cout << "Packet is incorrect after changing sensor1" << std::endl;
+    std::cout << "Packet is incorrect after changing value1" << std::endl;
 }
-checkPacket.sensor1 = 4;
+checkPacket.value1 = 4;
 
-// Sensor 2
-checkPacket.sensor2 = 1;
+// Value 2
+checkPacket.value2 = 1;
 if(!checkPacket.checksumMatches())
 {
-    std::cout << "Packet is incorrect after changing sensor2" << std::endl;
+    std::cout << "Packet is incorrect after changing value2" << std::endl;
 }
-checkPacket.sensor2 = 5;
+checkPacket.value2 = 5;
 
-// Sensor 3
-checkPacket.sensor3 = 1;
+// Value 3
+checkPacket.value3 = 1;
 if(!checkPacket.checksumMatches())
 {
-    std::cout << "Packet is incorrect after changing sensor3" << std::endl;
+    std::cout << "Packet is incorrect after changing value3" << std::endl;
 }
-checkPacket.sensor3 = 6;
+checkPacket.value3 = 6;
 
 // Test again with default values
 if(checkPacket.checksumMatches())
