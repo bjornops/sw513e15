@@ -65,13 +65,12 @@ void Node::begin()
         int attempt = 1;
         while (true)
         {
-            delay(nextExponentialBackoff(attempt++));
-            /*long remainingTimeToClear = (_lastPacketTime + TIMEOUT) - millis();
+            long remainingTimeToClear = (_lastPacketTime + TIMEOUT) - millis();
             
             // Laeser fra radio i maksimum tiden til timeout. Kommer der en pakke afbrydes listenfor og pakken haandteres
             char *res = _radio->listenFor((remainingTimeToClear > 0) ? remainingTimeToClear : 0);
             Packet packet(res);
-            handlePacket(packet);*/   
+            handlePacket(packet);  
         }
     }
 }
