@@ -18,7 +18,7 @@ uint16_t origin; // The original sender of the packet
 uint16_t sensor1; // Sensor 1 value 
 uint16_t sensor2; // Sensor 2 value
 uint16_t sensor3; // Sensor 3 value
-uint16_t checksum;
+uint16_t checksum; // Checksum value
 \end{lstlisting}
 These values cover everything in a packet; the type, the sender, the receiver, the origin of the packet, values and a checksum.
 Every packet has this format, and all values are filled out. With packets that might not require all these values, they will simply be zero. For example when sending a request, the sensor values and addressee will be zero.

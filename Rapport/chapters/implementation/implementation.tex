@@ -81,7 +81,7 @@ Instances of this class is created and used in the \textit{Node} class.
 This class contains the public methods:
 \begin{description}
 \item[Packet(char *input)] Create a packet from a char array. Used when radio receives a packet.
-\item[Packet(PacketType packetTypeInput, uint16\_t addresserInput, uint16\_t addresseeInput, uint16\_t originInput, uint16\_t sensor1Input, uint16\_t sensor2Input, uint16\_t sensor3Input)] Creates a new packet with data as noted in parameters.
+\item[{\parbox[t]{0.6\linewidth}{Packet(PacketType packetTypeInput, \\ uint16\_t addresserInput, \\ uint16\_t addresseeInput, \\ uint16\_t originInput, \\ uint16\_t sensor1Input, \\ uint16\_t sensor2Input, \\ uint16\_t sensor3Input)}}] \item[] Creates a new packet with data as noted in parameters.
 \item[char *encode()] Returns a char array representation of the packet. Used for broadcasting from the radio.
 \end{description}
 
