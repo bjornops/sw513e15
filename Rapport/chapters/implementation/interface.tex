@@ -8,3 +8,11 @@ When this program is run it prints out HTML, but because it is run as a CGI prog
 On startup, the program attempts to fetch the process ID of the main node program, located in \texttt{/var/run/} if the program is running. This PID is used when the request button is presed by the user. The PID is necessary to call the procedure \texttt{kill}, that is used to signal the main node software that it should start a request. The signal is handled as explained in Chapter \ref{cha:signalhandling}.
 
 When \texttt{kill} is issued, the program redirects to a waiting page. On this page, an AJAX request is performed every second to ping for a file in \texttt{/var/www/html/}. This ping will fail until the file \texttt{ping.txt} exists at this location. When the request is finished in the main node software, this file is created and the contents is set to the result name. When the file is written and closed by the main node software, the ping will succeed and the contents will be available. The browser can now be redirected to the result from the waiting screen. The ping file is then deleted as it is no longer needed.
+
+The full sequence is shown on Figure \ref{fig:sigsequence}.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1.1\textwidth]{chapters/implementation/figures/sigsequence.png}
+\caption{Full sequence from webinterface to results\cite{creately}.}
+\label{fig:sigsequence}
+\end{figure}

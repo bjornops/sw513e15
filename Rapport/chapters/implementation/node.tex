@@ -1,7 +1,9 @@
-\subsection{Node}
-The \textit{Node} class is used as a static class, which means that only one instance of it exists. This class determines the action to take when a packet is received, which takes place in the function \textit{void handlePacket(Packet packet)}, where a \textit{switch} statement is used based on the packet type.
+\subsection{Sensor nodes} 
 
-\textit{Node} also makes sure that packets are transferrered correctly. This means sending packets until an acknowledgement or other confirmation has arrived. To ensure this, exponential backoff is used, as explained in Chapter \ref{cha:expbackoff}.
+\subsection{Node}
+The \texttt{Node} class is used as a static class, which means that only one instance of it exists. This class determines the action to take when a packet is received, which takes place in the function \texttt{void handlePacket(Packet packet)}, where a \texttt{switch} statement is used based on the packet type.
+
+\texttt{Node} also makes sure that packets are transferrered correctly. This means sending packets until an acknowledgement or other confirmation has arrived. To ensure this, exponential backoff is used, as explained in Chapter \ref{cha:expbackoff}.
 
 The implementation of the \texttt{Node} classes are different on the main node and sensor nodes, which are explained in the following two sections.
 
@@ -9,5 +11,3 @@ The implementation of the \texttt{Node} classes are different on the main node a
 The main nodes tasks are to request and receive values from nodes. Once the values are received, they are saved, until all nodes have been accounted for, or a timeout is hit.
 
 When the request is done, the data is saved to a file with the name of the current date and time. Another file is also saved, which is used for knowing when the request is done in the webinterface, as explained in Chapter \ref{cha:webinterface}. The request is started when a signal of the type \texttt{SIGUSR1} is received. This sets a flag, \texttt{signalReceived} in \texttt{Node} to 1. The next time the main loop is run, the request will be send, and the flag set to 0 again.
-
-\subsection{Sensor nodes} 
