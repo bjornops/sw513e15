@@ -1,9 +1,23 @@
-\section{Design intention}
-This section contains the description of the system's intended workflow. \todo{elaborate. Use described protocols}
+\section{Design intention}\todo{Use described protocols}
+This section contains the description of the system's intended design and usage. The design will be based on the requirement specification in \charef{requirements}. The core function of the solution is to transfer data wirelessly to a main node, and to be used by a human workers. 
+
+The human aspect has requirements regarding aesthetics and user design, but that is secondary to the problem solving task of gathering data. This design will mainly consider the functional requirements to develop a functioning system, whereas data analysis and user experience with the solution are proposed further work in another project. Nevertheless, a user must be able to utilize the system, and the main characteristics of the solution will be described in the next section.
 
 \subsection{User-system workflow}
-As the solution's purpose is to \todo{complete..}
+% Practical use of the solution
+As the solution's purpose is to support in monitoring a golf course, the solution should make the task more efficient in terms of time consumption. The intention is that the data should be refreshed and updated on-demand, so that the golf course status is sufficiently new for the greenkeepers' usage.
 
+The solution is designed to function according to the following procedure:
+\begin{enumerate}
+	\item The system user will use an interface to demand readings from the sensors in the network.
+	\item The main node responds to the demand by broadcasting a request packet in the network.
+	\item The network nodes receives the request signal, gathers data from its sensors and sends it back to the main node.
+	\item The main node collects all data and append each reading to the respective origin node in a data sheet made available to the user.
+	\item The user can evaluate further action based on the results.
+\end{enumerate}
+
+%Old enum. Move to protocol design/sequence?
+\iffalse
 \begin{enumerate}
 	\item The system user will use an interface to demand readings from the sensors in the network.
 	\item The main node responds to the demand by sending a request packet in the network.
@@ -12,14 +26,40 @@ As the solution's purpose is to \todo{complete..}
 	\item Step 3 and 4 is repeated throughout the network, so that every node within reach of the network will transmit or relay data to its parent.
 	\item The main node collects all data and append each reading to the respective node in a data sheet available to the user.
 \end{enumerate}
+\fi
+
+An on-demand solution has several\todo{one?} advantageous properties. The system components can save energy by not updating data unnecessarily, and the user is able to evaluate the age of the last measurements and decide whether to refresh the data or not. 
+
+The on-demand solution, although, relies on the time required to gather the sensor readings to be useful. The current reference point is the time it takes to manually check the golf course status. However, the 20 minutes \todo{spørg Kim hvor lang tid det tar?} is not pleasant to wait in front of a computer\todo{another reason? source?} and is not more efficient than the manual check, thus the gathering time should be strictly less than 20 minutes.
+
+The solution should be considered automated so that the sensor readings are available when needed if the data gathering process lasts longer than the manual status check. This could be set to gather data, so that readings are available once or multiple times in a given time frame. An automated solution, however, has the disadvantages that the system could waste energy on readings that are not necessary, or not having readings available when needed, if the time frame is incorrect.
+
+The solution is deemed on-demand, because of the flexibility it provides. It can also be automated, by simulating a user request at a given time, in addition to let the users request readings whenever desired.
+
+%If the solution is on-demand, the measurement of the nodes should be faster than manually check the status. This gives a deadline of some 20 minutes\todo{what? why?}, but as that's a long wait in front of a computer, the initial goal deadline is set to 5 minutes\todo{what?}.%, although depending on the network size.
+
+Because of the temporal limitations of the project, the user interface has not been prioritized and accordingly, no thorough development of the user interface or experience is performed. \todo{move to reflection?}
+
 
 \subsection{Monitored data}\todo{make sensible title}
-The final solution will monitor the status of the determined properties of the golf course. The data observed should be stored and treated, to be usable to the greenkeeper in maintaining the golf course. Data from previous requests should be accessible later, making it necessary to save this data somewhere. To access this data, some kind of user interface is also necessary. The data should be presented in a way that greenkeepers can use it, without requiring them to read a manual or otherwise study the system. 
+% Save the data!
+The readings measured by the sensor nodes are the data used in the solution. The solution will monitor the status of the determined properties of the golf course. The observed data needs to be stored and processed to be usable for the greenkeeper in the process of maintaining the golf course. Data from previous requests should be accessible later, making it necessary to store previously received data. To access this data, a user interface is necessary. The data should be presented, enabling greenkeepers to use it.%, without requiring them to read a manual or otherwise study the system. 
 
-The saved data could be useful at some later date, for example in keeping  statistics of the properties being watched.
+% How and where to save data: not nodes
+A method to access the data is to gather them from each node to display at the main node. This would cause excess communication in the network, by first sending a sensor reading signal, and later gather the data for each representation of data. In addition, because of the limited amount of memory available in the sensor nodes, it is not possible to save all data on each node. This restricts the historical data to the amount of readings accommodable on the sensor nodes. A solution to the unnecessary communication as well as the restriction of stored data is to use the main node as a storage and user interface device.
 
-Because of the relatively small platforms being used in the sensor nodes, it is not possible to save all data on each node. This makes it the main nodes' job to save and present the collected data.
+% How and where to save data: main node!
+Storing the data on the main node, requires a sufficient amount of memory to be able to save a significant history of data. Handling and representing the data requires processing power, to be functional for a user. A computer is capable of fulfilling the role of this type of main node. A procedure for this kind of system is to relay all sensor readings to the main node, and develop a user interface to represent the data. 
 
-The solution chosen for this, is that all data is saved on the main device, ordered by date and time, and then accessible through a user interface. The user interface is run as a website, and will be accessible from any platform by connecting to the main node.
-
+% Conclusion
 This means that nodes in the system will only have the task of acquiring data and relaying it towards the main node. All storage and processing of data will be handled on the main node.
+The stored data can be used for statistics and other purposes to further optimize the golf course maintenance, but that is considered out of this project's objective.
+
+
+% What data to monitor
+The monitored data is the soil moisture.
+
+
+% Data representation
+The user interface is run as a website, and will be accessible from any platform by connecting to the main node.
+
