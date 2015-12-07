@@ -2,7 +2,6 @@
 
 #define MAIN_NODE_ID 0
 #define REQUEST_GENERATE_ID_TIMER 5000
-#define AFTER_SAVE_TIMEOUT 10000
 #define REQUEST_TIMEOUT 10000
 
 void signalHandler(int);
@@ -104,7 +103,7 @@ void Node::begin()
     while(true)
     {
         //Er flaget sat så vi skal sende requests?
-        if(Node::signalReceived)
+        if(!Node::_requested && Node::signalReceived)
         {
             printf("Signal received, sending requests ... ");
             Node::sendRequest(); //Mængde af forsøg defineret i funktion.
@@ -113,23 +112,21 @@ void Node::begin()
         }
 
         //Har vi modtaget fra alle noder?
-        if(Node::receivedFromAllNodes())
+        if(Node::_requested && Node::receivedFromAllNodes())
         {
             printf("All nodes have returned a value!\n");
             Node::saveSessionResults();
         }
 
-        //Er vi løbet tøt for tid? (TODO :p)
-        printf("%d\n",Node::_requestTime - bcm2835_millis());
+        //Er vi løbet tør for tid?
         if(Node::_requested && Node::_requestTime + REQUEST_TIMEOUT < bcm2835_millis())
         {
             printf("Timelimit reached!\n");
-            Node::_requested = false;
             Node::saveSessionResults();
         }
 
         //Vent og håndter kommende pakker. listenFor() i stedet?
-        res = _radio->listen();
+        res = _radio->listenFor(1000);
         Packet packet(res);
         Node::handlePacket(packet);
 
@@ -146,7 +143,7 @@ void Node::handlePacket(Packet packet)
             //If statement added for at sikre sig at data er tiltænkt main, og ikke en anden. Er egentligt overflødig, men bruges under debugging.
             if(packet.addressee == MAIN_NODE_ID)
             {
-                if(Node::_receivedThisSession[packet.origin] == -1 && bcm2835_millis() - AFTER_SAVE_TIMEOUT >= Node::_lastSavedFile)
+                if(Node::_receivedThisSession[packet.origin] == -1 && Node::_requested)
                 {
                     printf("Received node %d's value %d from node %d\n", packet.origin, packet.value1, packet.addresser);
 
@@ -158,10 +155,6 @@ void Node::handlePacket(Packet packet)
                     char *enc = ackPacket.encode();
                     _radio->broadcast(enc);
                     free(enc);
-                }
-                else
-                {
-                  printf("Received data from somewhere, but is not ready to handle it yet.\n");
                 }
             }
         }
@@ -214,7 +207,7 @@ void Node::handlePacket(Packet packet)
 // Gemmer denne sessions resulteter
 void Node::saveSessionResults()
 {
-    Node::_lastSavedFile = bcm2835_millis();
+    Node::_requested = false;
 
     char path[200] = "/home/pi/wasp/results/";
     char *name = getResultFilename();
@@ -246,12 +239,12 @@ void Node::saveSessionResults()
         }
         else
         {
-            printf("ERROR");
+            printf("ERROR\n");
         }
     }
     else
     {
-        printf("ERROR");
+        printf("ERROR\n");
     }
     fflush(stdout);
     free(name);
@@ -262,12 +255,13 @@ void Node::saveSessionResults()
 // Renser section
 void Node::clearSession()
 {
-	printf("Rydder data!\n");
+	printf("Clears local data ... \n");
     std::map<int, int>::iterator it;
     for (it = Node::_receivedThisSession.begin(); it != Node::_receivedThisSession.end(); it++)
     {
         Node::_receivedThisSession[it->first] = -1;
     }
+    printf("Done!\n");
 
     // Clear request!
     int attemptsToDo = 12; //Magisk udvalgt på baggrund af... stuff. 6 er i hvert fald for lidt.
@@ -276,7 +270,7 @@ void Node::clearSession()
     Packet clearPacket(ClearSignal, 0, MAIN_NODE_ID, 0, 0, 0, 0);
     char *enc = clearPacket.encode();
 
-    printf("Sender clear packets .. ");
+    printf("Sending clear packets ... ");
     //Try it
     for (int i = 1; i <= attemptsToDo; i++)
     {
@@ -344,10 +338,6 @@ unsigned int Node::nextExponentialBackoffDelay(int attemptNumber)
     //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
     unsigned int min = 1;
     unsigned int max = (unsigned int) 1 << (attemptNumber -1);
-    unsigned int ans = ( (unsigned int) rand() ) % max + min;
+    unsigned int ans = (((unsigned int) rand()) % max - min) + min;
     return ans;
-
-    //return (unsigned int) ( ( rand() % ( 1 << ( attemptNumber - 1 ) ) ) + 1 );
-    /*int delay = (rand() % (1<<(attemptNumber-1))) + 1;
-    bcm2835_delay(delay);*/
 }
