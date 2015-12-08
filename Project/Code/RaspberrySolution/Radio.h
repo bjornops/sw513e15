@@ -1,7 +1,6 @@
 #include "iRadio.h"
 #include "spi.h"
 #include "RF24.h"
-#include "Node.h"
 #include <stdlib.h>
 
 #ifndef RADIO_H

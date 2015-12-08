@@ -6,7 +6,7 @@
 class MoistureSensor: public iSensor
 {
 private:
-    int myPin;
+    int _myPin;
     
 public:
     MoistureSensor(int);
