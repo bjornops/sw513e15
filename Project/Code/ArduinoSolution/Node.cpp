@@ -65,7 +65,7 @@ void Node::begin()
         int attempt = 1;
         while (true)
         {
-            long remainingTimeToClear = (_lastPacketTime + TIMEOUT) - millis();
+            long remainingTimeToClear = (long)((_lastPacketTime + TIMEOUT) - millis());
             
             // Laeser fra radio i maksimum tiden til timeout. Kommer der en pakke afbrydes listenfor og pakken haandteres
             char *res = _radio->listenFor((remainingTimeToClear > 0) ? remainingTimeToClear : 0);
@@ -106,7 +106,7 @@ void Node::handlePacket(Packet packet)
         case DataRequest:
         {
             //Kender vi parent skipper vi. Er lifespan på en request 0 eller mindre skipper vi også.
-            if (parentID == -1 && packet.sensor1 > 0 /*&& packet.addresser != 0*/)
+            if (parentID == -1 && packet.value1 > 0 /*&& packet.addresser != 0*/)
             {
                 printf("Har modtaget datarequest fra %d\n", packet.addresser);
                 //Vi kender nu parent.
@@ -116,7 +116,7 @@ void Node::handlePacket(Packet packet)
                 if(readPackSend())
                 {
                     //Videresender request, men med mindre lifespan end modtaget. Dette umuliggør uendelig videresending af request
-                    broadcastNewDataRequest((packet.sensor1 - 1));
+                    broadcastNewDataRequest((packet.value1 - 1));
                     _lastPacketTime = millis();
                 }
             }
@@ -182,7 +182,7 @@ void Node::broadcastNewDataRequest(int remainingLifespan)
     //Byg pakke
     Packet requestPacket(DataRequest, nodeID, 0, 0, remainingLifespan, 0, 0);
     char *enc = requestPacket.encode();
-    unsigned int attempt = 1;
+    int attempt = 1;
     unsigned long attemptTime = nextExponentialBackoff(attempt++);
     unsigned long totalTime = attemptTime;
     
@@ -191,8 +191,9 @@ void Node::broadcastNewDataRequest(int remainingLifespan)
         // Broadcast
         _radio->broadcast(enc);
         
-        long startTime = millis();
-        long remainingTime = attemptTime;
+        unsigned long startTime = millis();
+        //attemptTime kan i denne kontekst ikke overstige 10 minutter (600000) og derfor kan vi sagtens dette:
+        long remainingTime = (long)attemptTime;
         while(remainingTime > 0)
         {
             res = _radio->listenFor((remainingTime > 0) ? remainingTime : 0);
@@ -260,17 +261,19 @@ bool Node::beginBroadcasting(Packet packet)
     char *packetCoding = packet.encode();
     char *res;
   
-    unsigned int attempt = 1;
+    int attempt = 1;
     unsigned long attemptTime = nextExponentialBackoff(attempt);
     unsigned long totalTime = attemptTime;
   
     while (totalTime < TIMEOUT)
     {
-        printf("Sender pakke med typen: %d og lytter for %d ms\n", packet.packetType, attemptTime);
+        printf("Attemptnumber: %d\n", attempt);
+        printf("Sender pakke med typen: %d og lytter for %ld ms\n\n\n\n", packet.packetType, attemptTime);
         _radio->broadcast(packetCoding);
         
-        long startTime = millis();
-        long remainingTime = attemptTime;
+        unsigned long startTime = millis();
+        //attemptTime kan i denne kontekst ikke overstige 10 minutter (600000) og derfor kan vi sagtens dette:
+        long remainingTime = (long)attemptTime;
         //Så længe der er remainingTime i det pågældende attempt fortsætter vi med at lytte uden at broadcaste. 
         //Nødvendigt fordi vi kun lytter indtil vi modtager en pakke - om den er relevant eller ej er lige meget.
         while(remainingTime > 0)
@@ -301,20 +304,24 @@ bool Node::beginBroadcasting(Packet packet)
         attemptTime = nextExponentialBackoff(attempt);
         totalTime += attemptTime;
     }
+    //Hvis vi ryger ud hat vi nået et timeout
     free(packetCoding);
+    parentID = -1;
+    memset(_rejectArray, 0, REJECTSIZE);
+    printf("Timeout now\n");
+    _lastPacketTime = millis();
     return false;
 }
 
 // Udregner exp. backoff delay
-int Node::nextExponentialBackoff(unsigned int attemptNumber)
+unsigned long Node::nextExponentialBackoff(int attemptNumber)
 {
   //Sikkerhedstjek så vi ikke ender i overflow hvor 1ms returneres
-    attemptNumber = (attemptNumber < 32) ? attemptNumber : 32;
-    
+    attemptNumber = (attemptNumber <= 32) ? attemptNumber : 32;
     
     //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
-    unsigned long potentialyBiggest = ((unsigned long)1 << (attemptNumber - 1)) + 1;
-    unsigned long delay = random(1, potentialyBiggest);
+    unsigned long potentiallyBiggest = ((unsigned long)1 << (attemptNumber - 1)) + 1;
+    unsigned long delay = random(1, potentiallyBiggest);
     return delay;
 }
 
