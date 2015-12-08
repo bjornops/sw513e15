@@ -178,6 +178,11 @@ void Node::handlePacket(Packet packet)
 
 void Node::broadcastNewDataRequest(int remainingLifespan)
 {
+    if(remainingLifespan <= 0)
+    {
+      return;
+    }
+    
     char *res;
 
     //Byg pakke
