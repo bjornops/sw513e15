@@ -65,11 +65,13 @@ char *NRF24Radio::listen(void)
         }
 
         //er der modtaget signal hos noden?
-        if (Node::signalReceived)
+        if (signalReceivedR)
         {
             printf("Listening interrupted by signal...\n");
             fflush(stdout);
+            signalReceivedR = 0;
             return {defaultMessage};
         }
     }
 }
+

@@ -48,7 +48,13 @@ void getAndSavePID()
 // Når vi får en 'alarm', send requests
 void signalHandler(int signum)
 {
-    Node::signalReceived = 1;
+    Node::setSignalReceived(1);
+}
+
+void Node::setSignalReceived(int value)
+{
+    Node::signalReceived = value;
+    Node::_radio->signalReceivedR = value;
 }
 
 char *Node::getResultFilename()
@@ -108,7 +114,7 @@ void Node::begin()
             printf("Signal received, sending requests ... ");
             Node::sendRequest(); //Mængde af forsøg defineret i funktion.
             printf("Done!\n");
-            Node::signalReceived = 0;
+            Node::setSignalReceived(0);
         }
 
         //Har vi modtaget fra alle noder?
@@ -143,25 +149,17 @@ void Node::handlePacket(Packet packet)
             //If statement added for at sikre sig at data er tiltænkt main, og ikke en anden. Check af adresee er egentligt overflødig, men bruges under debugging.
             if(packet.addressee == MAIN_NODE_ID && Node::_requested)
             {
+                // Send acknowledgement
+                Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
+                char *enc = ackPacket.encode();
+                _radio->broadcast(enc);
+                free(enc);
                 if(Node::_receivedThisSession[packet.origin] == -1)
                 {
                     printf("Received node %d's value %d from node %d\n", packet.origin, packet.value1, packet.addresser);
 
                     // Ikke modtaget før, så gem værdi!
                     Node::_receivedThisSession[packet.origin] = packet.value1;
-
-                    // Send acknowledgement
-                    Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
-                    char *enc = ackPacket.encode();
-                    _radio->broadcast(enc);
-                    free(enc);
-                }
-                else
-                {
-                    Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
-                    char *enc = ackPacket.encode();
-                    _radio->broadcast(enc);
-                    free(enc);
                 }
             }
         }
