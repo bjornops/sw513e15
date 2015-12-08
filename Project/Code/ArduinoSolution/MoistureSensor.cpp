@@ -3,7 +3,7 @@
 
 MoistureSensor::MoistureSensor(int aPin) 
 {
-    myPin = aPin;
+    _myPin = aPin;
 }
 
 int middle(int v1, int v2, int v3)
