@@ -106,7 +106,7 @@ void Node::handlePacket(Packet packet)
         case DataRequest:
         {
             //Kender vi parent skipper vi. Er lifespan på en request 0 eller mindre skipper vi også.
-            if (parentID == -1 && packet.sensor1 > 0 /*&& packet.addresser != 0*/)
+            if (parentID == -1 && packet.value1 > 0 /*&& packet.addresser != 0*/)
             {
                 printf("Har modtaget datarequest fra %d\n", packet.addresser);
                 //Vi kender nu parent.
@@ -116,7 +116,7 @@ void Node::handlePacket(Packet packet)
                 if(readPackSend())
                 {
                     //Videresender request, men med mindre lifespan end modtaget. Dette umuliggør uendelig videresending af request
-                    broadcastNewDataRequest((packet.sensor1 - 1));
+                    broadcastNewDataRequest((packet.value1 - 1));
                     _lastPacketTime = millis();
                 }
             }
