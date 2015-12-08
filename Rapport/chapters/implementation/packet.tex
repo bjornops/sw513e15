@@ -162,6 +162,6 @@ uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
 \end{lstlisting}
 
 
-\texttt{getChecksum} uses an \texttt{int offset} to keep track of the progress through the message, a \texttt{char byte} to contain a byte of the \texttt{message} and a \texttt{uint16\_t remainder} instantiated by the \texttt{INITIAL\_REMAINDER} value. 
+\texttt{getChecksum} uses an \texttt{int offset} to keep track of the iterative progress through the message, a \texttt{char byte} to contain a byte of the \texttt{message} and a \texttt{uint16\_t remainder} instantiated by the \texttt{INITIAL\_REMAINDER} value. 
 
-The function iterates over each byte in the \texttt{message}. The current \texttt{byte} is the remainder right shifted by 8 then XOR'ed with the \texttt{message}'s offset byte. The \texttt{remainder} is then calculated by XOR'ing the value already stored in \texttt{crcTable} at the current byte, with the remainder left shifted by 8. This is hard to explain and understand \todo{retry..}
+The function iterates over each byte in the \texttt{message}, according to the algorithm described in Section \ref{cha:crcComp}. The current \texttt{byte} is the remainder right shifted by 8 then XOR'ed with the \texttt{message}'s offset byte. The \texttt{remainder} is then calculated by XOR'ing the value already stored in \texttt{crcTable} at the current byte, with the remainder left shifted by 8. \todo{review explanation}
