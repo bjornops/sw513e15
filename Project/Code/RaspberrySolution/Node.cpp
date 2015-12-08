@@ -340,9 +340,16 @@ void Node::sendRequest()
 
 unsigned int Node::nextExponentialBackoffDelay(int attemptNumber)
 {
-    //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
+    //Minimum backoff
     unsigned int min = 1;
+    //Maximum backoff
     unsigned int max = (unsigned int) 1 << (attemptNumber -1);
+
+    //Random value from min to max
     unsigned int ans = (((unsigned int) rand()) % max - min) + min;
+
+    //5 ms added to help ensure a minimum time for listening
+    ans += 5;
+
     return ans;
 }
