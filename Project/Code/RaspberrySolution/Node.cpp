@@ -140,10 +140,10 @@ void Node::handlePacket(Packet packet)
     {
         case Data: // Har modtaget data der skal gemmes!
         {
-            //If statement added for at sikre sig at data er tiltænkt main, og ikke en anden. Er egentligt overflødig, men bruges under debugging.
-            if(packet.addressee == MAIN_NODE_ID)
+            //If statement added for at sikre sig at data er tiltænkt main, og ikke en anden. Check af adresee er egentligt overflødig, men bruges under debugging.
+            if(packet.addressee == MAIN_NODE_ID && Node::_requested)
             {
-                if(Node::_receivedThisSession[packet.origin] == -1 && Node::_requested)
+                if(Node::_receivedThisSession[packet.origin] == -1)
                 {
                     printf("Received node %d's value %d from node %d\n", packet.origin, packet.value1, packet.addresser);
 
@@ -151,6 +151,13 @@ void Node::handlePacket(Packet packet)
                     Node::_receivedThisSession[packet.origin] = packet.value1;
 
                     // Send acknowledgement
+                    Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
+                    char *enc = ackPacket.encode();
+                    _radio->broadcast(enc);
+                    free(enc);
+                }
+                else
+                {
                     Packet ackPacket(DataAcknowledgement, MAIN_NODE_ID, packet.addresser, MAIN_NODE_ID, 0, 0, 0);
                     char *enc = ackPacket.encode();
                     _radio->broadcast(enc);
