@@ -6,6 +6,30 @@ The \texttt{Node} class is used as a static class, which means that only one ins
 The implementation of the \texttt{Node} classes are different on the main node and sensor nodes, which are explained in the following two sections.
 
 \subsection{Sensor nodes} 
+The sensor nodes job is to read sensor data, then send and relay data towards the main node. The sensor nodes passive state is when listening for messages, be it requests or data. When a packet is received, it is handled in \texttt{void handlePacket(Packet packet)}.  \todo{Nu er handlePacket blevet for pæn. Der er jo intet indhold nu? :-( }
+
+
+
+
+\subsubsection*{Exponential backoff}
+Exponential backoff is used in the solution to make sure that conflicts will eventually solve themselves. In the solution, an response is often wanted when sending data, and exponential backoff can be used to make sure that this arrives at some point. For example, this is used when sending data and waiting for an acknowledgement.
+
+The code in Listing \ref{lst:expbackoff} shows how a delay is calculated based on the current attempt. First, a check is performed to see whether the attempt is too high. An \texttt{attemptNumber} too high could result in the result being too big for its variable type. 
+The biggest possible number is calculated by doing $1 * 1^(attemptNumber-1)$, and the number itself is fould by taking a random number between 1 and the biggest possible number.
+
+Before being returned, the values is increased by five. This is done as 1ms is simply not enough time for the devices to send, decode, encode and re-send. Tests showed that packets being sent with a delay of 1 had to be re-sent more often, so 5 was chosen as the smallest possible value.
+\begin{lstlisting}[language=C,caption={Exponential backoff on the sensor nodes. In Node.cpp.},label={lst:expbackoff}]
+unsigned long Node::nextExponentialBackoff(int attemptNumber)
+{
+    attemptNumber = (attemptNumber <= 32) ? attemptNumber : 32;
+    
+    unsigned long potentiallyBiggest = ((unsigned long)1 << (attemptNumber - 1));
+    unsigned long delay = random(1, potentiallyBiggest);
+    delay += 5;
+    
+    return delay;
+}
+\end{lstlisting}
 
 
 \subsection{Main node} \label{cha:signalhandling}
