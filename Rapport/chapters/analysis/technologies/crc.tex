@@ -16,7 +16,7 @@ MD5 is a widespread checksum algorithm. It produces a 128 bit checksum, which is
 \subsection*{Cyclic redundancy check}
 Cyclic redundancy check/code is a checksum algorithm, hereafter referenced to as \textit{CRC}. This exists in several forms, based on the parameters. The checksum size is variable as well as internal algorithm parameters. \todo{wat} CRC can detect single error, more than a single error and burst error \cite[p.~31]{elahi2001network}. The CRC meets the criteria for the solution, hence the selected checksum generator is CRC.
 
-\subsection{Computation of a checksum}
+\subsection{Computation of a checksum}\label{cha:crcComp}
 %Calculation of a checksum
 The algorithm for generating a CRC checksum is described in this subsection.
 In short, the CRC executes a division of the message on a polynomial, and the remainder is used as the checksum. 
