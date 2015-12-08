@@ -108,7 +108,7 @@ void Node::handlePacket(Packet packet)
             //Kender vi parent skipper vi. Er lifespan på en request 0 eller mindre skipper vi også.
             if (parentID == -1 && packet.value1 > 0 /*&& packet.addresser != 0*/)
             {
-                printf("Har modtaget datarequest fra %d\n", packet.addresser);
+                printf("Har modtaget datarequest fra %d med lifetime %d\n", packet.addresser, packet.value1);
                 //Vi kender nu parent.
                 parentID = packet.addresser;
                 
@@ -125,7 +125,7 @@ void Node::handlePacket(Packet packet)
         
         case Data: // Har modtaget data der skal videresendes
         {
-            if (parentID != -1)
+            if (parentID != -1 && packet.addressee == Node::nodeID)
             {
                 sendDataAcknowledgement(packet.addresser);
                 forwardData(packet);
@@ -159,11 +159,12 @@ void Node::handlePacket(Packet packet)
         default:
         {
             //Hvis vi har en parent og der er timeout nu
-            if( parentID != -1 && (_lastPacketTime + TIMEOUT) - millis() > 0)
+            printf("Time remaining: %lu", ((_lastPacketTime + TIMEOUT) - millis()));
+            if( parentID != -1 && (_lastPacketTime + TIMEOUT) - millis() < 0)
             {
                 parentID = -1;
                 memset(_rejectArray, 0, REJECTSIZE);
-                printf("Timeout now\n");
+                printf("Timeout now - switch\n");
                 _lastPacketTime = millis();
             }
             else if(parentID == -1)
@@ -207,7 +208,8 @@ void Node::broadcastNewDataRequest(int remainingLifespan)
             {
                 printf("Clearsignal newdatarequest\n");
                 handleClearSignal(receivedPacket);
-                break;
+                free(enc);
+                return;
             }
             remainingTime = (startTime + attemptTime) - millis();
         }
@@ -320,8 +322,13 @@ unsigned long Node::nextExponentialBackoff(int attemptNumber)
     attemptNumber = (attemptNumber <= 32) ? attemptNumber : 32;
     
     //Delay mellem 1 og 1 * 2 ^ ( attemptnumber - 1 )
-    unsigned long potentiallyBiggest = ((unsigned long)1 << (attemptNumber - 1)) + 1;
+    unsigned long potentiallyBiggest = ((unsigned long)1 << (attemptNumber - 1));
     unsigned long delay = random(1, potentiallyBiggest);
+    
+    //Mængden af tid vi minimum skal lytte for at få svar.
+    //1ms er for lidt og derfor tillægges der altid 5
+    delay += 5;
+    
     return delay;
 }
 
