@@ -329,9 +329,16 @@ void Node::sendRequest()
         // Broadcast
         _radio->broadcast(enc);
         // Backoff
-        res = _radio->listenFor(nextExponentialBackoffDelay(i));
-        Packet packet(res);
-        Node::handlePacket(packet);
+        unsigned int totalTimeToWait = nextExponentialBackoffDelay(i);
+        unsigned int startTime = bcm2835_millis();
+        unsigned int totalTimeWaited = 0;
+        while(totalTimeWaited < totalTimeToWait)
+        { 
+            res = _radio->listenFor();
+            Packet packet(res);
+            Node::handlePacket(packet);
+            totalTimeWaited = bcm2835millis() - startTime
+        }
     }
 
     //Ryd op
