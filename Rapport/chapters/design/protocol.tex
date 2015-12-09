@@ -11,7 +11,7 @@ Because the sensor nodes are battery driven, most of the choices are done with p
 % Range limitations
 While the individual nodes have a relatively short communication range, a network of these devices can have a longer reach if the nodes are able to relay data through each other.
 Therefore, relaying must be supported by the protocol as stated in \ref{cha:requirements}. 
-Another restriction of the radio modules is their range. The reach of the system can be extended by introducing relaying, so that a sequence of nodes can interconnect and transfer data through the chain\todo{find synonym for chain}. 
+Another restriction of the radio modules is their range. The reach of the system can be extended by introducing relaying, so that a sequence of nodes can interconnect and transfer data through the branch in the tree. 
 
 % Other limitations and considerations
 %To fulfill the requirements found in \ref{cha:requirements}, there is no demand to request data for only one specific node at a time.
@@ -91,13 +91,12 @@ This is the operation structure for each individual node in the system.
 \subsection{Interference handling} \label{cha:crcDesign}
 When utilizing wireless communication, interference can be a problem, as explained in section \ref{cha:floodingSec}. This is also the case when using controlled flooding, but using a protocol can help reduce problems with interference, for instance by validating the transferred data and acting accordingly.
 
-Interference might scramble packets, which makes it impossible to use the received data. Figure \ref{fig:prottree1} shows an example of a possible interference scenario, where nodes 5, 6, and 7 could send packets at the same time, causing node 3 to receive scrambled data.
+Interference might change packets, which makes it impossible to use the received data. Figure \ref{fig:prottree1} shows an example of a possible interference scenario, where nodes 5, 6, and 7 could send packets at the same time, causing node 3 to receive scrambled data.
 
-To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. If the checksums match, the packet is accepted and can be relayed to the next node. This will cause the receiving node to send an acknowledgment to the node that sent the packet, which will then stop transmitting data.
-If the checksums do not match, the packet is ignored until a packet that have the same checksum makes its way to the node. \todo{move to checksum/data verification}
+To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. How the checksum is calculated were explained back in \ref{cha:crcComp}.
 
 To ensure that a packet with the correct checksum will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will be transmitted to the receiver without interference. \todo{add ref}
-This is possible, as time is not essential, and the delay between trying again is short.
+This is possible, as time is not essential, and the delay between trying again is short.\todo{time is not essential?}
 
 
 \subsection*{Example}
@@ -142,31 +141,31 @@ Below is a description of the packet types:
 
 
 \textbf{Error}\newline
-Packets are not always transferred correctly, and this is why a node will verify the integrity of a packet whenever a new packet is received. Section \ref{cha:crcDesign} describes how this is done. If the checksums do not match, then the type of the packet will be set to \textit{error}.
-
-\textbf{Data acknowledgement}\newline
-A \textit{data acknowledgment} packet is expected to be received after a \textit{data} packet have been delivered. 
-When a node requests data from the surrounding nodes, they will all start responding by sending their \textit{data} packets, which cause a great deal of interference. The \textit{data acknowledgment} is used to confirm that the sent \textit{data} packet have been received correctly by the node that requested the data.
+Packets are not always transferred correctly, and this is why a node will verify the integrity of a packet whenever a new packet is received. Section \ref{cha:crcDesign} describes how this is done. If the checksums do not match, then the type of the packet will be set to \textit{error}. If the radio module is listing and in the time do not received a packet, it will also return an \textit{error} packet, discarding it.
 
 \textbf{Data request}\newline % Mention lifespan?
 To signal that a node is ready to receive data, it will broadcast a \textit{data request} packet to all sensor nodes within range.
-Each sensor node will then respond with a \textit{data} packet, containing their sensor data, before they relay the \textit{data request} packet out though the network.
-The packet contains the id of the previous node transmitting it, so each sensor node receiving the packet, knows where it comes from.
+Each sensor node will then respond with a \textit{data} packet, containing their sensor data, before they create and send a new \textit{data request} packet out though the network.
+The packet contains the id of the node transmitting it, so each sensor node receiving the packet, knows where it comes from.
 
 \textbf{Data}\newline
 A \textit{data} packet is a response to the \textit{data request} packet.
 A sensor node which receive a \textit{data request} will transmit a packet with data back to its parent.
 The parent is whom the \textit{data request} came from.
 
+\textbf{Data acknowledgement}\newline
+A \textit{data acknowledgment} packet is expected to be received after a \textit{data} packet have been delivered. 
+When a node requests data from the surrounding nodes, they will all start responding by sending their \textit{data} packets, which cause a great deal of interference. The \textit{data acknowledgment} is used to confirm that the sent \textit{data} packet have been received correctly by the node that requested the data.
+
 \textbf{Pair request}\newline
-A \textit{pair request} packet is sent from a sensor node directly to main/central node. The purpose is to have the sensor node registered in the system and have the main main/central node generate and assign an ID. This enables the main/central know when all data is collected at the end of a wave of \textit{data requests}, and to differentiate the collected data.
+A \textit{pair request} packet is sent from a sensor node directly to the main node. The purpose is to have each sensor node registered in the system and have the main main node generate and assign an ID. This enables the main node know when all data is collected at the end of a wave of \textit{data requests}, and to differentiate the collected data.
 
 \textbf{Pair request acknowledgement}\newline
-The \textit{pair request acknowledgement} packet is sent by the main/central node and used to confirm that the \textit{pair request} has been received and accepted. A \textit{pair request acknowledgement} packet also contain the assigned ID that have been assigned to the specific node. When the two nodes, main and sensor node, are paired, the sensor node knows what networks it belongs to, and can then be deployed in the field as a park of the network. 
+The \textit{pair request acknowledgement} packet is sent by the main node and used to confirm that the \textit{pair request} has been received and accepted. A \textit{pair request acknowledgement} packet also contain the assigned ID that have been assigned to the specific node. When the two nodes, main and sensor node, are paired, can the sensor node then be deployed in the field as a park of the network. 
 
 \textbf{Clear signal}\newline
-The \textit{clear signal} is used to reset every node in the network, which will happen once the main/central node have received data from all registered nodes in the system.
-The \textit{clear signal} packet let every node in the network know that it should forget any previous information stored, such as parent information, except its own ID. This is done to add flexibility to the system. When \textit{data request} spread through the network, it forms a tree based on how the nodes are placed. By resetting with the \textit{clear signal}, a new tree is created each time a new wave of \textit{data requests} goes through the network, which in turn means that nodes can be moved around the golf course between waves of \textit{data requests}. How the trees are constructed was explained in section \ref{cha:crcDesign}.
+The \textit{clear signal} is used to reset every node in the network, which will happen once the main node have received data from all registered nodes in the system.
+The \textit{clear signal} packet let every node in the network know that it should forget any previous information stored, except its own ID, such as parent information. This is done to add flexibility to the system. When \textit{data request} spread through the network, it forms a tree based on how the nodes are placed. By resetting with the \textit{clear signal}, a new tree is created each time a new wave of \textit{data requests} goes through the network, which in turn means that nodes can be moved around the golf course between waves of \textit{data requests}. How the trees are constructed was explained in section \ref{cha:crcDesign}.
 
 
 \begin{figure}[h!]
