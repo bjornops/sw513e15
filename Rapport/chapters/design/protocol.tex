@@ -3,53 +3,74 @@
 To transmit the data from the nodes to the main node, a protocol must be implemented.
 The protocol must support the utilized hardware components and be designed to work within their limitations. 
 
-The protocol to be developed for the solution will be based on the examination of networks in section \ref{fig:topologies} and the protocols described in section \ref{cha:comprot}.
+% Background/meta
+The protocol to be developed for the solution will be based on the networks examined in Section \ref{fig:topologies} and the protocols described in Section \ref{cha:comprot}.
 There are a number of considerations to be made to develop a protocol that complies to the requirements.
 Because the sensor nodes are battery driven, most of the choices are done with power consumption as a priority, to increase the battery longevity.
 
+% Range limitations
 While the individual nodes have a relatively short communication range, a network of these devices can have a longer reach if the nodes are able to relay data through each other.
 Therefore, relaying must be supported by the protocol as stated in \ref{cha:requirements}. 
+Another restriction of the radio modules is their range. The reach of the system can be extended by introducing relaying, so that a sequence of nodes can interconnect and transfer data through the chain\todo{find synonym for chain}. 
 
+% Other limitations and considerations
+%To fulfill the requirements found in \ref{cha:requirements}, there is no demand to request data for only one specific node at a time.
+There are multiple methods to request data from the network nodes, some of the most used ones can be found in \ref{cha:comprot}. \todo{research}
+
+The radio modules selected for the solution are half-duplex\todo{ensure duplex is described in theory} and not capable of full-duplexing, and this limitation needs to be addressed in the development of the transmission part of the protocol. 
+
+% Already mentioned in design intention/data handling => move?
 For power consumption and complying to the usage, the network nodes are controlled by the main node, and the nodes will transmit sensor data on demand.
 This implementation will keep the nodes in a low power listening mode until a data request is received.
 The nodes transmitting their sensor readings automatically requires some sort of synchronization, so the node data is updated for every node and transmitted back to the main node.
 There is no requirement for real-time monitoring of the golf course, making it difficult defining a data transfer interval that matches both power consumption as well as the need for information.
-Hence, an on demand request for data will be sufficient.
+Hence, an on-demand request for data will be sufficient.
 
-\subsection{Transfer method and topology}
-The solution must gather sensor data from all nodes in the network, and this subsection will contain the considerations made for the choice of topology.
+\subsection{Transfer method and topology}\todo{new title}
+% Intention/motivation
+The solution is required to gather sensor data from all nodes in the network, and this subsection will contain the considerations regarding choice of method and the according topology.
 
-To fulfill the requirements found in \ref{cha:requirements}, there is no demand to request data for only one specific node at a time.
-There are multiple methods to request data from the network nodes, some of the most used ones can be found in \ref{cha:comprot}. 
-\iffalse
-One way of requesting data can be done by transmitting a data request to every node in the network, addressing the nodes by name. This would require the main node to create an individual request to each node in the network, and the network nodes to know the path through the network to the addressee, so that the request can be relayed correctly. This is not appropriate when the network nodes have limited memory\todo{how much would routing tables fill?}. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that does exist. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy.
-\fi
+%This enables the main node to broadcast data requests throughout the sensor network, and likewise transmitting data readings from the sensor nodes to the main node.
 
-The protocol selected for the solution is partly based on the flooding protocol.
-This protocol is a method where the data request can be transmitted by flooding the network, without needing to send a tailored request to every node in the network. 
-A data request will be broadcasted to all nodes in the network, using flooding, and will only require one packet. 
+% The two types of communication (data request and data respond)
+As the sensor readings are required on-demand, there must be at least two types of communication. The first being the data request, an outgoing signal from the main node, notifying the data demand. This is a broadcasted packet, as every node is targeted as recipient. The second type is data response, while the sensor readings needs to be returned to the main node for storage and representation. The design of the two types follows.
+
+% Design of data request: individual request
+One data gathering method is to demand data explicitly from each node. That can be done by transmitting a unique data request to every node in the network, addressing each nodes by its identification. This would require the main node to create an individual request to each node in the network, and the network nodes to know the path through the network to the addressee, so that the request can be relayed correctly. This is not appropriate as routing tables would use a significant amount of the network nodes' limited memory\todo{how much would routing tables fill?}. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that actually exist. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy in addition to more memory.
+
+% Design of data request: broadcast request
+Another method of data gathering is by a request broadcast. This would work as a flooded request throughout the network.
+A data request will be broadcasted to all nodes in the network, using flooding, and will only require one unique packet. 
 If the broadcast is done by controlled flooding, there will be no cycles, and the outgoing transmit topology will consequently be a tree. 
 Flooding will only handle one packet, but the nodes can receive the same packet multiple times and must analyze and discard any duplicate packets.
 
+% Data request method selection template
+The protocol selected for the solution is partly based on the flooding protocol.
+This protocol is a method where the data request can be transmitted by flooding the network, without needing to send a tailored request to every node in the network. 
+
 The controlled flooding has a low memory impact and thus best suited for the solution. The flooding protocol will create a tree which can be utilized to create a return path for the nodes' sensor readings.
 
+% Practical implementation of data request
 \begin{figure}[h!]
 	\centering
 	\makebox[\textwidth][c]{\includegraphics[scale=0.4]{chapters/design/figures/branchExample.png}}
-	\caption{The trees structure can vary depending on the node that connects to the main node first.}
+	\caption{The tree's structure can vary depending on the node that connects to the main node first.}
 	\label{fig:treeVariation}
 \end{figure}
 
-The tree created in each request broadcast can vary in its structure, depending on interference, removal of nodes or faulty nodes or by other occurrences. \figref{treeVariation} shows an example of how the tree can vary: first the main node will broadcast "request 1", which is received by both "node 1" and "node 2". An external node in the system will always handle its own sensor data before it starts relaying data from other nodes. If the main node receives data from "node 1" first, then the resulting tree will match the tree seen to the left on \figref{treeVariation}. If "node 2" connects to the main node first, then the tree will match the tree on the right.
-This will effectively solve the requirement of respond appropriately to a disconnecting node as well as including new nodes in the network, since a new tree is constructed with each wave of requests from the main node.
-It will also use the shortest paths to every node, due to each node connecting to its immediate neighbors.
 
+The tree created in each request broadcast can vary in its structure, depending on interference, removal of nodes or faulty nodes or by other occurrences. \figref{treeVariation} shows an example of how the tree can vary: first the main node will broadcast "request 1", which is received by both "node 1" and "node 2". An external node in the system will always handle its own sensor data before it starts relaying data from other nodes. If the main node receives data from "node 1" first, then the resulting tree will match the tree seen to the left on \figref{treeVariation}. If "node 2" connects to the main node first, then the tree will match the tree on the right.
+This will effectively solve the requirement of responding appropriately to a disconnecting node, as well as including new nodes in the network, since a new tree is constructed with each wave of requests from the main node.
+It will also use the shortest path to every node, due to each node connecting to its immediate neighbors.
+
+% Design of data respond
 The tree instantiated by the flood, can be used to create a path from each node to the main node.
 The receiver of a request signal can use the sender as the parent when data is to be returned.
-The child will then repeat the request signal, and be the parent of the nodes hearing it.
+The child will then repeat the request signal, and be the parent of nodes hearing it.
 
+% Topological consequence of data communication: tree
 The topology of the network will effectively be a tree, although prone to changes in branches.
-Any node receiving a request signal will then be able to respond to its parent, causing all nodes to have a single identifier for the routing towards the main node.
+Any node receiving a request signal will then be able to respond to its parent, causing all nodes to have a single identifier for the routing towards the destination node, the main node.
 
 \subsection{Sequence}
 The protocol sequence is determined as the following. A flowchart can be seen in the appendix.\todo{add flowchart to appendix}
@@ -75,7 +96,7 @@ Interference might scramble packets, which makes it impossible to use the receiv
 To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. If the checksums match, the packet is accepted and can be relayed to the next node. This will cause the receiving node to send an acknowledgment to the node that sent the packet, which will then stop transmitting data.
 If the checksums do not match, the packet is ignored until a packet that have the same checksum makes its way to the node. \todo{move to checksum/data verification}
 
-To ensure that a packet with the correct checksum will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will be transmitted to the receiver without interference.
+To ensure that a packet with the correct checksum will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will be transmitted to the receiver without interference. \todo{add ref}
 This is possible, as time is not essential, and the delay between trying again is short.
 
 
@@ -115,32 +136,38 @@ This section covers the descriptions and decisions regarding the packets in the 
 There are multiple types of data needed to make a functioning protocol. The nRF24L01 supports data payloads up to 32 bytes, and is accordingly the limit of data to transfer in each packet.
 Although, a decrease in amount of data can enable the protocol to be implemented on more limited hardware in addition to use less energy on broadcast.
 
-There are five types of packages: pair request, data request, data response, acknowledgment and flush?
+There are seven types of packages: error, data acknowledgement, data request, data, pair request, pair request acknowledgement, and clear signal.
 These are used to tell the receiver what kind of data the packet contains, so that the receiving node can decide how to handle the received packet. 1 byte will be sufficient to store the packet type.
-The five packet types are described followingly.
+Below is a description of the packet types:
 
-\textit{Pair request}\newline
-A pair request is a packet send from the main node, the raspberry pi.
-The packet will be read by a single sensor node set to be paired with the network.
-When the two nodes, main and sensor node, are paired, the sensor node knows what networks it belongs to, and can then be deployed in the field as a park of the network. 
 
-\textit{Data request}\newline
-A data request is a packet which the main node transmits to all sensor nodes within range.
-Each sensor node then relay the data request out though the network.
-The packet contains the ID of the previous node transmitting it, so each sensor node receiving the packet, knows where it comes from.
+\textbf{Error}\newline
+Packets are not always transferred correctly, and this is why a node will verify the integrity of a packet whenever a new packet is received. Section \ref{cha:crcDesign} describes how this is done. If the checksums do not match, then the type of the packet will be set to \textit{error}.
 
-\textit{Data response}\newline
-A data response is a response to the data request.
-A sensor node which receive a data request will transmit a packet with data back to its parent.
-The parent is whom the data request came from.
+\textbf{Data acknowledgement}\newline
+A \textit{data acknowledgment} packet is expected to be received after a \textit{data} packet have been delivered. 
+When a node requests data from the surrounding nodes, they will all start responding by sending their \textit{data} packets, which cause a great deal of interference. The \textit{data acknowledgment} is used to confirm that the sent \textit{data} packet have been received correctly by the node that requested the data.
 
-\textit{Acknowledgment}\newline
-An acknowledgment packet is a packet which is expected to be received after a data response packet have been delivered.
-The packet is only to make sure the recorded date from the sensor nodes reach another node, and is not lost.
+\textbf{Data request}\newline % Mention lifespan?
+To signal that a node is ready to receive data, it will broadcast a \textit{data request} packet to all sensor nodes within range.
+Each sensor node will then respond with a \textit{data} packet, containing their sensor data, before they relay the \textit{data request} packet out though the network.
+The packet contains the id of the previous node transmitting it, so each sensor node receiving the packet, knows where it comes from.
 
-\textit{Flush}\newline
-Flush is used to reset every node in the network, this will happen when all data is collected.
-The flush packet let every node in the network know that it should forget any previous information stored, such as parent information.
+\textbf{Data}\newline
+A \textit{data} packet is a response to the \textit{data request} packet.
+A sensor node which receive a \textit{data request} will transmit a packet with data back to its parent.
+The parent is whom the \textit{data request} came from.
+
+\textbf{Pair request}\newline
+A \textit{pair request} packet is sent from a sensor node directly to main/central node. The purpose is to have the sensor node registered in the system and have the main main/central node generate and assign an ID. This enables the main/central know when all data is collected at the end of a wave of \textit{data requests}, and to differentiate the collected data.
+
+\textbf{Pair request acknowledgement}\newline
+The \textit{pair request acknowledgement} packet is sent by the main/central node and used to confirm that the \textit{pair request} has been received and accepted. A \textit{pair request acknowledgement} packet also contain the assigned ID that have been assigned to the specific node. When the two nodes, main and sensor node, are paired, the sensor node knows what networks it belongs to, and can then be deployed in the field as a park of the network. 
+
+\textbf{Clear signal}\newline
+The \textit{clear signal} is used to reset every node in the network, which will happen once the main/central node have received data from all registered nodes in the system.
+The \textit{clear signal} packet let every node in the network know that it should forget any previous information stored, such as parent information, except its own ID. This is done to add flexibility to the system. When \textit{data request} spread through the network, it forms a tree based on how the nodes are placed. By resetting with the \textit{clear signal}, a new tree is created each time a new wave of \textit{data requests} goes through the network, which in turn means that nodes can be moved around the golf course between waves of \textit{data requests}. How the trees are constructed was explained in section \ref{cha:crcDesign}.
+
 
 \begin{figure}[h!]
 	\centering

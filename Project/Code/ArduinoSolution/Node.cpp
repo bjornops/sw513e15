@@ -29,10 +29,10 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
 {
     printf("\nNode klar!\n");
     Packet::crcInit();
-  
+
     _sensor = sensor;
     _radio = radio;
-  
+
     randomSeed(analogRead(0));
 }
 
@@ -52,7 +52,7 @@ void Node::begin()
         printf("Har ingen nodeID..\n");
         shouldSendPairRequest = true;
     }
-  
+
     // Haandter!
     if (shouldSendPairRequest)
     {
@@ -66,11 +66,11 @@ void Node::begin()
         while (true)
         {
             long remainingTimeToClear = (long)((_lastPacketTime + TIMEOUT) - millis());
-            
+
             // Laeser fra radio i maksimum tiden til timeout. Kommer der en pakke afbrydes listenfor og pakken haandteres
             char *res = _radio->listenFor((remainingTimeToClear > 0) ? remainingTimeToClear : 0);
             Packet packet(res);
-            handlePacket(packet);  
+            handlePacket(packet);
         }
     }
 }
@@ -136,7 +136,7 @@ void Node::handlePacket(Packet packet)
             }
         }
         break;
-        
+
         //Hvis pakken er Error, DataAcknowledgement, PairRequest. Primær funktion er at levere nulstilling efter ydre listenFor() har kørt den fulde tid uden at modtage en brugbar pakke.
         default:
         {
@@ -222,18 +222,21 @@ void Node::broadcastNewDataRequest(int remainingLifespan)
     {
       return;
     }
-    
+
     char *res;
 
     //Byg pakke
     Packet requestPacket(DataRequest, nodeID, 0, 0, remainingLifespan, 0, 0);
     char *enc = requestPacket.encode();
-    int attempt = 1;
-    unsigned long attemptTime = nextExponentialBackoff(attempt++);
-    unsigned long totalTime = attemptTime;
+    unsigned long attemptTime;
+    unsigned long totalTime = 0;
 
-    for (int i = 1; i <= REQUEST_AND_CLEAR_ATTEMPTS; i++)
+    for (int attempt = 1; attempt <= REQUEST_AND_CLEAR_ATTEMPTS; attempt++)
     {
+        //fix tid.
+        attemptTime = nextExponentialBackoff(attempt);
+        totalTime += attemptTime;
+
         // Broadcast
         _radio->broadcast(enc);
 
@@ -243,12 +246,8 @@ void Node::broadcastNewDataRequest(int remainingLifespan)
         while(remainingTime > 0)
         {
             res = _radio->listenFor((remainingTime > 0) ? remainingTime : 0);
-
-            // Backoff
-            res = _radio->listenFor(nextExponentialBackoff(i));
             Packet receivedPacket(res);
 
-            //printf("Packet i newdatarequest: %d - %d - %d - %d \n", receivedPacket.packetType , receivedPacket.addresser, receivedPacket.addressee, receivedPacket.origin);
             if (receivedPacket.packetType == ClearSignal)
             {
                 printf("Clearsignal newdatarequest\n");
@@ -258,10 +257,6 @@ void Node::broadcastNewDataRequest(int remainingLifespan)
             }
             remainingTime = (startTime + attemptTime) - millis();
         }
-
-        //fix tid.
-        attemptTime = nextExponentialBackoff(attempt++);
-        totalTime += attemptTime;
     }
 
     //Ryd op
@@ -346,7 +341,7 @@ unsigned long Node::nextExponentialBackoff(int attemptNumber)
     //Mængden af tid vi minimum skal lytte for at få svar.
     //f.eks. 1ms er for lidt og derfor skal delay altid være minimum 5
     delay = (delay < 5) ? 5 : delay;
-    
+
     return delay;
 }
 
