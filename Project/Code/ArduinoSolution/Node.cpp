@@ -151,10 +151,6 @@ void Node::handlePacket(Packet packet)
         }
         break;
         
-        case PairRequest:
-        {}
-        break;
-      
         //Hvis pakken er Error, DataAcknowledgement, PairRequest. Primær funktion er at levere nulstilling efter ydre listenFor() har kørt den fulde tid uden at modtage en brugbar pakke.
         default:
         {
