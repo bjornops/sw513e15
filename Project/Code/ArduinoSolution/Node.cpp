@@ -267,33 +267,6 @@ void Node::broadcastNewDataRequest(int remainingLifespan)
     //Ryd op
     free(enc);
 }
-
-void Node::handleClearSignal(Packet packet)
-{
-    parentID = -1;
-    memset(_rejectArray, 0, REJECTSIZE);
-    
-    char *encoded = packet.encode();
-  
-    for (int i = 1; i <= REQUEST_AND_CLEAR_ATTEMPTS; i++)
-    {
-        _radio->broadcast(encoded);
-        delay(nextExponentialBackoff(i));
-    }
-    free(encoded);
-    printf("Clearsignal handled - klar igen om 1 sekund\n");
-    delay(1000);
-}
-
-void Node::receivedPairRequestAcknowledgement(int newID)
-{
-    printf("Modtaget ack paa pair!\n");
-    if (nodeID == -1) // Default ID
-    {
-        printf("Har nu faaet ID: %d\n", newID);
-        saveID(newID);
-    }
-}
 // Sender pair request
 void Node::sendPairRequest()
 {
