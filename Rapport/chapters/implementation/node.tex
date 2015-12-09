@@ -60,7 +60,6 @@ Exponential backoff is used in the solution to make sure that conflicts will eve
 The code in Listing \ref{lst:expbackoff} shows how a delay is calculated based on the current attempt. First, a check is performed to see whether the attempt is too high. An \texttt{attemptNumber} too high could result in the result being too big for its variable type. 
 The biggest possible number is calculated by doing $1 * 1^(attemptNumber-1)$, and the number itself is fould by taking a random number between 1 and the biggest possible number.
 
-Before the delay is returned, the value is set to five if it is lower than five. This is done as 1ms is simply not enough time for the devices to send, decode, encode and re-send. Tests showed that packets being sent with a delay of 1ms had to be re-sent more often, so 5ms was chosen as the smallest possible value.
 \begin{lstlisting}[language=C,caption={Exponential backoff on the sensor nodes. In Node.cpp.},label={lst:expbackoff}]
 unsigned long Node::nextExponentialBackoff(int attemptNumber)
 {
@@ -73,6 +72,9 @@ unsigned long Node::nextExponentialBackoff(int attemptNumber)
     return delay;
 }
 \end{lstlisting}
+
+Before the delay is returned, the value is set to five if it is lower than five. This is done as 1ms is simply not enough time for the devices to send, decode, encode and re-send. Tests showed that packets being sent with a delay of 1ms had to be re-sent more often, so 5ms was chosen as the smallest possible value.
+
 
 
 \subsection{Main node} \label{cha:signalhandling}
