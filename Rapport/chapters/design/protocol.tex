@@ -111,7 +111,7 @@ For each new data request from the main node the tree structure and node levels 
 This section covers the descriptions and decisions regarding the packets in the system.
 
 
-\subsubsection{Packet types}
+\subsection{Packet types}
 There are multiple types of data needed to make a functioning protocol. The nRF24L01 supports data payloads up to 32 bytes, and is accordingly the limit of data to transfer in each packet.
 Although, a decrease in amount of data can enable the protocol to be implemented on more limited hardware in addition to use less energy on broadcast.
 
@@ -142,16 +142,6 @@ The packet is only to make sure the recorded date from the sensor nodes reach an
 Flush is used to reset every node in the network, this will happen when all data is collected.
 The flush packet let every node in the network know that it should forget any previous information stored, such as parent information.
 
-\subsubsection{Other data}
-There has to be an addresser and an addressee.\todo{why?} These are the 'from' and 'to' parts of the packet, and specifies which node the packet is for, and which node the packet is sent from.
-Since the data sent with the package not necessarily originates from the same node from which it is sent, because of relaying in the network, there also needs to be data allocated to identify the origin.
-The limitation of the network size is 1000 nodes, the identifier data fields needs to support 1000 unique addresses, which requires 9 bits. The allocated size for the addresses are accordingly 2 bytes(16 bits) each to maintain usage of whole bytes. This is done because it is more efficient to manipulate a byte instead of a bit \cite{bytevsbit}. The addresses requires 6 bytes in total.
-
-To verify the integrity of the received package, a Cyclic redundancy check (CRC16) is appended. CRC16 uses 2 bytes to distinguish a successfully transfered packet from an erroneous one. 
-
-To support multiple sensors per node, there are three fields allocated for sensor data.
-The readings of the moisture sensor have a resolution of 1024 values, and the required size allocated for the sensor reading data is 10 bits. The allocated data size in the transfer is therefore 2 bytes.
-
 \begin{figure}[h!]
 	\centering
 	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth,trim={0 3cm 0 8cm},clip]{figures/dataalloc.png}}
@@ -159,18 +149,48 @@ The readings of the moisture sensor have a resolution of 1024 values, and the re
 	\label{fig:dataalloc}
 \end{figure}
 
-The sizes of the different data to transfer sums up to 16 bytes and the distribution is displayed in \figref{dataalloc}.
+\subsection{Addresses}
+Twelve bytes have are used to keep track of a packet. These contain the addresser, addressee and the origin address which can be seen on figure \ref{fig:dataalloc}. 
+
+\textbf{Addresser}\newline
+When a node receives a packet, for instance a packet of the data request type, the node in question need to respond with its sensor data. The node could begin broadcasting its sensor data openly as response, however this could potentially be received by other nodes in range, whereas the sensor data might be irrelevant. This is why a packet contain the id of the sender, which is the addresser. This gives the node knowledge of the node that requested data and can therefore address its data correctly. Other nodes in range might receive the data as well, but they will ignore the this packet since it was not addressed for them.
+
+The addresser field of a packet will change during the packets lifetime. This happens when a node forwards a packet from another node. The addresser id be replaced by the id of the node relaying the data.
+
+\textbf{Addressee}\newline
+When a node wants to send a packet with its sensor data, a data type packet in this case, it need to specify who this data is meant for, which is the node that requested the data. The id of the node that requested the data will be marked in the packet as the addressee. This is done to ensure that the packet reaches the intended node. When a node, that are expecting a data packet, receives such a packet, it compare the addressee of the packet with its own id. The packet will be ignored by the node if the addressee and id does not match.
+
+The addressee field of a packet will change during the packets lifetime. This is the case when the packet is relayed, in the same way that the addresser changes.
+
+\textbf{Origin address}\newline
+The origin address contains the id of the node where the data of a specific packet originated. This data is used by both the main/central node and the external nodes to differentiate the data.
+
+The origin address field of a packet will not be altered during the packets lifetime.
 
 
-\subsection{Packet data and allocation}
-This section will contain elaborations regarding the data to be used in the protocol.\todo{explain "packet" somewhere earlier?}
+\subsubsection{Data}
+When a data packet is constructed, the sensor data is stored in the "data" fields of the packet as seen on figure \ref{fig:dataalloc}. There are three fields available for sensor data storage. The solution will at this time only contain an implementation of the moisture sensor, but the aim of the three data fields is to add extendability by enabling support for a maximum of tree sensors per node, each with its own field in the packet.
+
+
+\subsubsection{Checksum}
+There is a possibility that a packet is not transferred correctly. This could be due to interference. The packets checksum is stored in the checksum field of the packet and is used for verification. Interference handling was discussed in section \ref{cha:crcDesign}.
+
+
+\subsubsection{Packet allocation}
+The limitation of the network size is 1000 nodes. This means the addresser, addressee and origin address fields need to support 1000 unique addresses, which requires 9 bits. The allocated size for the addresses are accordingly 2 bytes(16 bits) each to maintain usage of whole bytes. This is done because it is more efficient to manipulate a byte instead of a bit \cite{bytevsbit}. The addresses requires 6 bytes in total.
+
+The readings of the moisture sensor have a resolution of 1024 values, and the required size allocated for the sensor reading data is 10 bits. The allocated data size in the transfer is therefore 2 bytes.
+
+To verify the integrity of the received package, a Cyclic redundancy check (CRC16) is appended. CRC16 uses 2 bytes to distinguish a successfully transfered packet from an erroneous one. 
+
+The sizes of the different data to transfer sums up to 16 bytes and the distribution is displayed in \figref{dataalloc} as the data 1, data 2, and data 3 fields.
 
 
 
 
-\subsection{Verification of a message}
+\subsection{Verification of a packet}
 %Verification of a message
-The received message is verified by doing one of the two following methods. 
+The received packet is verified by doing one of the two following methods. 
 
 Generate checksum of message m and compare with received checksum r.
 The checksum of a correctly transferred packet $T$ is 0, because a package $T$, if correctly transferred, is some quotient $Q$ times the polynomial $G$, as seen in eqref[earlier]. If a division has a zero remainder, the packet was transferred correctly.
