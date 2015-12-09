@@ -331,8 +331,8 @@ unsigned long Node::nextExponentialBackoff(int attemptNumber)
     unsigned long delay = random(1, potentiallyBiggest);
     
     //Mængden af tid vi minimum skal lytte for at få svar.
-    //1ms er for lidt og derfor tillægges der altid 5
-    delay += 5;
+    //f.eks. 1ms er for lidt og derfor skal delay altid være minimum 5
+    delay = (delay < 5) ? 5 : delay;
     
     return delay;
 }
