@@ -8,44 +8,41 @@ class Packet;
 #define TIMEOUT 600000
 #define REQUEST_AND_CLEAR_ATTEMPTS 5
 
-enum NodeState
-{
-    WaitingState,
-    RequestingState,
-    RelayingDataState,
-    SendingOwnDataState
-};
-
 class Node
 {
 public:
     static int nodeID, parentID;
-    
+
     static void initializeNode(iSensor *, iRadio *);
-    
     static void begin();
-    static void sendPairRequest();
-    
+
 private:
     static iSensor *_sensor;
     static iRadio *_radio;
-    static uint16_t _rejectArray[REJECTSIZE]; 
+    static uint16_t _rejectArray[REJECTSIZE];
     static int _rejectCount;
     static unsigned long _lastPacketTime;
 
-    static void receivedPairRequestAcknowledgement(int);
+    //Eeprom
     static void saveID(int);
     static int loadID();
-    static bool readPackSend();
+
+    //Handle packets
     static void handlePacket(Packet);
+    static void handleDataRequest(Packet);
+    static void handleData(Packet);
+    static void handlePairRequestAcknowledgement(Packet);
     static void handleClearSignal(Packet);
-    static bool beginBroadcasting(Packet);
+    static void handleDefault();
+
     static unsigned long nextExponentialBackoff(int);
     static void sendRequests();
+    static void sendPairRequest();
     static bool checkRejectArray(uint16_t);
     static void sendDataAcknowledgement(uint16_t);
     static void forwardData(Packet);
     static void broadcastNewDataRequest(int);
+    static bool beginBroadcasting(Packet);
 };
 
 #endif

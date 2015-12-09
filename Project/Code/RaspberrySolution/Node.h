@@ -17,11 +17,11 @@ class Node
 {
 public:
     static volatile sig_atomic_t signalReceived;
+    static void setSignalReceived(int);
 
     static void initializeNode();
     static void begin();
     static void sendRequest();
-
 
 private:
     // ID generating
