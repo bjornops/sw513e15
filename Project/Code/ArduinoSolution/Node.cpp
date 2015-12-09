@@ -29,10 +29,10 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
 {
     printf("\nNode klar!\n");
     Packet::crcInit();
-
+  
     _sensor = sensor;
     _radio = radio;
-
+  
     randomSeed(analogRead(0));
 }
 
@@ -52,7 +52,7 @@ void Node::begin()
         printf("Har ingen nodeID..\n");
         shouldSendPairRequest = true;
     }
-
+  
     // Haandter!
     if (shouldSendPairRequest)
     {
@@ -66,11 +66,11 @@ void Node::begin()
         while (true)
         {
             long remainingTimeToClear = (long)((_lastPacketTime + TIMEOUT) - millis());
-
+            
             // Laeser fra radio i maksimum tiden til timeout. Kommer der en pakke afbrydes listenfor og pakken haandteres
             char *res = _radio->listenFor((remainingTimeToClear > 0) ? remainingTimeToClear : 0);
             Packet packet(res);
-            handlePacket(packet);
+            handlePacket(packet);  
         }
     }
 }
@@ -136,11 +136,7 @@ void Node::handlePacket(Packet packet)
             }
         }
         break;
-
-        case PairRequest:
-        {}
-        break;
-
+        
         //Hvis pakken er Error, DataAcknowledgement, PairRequest. Primær funktion er at levere nulstilling efter ydre listenFor() har kørt den fulde tid uden at modtage en brugbar pakke.
         default:
         {
@@ -270,6 +266,33 @@ void Node::broadcastNewDataRequest(int remainingLifespan)
 
     //Ryd op
     free(enc);
+}
+
+void Node::handleClearSignal(Packet packet)
+{
+    parentID = -1;
+    memset(_rejectArray, 0, REJECTSIZE);
+    
+    char *encoded = packet.encode();
+  
+    for (int i = 1; i <= REQUEST_AND_CLEAR_ATTEMPTS; i++)
+    {
+        _radio->broadcast(encoded);
+        delay(nextExponentialBackoff(i));
+    }
+    free(encoded);
+    printf("Clearsignal handled - klar igen om 1 sekund\n");
+    delay(1000);
+}
+
+void Node::receivedPairRequestAcknowledgement(int newID)
+{
+    printf("Modtaget ack paa pair!\n");
+    if (nodeID == -1) // Default ID
+    {
+        printf("Har nu faaet ID: %d\n", newID);
+        saveID(newID);
+    }
 }
 // Sender pair request
 void Node::sendPairRequest()
