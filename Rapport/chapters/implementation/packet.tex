@@ -1,6 +1,6 @@
 \subsection{Packet}
-The \textit{Packet} class contains the data from a packet received from the radio module. It can be instantiated with a string, or with every part of the packet as a parameter, using the constructors:
-\begin{lstlisting}
+The \texttt{Packet} class contains the data from a packet received from the radio module. It can be instantiated with a string, or with every part of the packet as a parameter, using the constructors in Listing \ref{lst:packetconstructors}.
+\begin{lstlisting}[language=C,label={lst:packetconstructors},caption={Packet constructors}]
 Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t value1Input,
 	uint16_t value2Input, uint16_t value3Input)
 	
@@ -8,18 +8,20 @@ Packet::Packet(char *input)
 \end{lstlisting}
 
 
-This class is passed around in \textit{Node}, where it is used to determine actions based on the type, or being relayed with some new data. 
+This class is passed around in \texttt{Node}, where it is used to determine actions based on the type, or being relayed with some new data. 
 The class itself contains the variables:
+\begin{figure}
 \begin{lstlisting}
 PacketType packetType; // The type of the packet
 uint16_t addresser; // The sender of the packet (node ID)
 uint16_t addressee; // The receiver of the packet (node ID)
 uint16_t origin; // The original sender of the packet
-uint16_t value1; // Value 1 (Used for sensor value)
+uint16_t value1; // Value 1 (Used for sensor value and lifespan)
 uint16_t value2; // Value 2
 uint16_t value3; // Value 3
 uint16_t checksum; // Checksum value
 \end{lstlisting}
+\end{figure}
 These values cover everything in a packet; the type, the sender, the receiver, the origin of the packet, values and a checksum.
 Every packet has this format, and all values are filled out. With packets that might not require all these values, they will simply be zero. For example when sending a request, the sensor values and addressee will be zero.
 
@@ -47,11 +49,11 @@ Every packet has this format, and all values are filled out. With packets that m
 \label{tab:packetTableSecond}
 \end{table}
 
-The datatype of the members of \textit{Packet} are all \textit{uint16\_t}. This is to ensure that the size of the class does not vary on different architectures. The \textit{uint16\_t} is always of size 2 bytes. The same size as two characters. Together, all members in the class gives a total size of 16 bytes. The final architecture of a packet can be seen on \ref{tab:packetTableFirst} and \ref{tab:packetTableSecond}.
+The datatype of the members of \texttt{Packet} are all \texttt{uint16\_t}. This is to ensure that the size of the class does not vary on different architectures. The \texttt{uint16\_t} is always of size 2 bytes. The same size as two characters. Together, all members in the class gives a total size of 16 bytes. The final architecture of a packet can be seen on \ref{tab:packetTableFirst} and \ref{tab:packetTableSecond}.
 
 Only half of the space available in a transmission are occupied as the radio module used in this project supports transmissions of 32 byte at a time. As the solution is designed modular, and the radio module can be replaced with a potentially 'smaller' module in terms of transmission size, the solution would still support this 'smaller' module. Furthermore, a packetsize of 16 bytes is enough to contain the different data collected from the nodes.
 
-\textit{PacketType} is defined as follows:
+\texttt{PacketType} is defined as follows:
 \begin{lstlisting}[language=C]
 enum PacketType : uint16_t {
     Error,
@@ -65,16 +67,16 @@ enum PacketType : uint16_t {
 \end{lstlisting}
 
 
-When a \textit{Packet} is instantiated using the constructor with the \textit{char *input} as parameter, these values are found using the function \textit{memcpy}, in the \textit{decode} function:
-\begin{lstlisting}[language=C]
+When a \texttt{Packet} is instantiated using the constructor with the \texttt{char *input} as parameter, these values are found using the function \texttt{memcpy}, in the \texttt{decode} function, seen in Listing \ref{lst:decodefunc}.
+\begin{lstlisting}[language=C,label={lst:decodefunc},caption={Decode function.}]
 void Packet::decode(char *input)
 {
     memcpy(this, input, sizeof(Packet));
 }
 \end{lstlisting}
-This copies the memory of the \textit{char *input} into the memory location where the current \textit{Packet} object is located. This means that the contents of the packet is set to the content of \textit{input}.
+This copies the memory of the \texttt{char *input} into the memory location where the current \texttt{Packet} object is located. This means that the contents of the packet is set to the content of \texttt{input}.
 
-This is possible as every part of the packet has a known, pre-determined size. \textit{uint16\_t} always has the same size, not dependant on the architecture running the code. When a packet is encoded, using the \textit{char *encode()} function, the returned character array is built in the same way, by setting the contents of the array to the contents of the package.
+This is possible as every part of the packet has a known, pre-determined size. \texttt{uint16\_t} always has the same size, not dependant on the architecture running the code. When a packet is encoded, using the \texttt{char *encode()} function, the returned character array is built in the same way, by setting the contents of the array to the contents of the package.
 
 \begin{lstlisting}[language=C]
 char *Packet::encode()
@@ -87,10 +89,10 @@ char *Packet::encode()
     return returnstring;
 }
 \end{lstlisting}
-The \textit{encode} function allocates the size necessary for a \textit{Packet}, but as a \textit{char *} and uses \textit{memcpy} to set the contents of the array to the contents of the current \textit{Packet} and then returning the array. The char array can be seen as a format of the packet object, that can be directly transmitted by the radio module without further operations to the array.
+The \texttt{encode} function allocates the size necessary for a \texttt{Packet}, but as a \texttt{char *} and uses \texttt{memcpy} to set the contents of the array to the contents of the current \texttt{Packet} and then returning the array. The char array can be seen as a format of the packet object, that can be directly transmitted by the radio module without further operations to the array.
 
 \subsubsection{Checksum}
-\texttt{Packet} objects contains a checksum, used to verify the content's integrity. The checksum uses two functions: \texttt{crcInit()} and \texttt{crcCompute(unsigned char *message, unsigned int nBytes)}. The checksum implementation is based on the description in \textit{Programming Embedded Systems in C and C++} \cite{crcCode}.
+\texttt{Packet} objects contains a checksum, used to verify the content's integrity. The checksum uses two functions: \texttt{crcInit()} and \texttt{crcCompute(unsigned char *message, unsigned int nBytes)}. The checksum implementation is based on the description in \texttt{Programming Embedded Systems in C and C++} \cite{crcCode}.
 
 The CRC functions share the following data, and this data should be implemented so that it is usable by the functions without instantiating them multiple times and use more memory than necessary.
 
