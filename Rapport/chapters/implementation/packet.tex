@@ -7,9 +7,8 @@ Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t add
 Packet::Packet(char *input)
 \end{lstlisting}
 
-
-This class is passed around in \texttt{Node}, where it is used to determine actions based on the type, or being relayed with some new data. 
-The class itself contains the variables:
+Objects of this class is passed around in \texttt{Node}, where it is used to determine actions based on the type, or being relayed with some new data. 
+The objects contain the variables:
 \begin{figure}
 \begin{lstlisting}
 PacketType packetType; // The type of the packet
@@ -23,7 +22,7 @@ uint16_t checksum; // Checksum value
 \end{lstlisting}
 \end{figure}
 These values cover everything in a packet; the type, the sender, the receiver, the origin of the packet, values and a checksum.
-Every packet has this format, and all values are filled out. With packets that might not require all these values, they will simply be zero. For example when sending a request, the sensor values and addressee will be zero.
+Every packet has this format, and all values are filled out. With packets that might not require all these values, they will simply be zero. For example when sending a request, addressee, value2 and value3 will be zero.
 
 \begin{table}[]
 \centering
@@ -104,7 +103,7 @@ The CRC functions share the following data, and this data should be implemented 
 	\item[TOPBIT] is the most significant bit set to 1.
 \end{description}
 
-The \texttt{crcInit()} should be run initially to instantiate a table of remainders to expedite the computation of the checksum. The computation is accelerated because the remainder can be calculated byte-wise instead of bit-wise, by the cost of 256 bytes in the memory.  
+The \texttt{crcInit()} is executed once initially to instantiate a table of remainders to expedite the computation of the checksum. The computation is accelerated because the remainder can be calculated byte-wise instead of bit-wise, by the cost of 256 bytes in the memory.  
 
 \begin{lstlisting}[language=C]
 void Packet::crcInit()
@@ -162,7 +161,6 @@ uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
     return result;
 }
 \end{lstlisting}
-
 
 \texttt{getChecksum} uses an \texttt{int offset} to keep track of the iterative progress through the message, a \texttt{char byte} to contain a byte of the \texttt{message} and a \texttt{uint16\_t remainder} instantiated by the \texttt{INITIAL\_REMAINDER} value. 
 
