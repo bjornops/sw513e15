@@ -9,10 +9,10 @@ The implementation is written in C++. The development of the solution is done in
 \section{Classes}
 The solution contains two different running applications. The main node and the sensor nodes. There are two sets of code due to the different requirements of the nodes. For example, the main node does not have a sensor, so it should not be able to handle a sensor, and therefore does not contain the classes used for sensors.
 
-This section contains the classes contained in each application.
+This section contains the classes contained in each application. UML diagrams showing all fields and methods for both main and sensor nodes can be found in Appendix \ref{cha:fulluml}.
 
 \subsubsection*{Main node}
-The main node is a Raspberry Pi device, running the Raspbian operating system. The classes in the main node application is seen on Figure \ref{fig:mainnodeClass}.
+The main node is a Raspberry Pi device, running the Raspbian operating system. The classes in the main node application is seen on Figure \ref{fig:mainnodeClass}. 
 The main node pairs nodes, send requests, and handles receiving and handling data.
 
 \begin{figure}[h!]
@@ -91,11 +91,11 @@ This class contains the public methods:
 \section{Code}
 This section contains explanations for some of the important parts of the code.
 
-First, the \texttt{Packet} implementation is explained, with code showing how variables are handled, and how CRC is implemented.
+First, the \texttt{Packet} implementation is explained, with code showing how values are handled and how CRC is implemented.
 
-Second, the \texttt{Node} class is explained on both the main node, and the sensor nodes.
+Second, the \texttt{Node} class is explained along with sensor nodes.
 
-Last, the interface running on the main node is explained.
+Last, the main node and its interface is explained.
 
 \input{chapters/implementation/packet.tex}
 \input{chapters/implementation/node.tex}
