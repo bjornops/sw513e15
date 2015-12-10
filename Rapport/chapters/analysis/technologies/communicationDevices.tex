@@ -19,6 +19,8 @@ XBees are quite expensive, which makes them unfit for this project. If the solut
 \subsection{nRF24L01 Transceiver}
 The nRF24L01 transceiver module is a radio module used for exchanging data between modules of the same frequency. As with most of the XBee modules, the RF24 uses the 2.4GHz band, which is license-free in the whole world\cite{itubands}. It is well documented, and multiple libraries exists for using the device with Arduino.
 
+nRF24L01 is what is call a half-duplex device, which means it can only transmit or receive data at any giving time. An example of a full-duplex devices could be a telephone where both devices can transmit and receive data simultaneously.
+
 The nRF24L01 is cheaper than the XBees, and has shorter range and is potentially slower, depending on the communication protocol.
 
 The full specifications can be seen on the attached DVD, or at \cite{nf24datasheet}
