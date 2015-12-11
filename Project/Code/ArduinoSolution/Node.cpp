@@ -39,10 +39,15 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
 // Starter hele lortet!
 void Node::begin()
 {
+    // Resetting ID
+    //saveID(1);
+    //return;
+    
+    
     // Find dit ID her
     bool shouldSendPairRequest = false;
     int ID = loadID();
-    if (nodeID != 0)
+    if (ID != 0)
     {
         nodeID = ID;
         printf("Har nodeID: %d\n", nodeID);
@@ -50,6 +55,7 @@ void Node::begin()
     else
     {
         printf("Har ingen nodeID..\n");
+        nodeID = -1;
         shouldSendPairRequest = true;
     }
 
@@ -266,7 +272,6 @@ void Node::broadcastNewDataRequest(int remainingLifespan)
 void Node::sendPairRequest()
 {
     Packet requestPacket(PairRequest, 0, 0, 0, 0, 0, 0); // Data does not matter, only need 'type'.
-
     beginBroadcasting(requestPacket);
 }
 
@@ -309,6 +314,12 @@ bool Node::beginBroadcasting(Packet packet)
                 handleClearSignal(receivedPacket);
                 free(packetCoding);
                 return false;
+            }
+            else if (receivedPacket.packetType == PairRequestAcknowledgement && (nodeID == -1 || nodeID == 0))
+            {
+                handlePairRequestAcknowledgement(receivedPacket);
+                free(packetCoding);
+                return true;
             }
 
             remainingTime = (startTime + attemptTime) - millis();
