@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.</declaration>
+	<template>
+		<name>Sensor</name>
+		<location id="id0" x="1190" y="-510">
+			<name x="1180" y="-544">waitingToSendNextRequest</name>
+		</location>
+		<location id="id1" x="918" y="-510">
+		</location>
+		<location id="id2" x="646" y="-510">
+			<name x="636" y="-544">waitingForDataAcknowledgement</name>
+		</location>
+		<location id="id3" x="374" y="102">
+			<name x="364" y="68">handleErrorPacket</name>
+		</location>
+		<location id="id4" x="374" y="-102">
+			<name x="364" y="-136">handleClearPacket</name>
+		</location>
+		<location id="id5" x="374" y="-306">
+			<name x="364" y="-340">handleDataPacket</name>
+		</location>
+		<location id="id6" x="374" y="-510">
+			<name x="364" y="-544">handleDataRequestPacket</name>
+		</location>
+		<location id="id7" x="102" y="-204">
+			<name x="92" y="-238">handlePacket</name>
+		</location>
+		<location id="id8" x="-170" y="-204">
+			<name x="-180" y="-238">listenForPacket</name>
+		</location>
+		<init ref="id8"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id4"/>
+			<nail x="1190" y="-408"/>
+			<nail x="374" y="-408"/>
+			<nail x="340" y="-348"/>
+			<nail x="340" y="-170"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="comments" x="935" y="-467">vi mangler at sende flere requests</label>
+			<nail x="1122" y="-476"/>
+			<nail x="986" y="-476"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="comments" x="986" y="-569">broadcast request</label>
+			<nail x="986" y="-544"/>
+			<nail x="1122" y="-544"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="comments" x="680" y="-535">acknowledgement modtaget</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id6"/>
+			<label kind="comments" x="450" y="-467">ingen acknowledgement modtaget</label>
+			<nail x="578" y="-476"/>
+			<nail x="442" y="-476"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id2"/>
+			<label kind="comments" x="442" y="-569">send packet til parent</label>
+			<nail x="442" y="-544"/>
+			<nail x="578" y="-544"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id8"/>
+			<label kind="comments" x="-59" y="-127">vi er allerede clearet</label>
+			<nail x="-68" y="-102"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id8"/>
+			<label kind="comments" x="-59" y="-331">data er ikke addreseret til os, eller kender ikke parent</label>
+			<nail x="-68" y="-306"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id8"/>
+			<label kind="comments" x="-59" y="-535">kender allerede en parent eller packets levetid er udløbet</label>
+			<nail x="-102" y="-510"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id3"/>
+			<nail x="221" y="-153"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id4"/>
+			<nail x="238" y="-187"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id5"/>
+			<nail x="238" y="-221"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<nail x="221" y="-255"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id7"/>
+			<label kind="comments" x="-187" y="-229">Packet modtaget eller listenFor timeout mødt</label>
+			<nail x="-102" y="-204"/>
+			<nail x="34" y="-204"/>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">Main</name>
+		<declaration>// Place local declarations here.</declaration>
+		<location id="id9" x="1326" y="102">
+			<name x="1316" y="68">doneHandlingDataPacket</name>
+		</location>
+		<location id="id10" x="714" y="408">
+			<name x="704" y="374">waiting</name>
+		</location>
+		<location id="id11" x="408" y="408">
+			<name x="398" y="374">sendClearSignals</name>
+		</location>
+		<location id="id12" x="1020" y="102">
+			<name x="1010" y="68">handleDataPacket</name>
+		</location>
+		<location id="id13" x="1326" y="408">
+			<name x="1316" y="374">done</name>
+		</location>
+		<location id="id14" x="714" y="102">
+			<name x="704" y="68">handlePacket</name>
+		</location>
+		<location id="id15" x="408" y="102">
+			<name x="398" y="68">listenForPacket</name>
+		</location>
+		<location id="id16" x="102" y="102">
+			<name x="92" y="68">sendRequests</name>
+		</location>
+		<location id="id17" x="-204" y="102">
+			<name x="-214" y="68">start</name>
+		</location>
+		<init ref="id17"/>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id15"/>
+			<label kind="comments" x="807" y="-85">data er handlet</label>
+			<nail x="1258" y="-68"/>
+			<nail x="476" y="-68"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id9"/>
+			<label kind="comments" x="1071" y="85">broadcast acknowledgement</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id13"/>
+			<label kind="comments" x="918" y="391">ikke flere clearsignals at sende</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="comments" x="476" y="442">flere clearsignals at sende</label>
+			<nail x="646" y="442"/>
+			<nail x="476" y="442"/>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id10"/>
+			<label kind="comments" x="510" y="357">broadcast clear</label>
+			<nail x="476" y="374"/>
+			<nail x="646" y="374"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id11"/>
+			<label kind="comments" x="416" y="255">har data fra alle kendte knuder, eller har ramt timeout</label>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id15"/>
+			<label kind="comments" x="476" y="136">packet ikke af typen data</label>
+			<nail x="646" y="136"/>
+			<nail x="561" y="136"/>
+			<nail x="476" y="136"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id12"/>
+			<label kind="comments" x="782" y="85">packet har typen "data"</label>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id14"/>
+			<label kind="comments" x="501" y="51">packet modtaget</label>
+			<nail x="484" y="68"/>
+			<nail x="646" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id16"/>
+			<label kind="comments" x="127" y="136">timeout men flere requests at sende</label>
+			<nail x="340" y="136"/>
+			<nail x="170" y="136"/>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id15"/>
+			<label kind="comments" x="187" y="51">broadcast request</label>
+			<nail x="170" y="68"/>
+			<nail x="340" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id16"/>
+			<label kind="comments" x="-136" y="85">modtager signal til start</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+MainNode = Main();
+// List one or more processes to be composed into a system.
+system MainNode;
+    </system>
+	<queries>
+	</queries>
+</nta>
