@@ -126,37 +126,47 @@ For each new data request from the main node the tree structure and node levels 
 
 
 \section{Protocol packet}
-This section covers the descriptions and decisions regarding the packets in the system.
+This section covers the descriptions and decisions regarding the packets sent wirelessly in the network.
+
+The packet overview can be seen in \figref{dataalloc}, where each block represents 1 byte.
+\begin{figure}[h!]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth,trim={0 3cm 0 8cm},clip]{figures/dataalloc.png}}
+	\caption{Data allocation in packets.}
+	\label{fig:dataalloc}
+\end{figure}
 
 
 \subsection{Packet types}
+% Motivation
+To be able to discern and utilize received data, it is decided to mark the packet accordingly, indicating the packet content.
+The types are used to inform the receiver what type of data the packet contains, so that the receiving node can decide how to handle the received packet. 
+
+% Limitations
 There are multiple types of data needed to make a functioning protocol. The nRF24L01 supports data payloads up to 32 bytes, and is accordingly the limit of data to transfer in each packet.
 Although, a decrease in amount of data can enable the protocol to be implemented on more limited hardware in addition to use less energy on broadcast.
 
-There are seven types of packages: error, data acknowledgement, data request, data, pair request, pair request acknowledgement, and clear signal.
-These are used to tell the receiver what kind of data the packet contains, so that the receiving node can decide how to handle the received packet. 1 byte will be sufficient to store the packet type.
-Below is a description of the packet types:
-
-
-\textbf{Error}\newline
-Packets are not always transferred correctly, and this is why a node will verify the integrity of a packet whenever a new packet is received. Section \ref{cha:crcDesign} describes how this is done. If the checksums do not match, then the type of the packet will be set to \textit{error}. If the radio module is listing and in the time do not received a packet, it will also return an \textit{error} packet, discarding it.
-
-\textbf{Data request}\newline % Mention lifespan?
-To signal that a node is ready to receive data, it will broadcast a \textit{data request} packet to all sensor nodes within range.
-Each sensor node will then respond with a \textit{data} packet, containing their sensor data, before they create and send a new \textit{data request} packet out though the network.
-The packet contains the id of the node transmitting it, so each sensor node receiving the packet, knows where it comes from.
+% Meta
+Below is a description of the different packet types:
 
 \textbf{Data}\newline
-A \textit{data} packet is a response to the \textit{data request} packet.
-A sensor node which receive a \textit{data request} will transmit a packet with data back to its parent.
-The parent is whom the \textit{data request} came from.
+The \textit{data} packet fulfills the main requirement of transmitting the sensor readings to the main node. The packet contains up to 3 sensor readings, restricted by the 16 byte packet size, the metadata in the packet and the sensor reading resolution of 1024, each requiring 2 bytes in size.
+%The \textit{data} packet is used as a response to a \textit{data request} packet. A sensor node which receive a \textit{data request} will respond with a packet containing sensor reading data back to its parent, and broadcast a \textit{data request}.
+
+\textbf{Data request}\newline % Mention lifespan?
+The \textit{data request} packet is the packet notifying the receiving nodes of a data demand. 
+The packet contains the transmitting node's ID, so that sensor nodes receiving the packet knows the addresser, thus enabling the receiving nodes to set a parent ID.
+
+%To signal that a node is ready to receive data, it will broadcast a \textit{data request} packet to all sensor nodes within range. The sensor nodes will then respond with a \textit{data} packet and send a new \textit{data request} packet out though the network.
+
 
 \textbf{Data acknowledgement}\newline
-A \textit{data acknowledgment} packet is expected to be received after a \textit{data} packet have been delivered. 
-When a node requests data from the surrounding nodes, they will all start responding by sending their \textit{data} packets, which cause a great deal of interference. The \textit{data acknowledgment} is used to confirm that the sent \textit{data} packet have been received correctly by the node that requested the data.
+A \textit{data acknowledgment} packet is used to confirm that the sent \textit{data} packet has been received correctly. The parent node is responsible for sending a \textit{data acknowledgment} to the addresser of the received packet. 
+
+%expected to be received after a \textit{data} packet have been delivered. When a node requests data from the surrounding nodes, they will all start responding by sending their \textit{data} packets, which cause a great deal of interference. The \textit{data acknowledgment} 
 
 \textbf{Pair request}\newline
-A \textit{pair request} packet is sent from a sensor node directly to the main node. The purpose is to have each sensor node registered in the system and have the main main node generate and assign an ID. This enables the main node know when all data is collected at the end of a wave of \textit{data requests}, and to differentiate the collected data.
+A \textit{pair request} packet is sent by a new sensor node and handled directly by the main node. The purpose is to assign an ID to the sensor node and have each sensor node registered in the system and have the main node generate. The ID's enables the main node to confirm that data is collected from all sensor nodes for the current data gathering, and to identify the origin of the collected data. The ID also provides an ability of a parent-child hierarchy between the nodes.
 
 \textbf{Pair request acknowledgement}\newline
 The \textit{pair request acknowledgement} packet is sent by the main node and used to confirm that the \textit{pair request} has been received and accepted. A \textit{pair request acknowledgement} packet also contain the assigned ID that have been assigned to the specific node. When the two nodes, main and sensor node, are paired, can the sensor node then be deployed in the field as a park of the network. 
@@ -165,13 +175,15 @@ The \textit{pair request acknowledgement} packet is sent by the main node and us
 The \textit{clear signal} is used to reset every node in the network, which will happen once the main node have received data from all registered nodes in the system.
 The \textit{clear signal} packet let every node in the network know that it should forget any previous information stored, except its own ID, such as parent information. This is done to add flexibility to the system. When \textit{data request} spread through the network, it forms a tree based on how the nodes are placed. By resetting with the \textit{clear signal}, a new tree is created each time a new wave of \textit{data requests} goes through the network, which in turn means that nodes can be moved around the golf course between waves of \textit{data requests}. How the trees are constructed was explained in section \ref{cha:crcDesign}.
 
+\textbf{Error}\newline
+Because packets are not always transferred correctly, the receiver node will verify the integrity of a packet whenever a packet is received. Section \ref{cha:crcDesign} describes how this is done. If the checksums do not match, the packet type will be set to \textit{error}. 
+If the radio module is listening and does not receive a packet within the listening duration, it will also return an \textit{error} packet and followingly discard it.\todo{last sentece is more implementation than design}
 
-\begin{figure}[h!]
-	\centering
-	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth,trim={0 3cm 0 8cm},clip]{figures/dataalloc.png}}
-	\caption{Data allocation in packets.}
-	\label{fig:dataalloc}
-\end{figure}
+
+In summary, there are seven types of packages: error, data acknowledgement, data request, data, pair request, pair request acknowledgement, and clear signal. 1 byte will be sufficient to store the packet type.
+
+
+
 
 \subsection{Addresses}
 Twelve bytes have are used to keep track of a packet. These contain the addresser, addressee and the origin address which can be seen on figure \ref{fig:dataalloc}. 
@@ -205,7 +217,7 @@ The limitation of the network size is 1000 nodes. This means the addresser, addr
 
 The readings of the moisture sensor have a resolution of 1024 values, and the required size allocated for the sensor reading data is 10 bits. The allocated data size in the transfer is therefore 2 bytes.
 
-To verify the integrity of the received package, a Cyclic redundancy check (CRC16) is appended. CRC16 uses 2 bytes to distinguish a successfully transfered packet from an erroneous one. 
+To verify the integrity of the received package, a cyclic redundancy check (CRC16) is appended. CRC16 uses 2 bytes to distinguish a successfully transfered packet from an erroneous one. 
 
 The sizes of the different data to transfer sums up to 16 bytes and the distribution is displayed in \figref{dataalloc} as the data 1, data 2, and data 3 fields.
 
