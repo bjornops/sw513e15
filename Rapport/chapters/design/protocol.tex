@@ -9,20 +9,18 @@ There are a number of considerations to be made to develop a protocol that compl
 Because the sensor nodes are battery driven, most of the choices are done with power consumption as a priority, to increase the battery longevity.
 
 % Range limitations
-While the individual nodes have a relatively short communication range, a network of these devices can have a longer reach if the nodes are able to relay data through each other.
-Therefore, relaying must be supported by the protocol as stated in \ref{cha:requirements}. 
-Another restriction of the radio modules is their range. The reach of the system can be extended by introducing relaying, so that a sequence of nodes can interconnect and transfer data through the branch in the tree. 
+A restriction of the radio modules is their relatively short communication range. The reach of the system can be extended by introducing relaying, so that a sequence of nodes can interconnect and transfer data through the branch in the tree. Therefore, relaying must be supported by the protocol as stated in \ref{cha:requirements}. 
 
 % Other limitations and considerations
-%To fulfill the requirements found in \ref{cha:requirements}, there is no demand to request data for only one specific node at a time.
+% To fulfill the requirements found in \ref{cha:requirements}, there is no demand to request data for only one specific node at a time.
 There are multiple methods to request data from the network nodes, some of the most used ones can be found in \ref{cha:comprot}. \todo{research}
 
 The radio modules selected for the solution are half-duplex\todo{ensure duplex is described in theory} and not capable of full-duplexing, and this limitation needs to be addressed in the development of the transmission part of the protocol. 
 
 % Already mentioned in design intention/data handling => move?
-For power consumption and complying to the usage, the network nodes are controlled by the main node, and the nodes will transmit sensor data on demand.
-This implementation will keep the nodes in a low power listening mode until a data request is received.
-The nodes transmitting their sensor readings automatically requires some sort of synchronization, so the node data is updated for every node and transmitted back to the main node.
+For power consumption and complying to the usage, the network nodes are controlled by the main node, and the nodes will only transmit sensor data on demand.
+%The ideal implementation of the solution will keep the nodes in a low power listening mode until a data request is received to preserve battery life. 
+The nodes transmitting their sensor readings automatically requires some sort of synchronization, so the node data is updated for every node and transmitted back to the main node. \todo{Hvad menes der her?}
 There is no requirement for real-time monitoring of the golf course, making it difficult defining a data transfer interval that matches both power consumption as well as the need for information.
 Hence, an on-demand request for data will be sufficient.
 
