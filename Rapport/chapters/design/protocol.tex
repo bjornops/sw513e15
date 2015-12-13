@@ -15,7 +15,7 @@ A restriction of the radio modules is their relatively short communication range
 % To fulfill the requirements found in \ref{cha:requirements}, there is no demand to request data for only one specific node at a time.
 There are multiple methods to request data from the network nodes, some of the most used ones can be found in \ref{cha:comprot}. \todo{research}
 
-The radio modules selected for the solution are half-duplex\todo{ensure duplex is described in theory} and not capable of full-duplexing, and this limitation needs to be addressed in the development of the transmission part of the protocol. 
+The radio modules selected for the solution are half-duplex and not capable of full-duplexing, and this limitation needs to be addressed in the development of the transmission part of the protocol. 
 
 % Already mentioned in design intention/data handling => move?
 For power consumption and complying to the usage, the network nodes are controlled by the main node, and the nodes will only transmit sensor data on demand.
@@ -24,7 +24,7 @@ The nodes transmitting their sensor readings automatically requires some sort of
 There is no requirement for real-time monitoring of the golf course, making it difficult defining a data transfer interval that matches both power consumption as well as the need for information.
 Hence, an on-demand request for data will be sufficient.
 
-\subsection{Transfer method and topology}\todo{new title}
+\subsection{Packet Transfer}
 % Intention/motivation
 The solution is required to gather sensor data from all nodes in the network, and this subsection will contain the considerations regarding choice of method and the according topology.
 
@@ -34,7 +34,7 @@ The solution is required to gather sensor data from all nodes in the network, an
 As the sensor readings are required on-demand, there must be at least two types of communication. The first being the data request, an outgoing signal from the main node, notifying the data demand. This is a broadcasted packet, as every node is targeted as recipient. The second type is data response, while the sensor readings needs to be returned to the main node for storage and representation. The design of the two types follows.
 
 % Design of data request: individual request
-One data gathering method is to demand data explicitly from each node. That can be done by transmitting a unique data request to every node in the network, addressing each nodes by its identification. This would require the main node to create an individual request to each node in the network, and the network nodes to know the path through the network to the addressee, so that the request can be relayed correctly. This is not appropriate as routing tables would use a significant amount of the network nodes' limited memory\todo{how much would routing tables fill?}. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that actually exist. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy in addition to more memory.
+One data gathering method is to demand data explicitly from each node. That can be done by transmitting a unique data request to every node in the network, addressing each nodes by its identification. This would require the main node to create an individual request to each node in the network, and the network nodes to know the path through the network to the addressee, so that the request can be relayed correctly. This is not appropriate as routing tables would use a significant amount of the network nodes' limited memory if the addressee is a sufficient amount of nodes away. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that actually exist. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy in addition to more memory.
 
 % Design of data request: broadcast request
 Another method of data gathering is by a request broadcast. This would work as a flooded request throughout the network.
@@ -93,8 +93,7 @@ Interference might change packets, which makes it impossible to use the received
 
 To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. How the checksum is calculated were explained back in \ref{cha:crcComp}.
 
-To ensure that a packet with the correct checksum will arrive at some point, the nodes will wait a random, but longer, interval between attempting to send data. This means that at some point, the data will be transmitted to the receiver without interference. \todo{add ref}
-This is possible, as time is not essential, and the delay between trying again is short.\todo{time is not essential?}
+To ensure that a packet with the correct checksum will arrive at some point, the nodes will wait a random, but longer, interval, between attempting to send data known as exponential backoff. This means that at some point, the data will be transmitted to the receiver without interference. This is possible, as delivery time is not prioritized high. Exponential backoff is further explained in \ref{cha:expbackoff}
 
 
 \subsection*{Example}
@@ -176,12 +175,9 @@ The \textit{clear signal} is used to reset every node in the network, which will
 The \textit{clear signal} packet let every node in the network know that it should forget any previous information stored, except its own ID, such as parent information. This is done to add flexibility to the system. When \textit{data request} spread through the network, it forms a tree based on how the nodes are placed. By resetting with the \textit{clear signal}, a new tree is created each time a new wave of \textit{data requests} goes through the network, which in turn means that nodes can be moved around the golf course between waves of \textit{data requests}. How the trees are constructed was explained in section \ref{cha:crcDesign}.
 
 \textbf{Error}\newline
-Because packets are not always transferred correctly, the receiver node will verify the integrity of a packet whenever a packet is received. Section \ref{cha:crcDesign} describes how this is done. If the checksums do not match, the packet type will be set to \textit{error}. 
-If the radio module is listening and does not receive a packet within the listening duration, it will also return an \textit{error} packet and followingly discard it.\todo{last sentece is more implementation than design}
-
+Because packets are not always transferred correctly, the receiver node will verify the integrity of a packet whenever a packet is received. Section \ref{cha:crcDesign} describes how this is done. If the checksums do not match, the packet type will be set to \textit{error}.
 
 In summary, there are seven types of packages: error, data acknowledgement, data request, data, pair request, pair request acknowledgement, and clear signal. 1 byte will be sufficient to store the packet type.
-
 
 
 

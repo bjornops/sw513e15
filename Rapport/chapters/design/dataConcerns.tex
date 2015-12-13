@@ -11,7 +11,13 @@ This way, a node could have assigned a unique identity to be able to recognize i
 The protocol is described more indepth in \ref{cha:floodingSec}
 
 \subsection{Overloaded nodes}
-Nodes near the root transfers data for a lot of sensors. Can they handle it? Battery problems? \todo{elaborate regarding stressed nodes near the root of the tree(high throughput problems?)}
+Nodes close to the main node are prone to receive larger amount of data since many, if not every data packet must go though the node. Looking at \ref{fig:overloadtree} it is seen that node 2 will handle every data packet on its way to the main node. Such low level nodes might be overloaded with data packets, coursing a bottleneck if not thoughtfully spread out. The danger is several higher level nodes are trying to send data packets back to node 2, and node 2 can only handle packets with a certain speed.
+\begin{figure}[!h]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth]{chapters/design/figures/overloadtree.png}}
+	\caption{Example of a tree.}
+	\label{fig:overloadtree}
+\end{figure}
 
 \subsection{Data importance}
 The gathered data is not critical. If a packet is lost, it is negligible. If the user of the system discovers multiple missing data from a certain area or node, the node can be fixed or replaced.
