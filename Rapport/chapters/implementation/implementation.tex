@@ -1,20 +1,20 @@
-This chapter contains documentation about the implementation of the protocol designed in Chapter \ref{cha:protocolDesign}. 
+This chapter contains documentation about the implementation of the protocol designed in chapter \ref{cha:protocolDesign}. 
 
 First, the classes used in the implementation are shown and explained. Then important parts of the sourcecode are explained.
  
 
 \section{General}
-The implementation is written in C++. The development of the solution is done in two man teams, using pair programming. Git is used for version control. The implementation is designed with the requirements of the solution along with the components and choices made in Chapter \ref{cha:designintro}. 
+The implementation is written in C++. The development of the solution is done in two man teams, using pair programming. Git is used for version control. The implementation is designed with the requirements of the solution along with the components and choices made in chapter \ref{cha:designintro}. 
 
 Note that the code in the listings does not necessarily contain the same comments and print statements as in the actual code, to make the code fit onto the pages in the report.
 
 \section{Classes}
-The solution contains two different running applications. The main node and the sensor nodes. There are two sets of code due to the different requirements of the nodes. For example, the main node does not have a sensor, as explained in Chapter \ref{cha:workflowDesign}, so it should not be able to handle a sensor, and therefore does not contain the classes used for sensors.
+The solution contains two different running applications. The main node and the sensor nodes. There are two sets of code due to the different requirements of the nodes. For example, the main node does not have a sensor, as explained in chapter \ref{cha:workflowDesign}, so it should not be able to handle a sensor, and therefore does not contain the classes used for sensors.
 
 This section contains the classes contained in each application. UML diagrams showing all fields and methods for both main and sensor nodes can be found in Appendix \ref{cha:fulluml}.
 
 \subsubsection*{Main node}
-The main node is a Raspberry Pi device, running the Raspbian operating system. The classes in the main node application is seen on Figure \ref{fig:mainnodeClass}. 
+The main node is a Raspberry Pi device, running the Raspbian operating system. The classes in the main node application is seen in figure \ref{fig:mainnodeClass}. 
 According to the specification, the main node pairs nodes, sends requests, and handles received data.
 
 \begin{figure}[h!]
@@ -29,7 +29,7 @@ According to the specification, the main node pairs nodes, sends requests, and h
 \subsubsection*{Sensor nodes}
 The platforms used for the sensor nodes are Arduino Uno and Mega, although one platform per node. The differences between the two platforms are the pins used for the sensor and radio modules. Besides the pin number, the code is identical on the two platform types. 
 
-The classes used in the nodes are seen on Figure \ref{fig:nodeClass}.
+The classes used in the nodes are seen in figure \ref{fig:nodeClass}.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.85\textwidth]{chapters/implementation/figures/nodeClass.png}
@@ -71,9 +71,9 @@ In the solution the sensor class is called \texttt{MoistureSensor}, as a moistur
 The \texttt{NRF24Radio} class handles the radio communication. Classes of this class should inherit from the \texttt{iRadio} interface as the application uses this interface to handle all radiocommunication. The \texttt{NRF24Radio} class returns a \texttt{char} pointer when a packet is received, using one of the listening methods explained in the \texttt{iRadio} section. It is also able to send packets given from other classes, using the \texttt{broadcast} method.
 
 \item[Packet] \hfill \\
-The class \texttt{Packet} has the ability to parse a packet from a char\todo{either character og textttttt[char]} array to a \texttt{Packet} object, along with the properties required to further handle the packet. This includes the type, and possibly sensor values, from/to\todo{no slashes in the text!} values or an identifier from the main node.
+The class \texttt{Packet} has the ability to parse a packet from a \texttt{char} array to a \texttt{Packet} object, along with the properties required to further handle the packet. This includes the type, and possibly sensor values, sender and receiver values or an identifier from the main node.
 
-Instances of this class is created and used in the \texttt{Node} class.\todo{plz stop.}
+Instances of this class is created and used in the \texttt{Node} class. The objects are created when the radio returns the \texttt{char} array from the listen methods. The packet is then used before it is freed.
 
 This class contains the public methods:
 \begin{description}

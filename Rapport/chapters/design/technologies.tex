@@ -3,13 +3,13 @@ Chapter \ref{cha:technologies} examined the various components viable for use in
 
 \subsection{Arduino}
 %Explain the usage of Arduino Mega
-Both Arduino Uno and Mega are used in the solution, as they qualify regarding specifications, and due to their availability to the project group. The Mega boards are not faster than the Uno boards, but can contain more program code and have more digital pins available. While the solution should be runnable on the Arduino Uno boards, the solution is restricted by the Uno's capacity and extra memory and pins on the Mega boards are superfluous. The Mega boards are still used in the project, not because of the extra functionality, but to enable the project group to test a larger system of nodes.
+Both Arduino Uno and Mega are used in the solution, as they qualify regarding specifications, and due to their availability to the project group. The Mega boards are not faster than the Uno boards, but can contain more program code and have more digital pins available. While the solution should be runnable on the Arduino Uno boards, the solution is restricted to the Uno's capacity and extra memory and pins on the Mega boards are superfluous. The Mega boards are still used in the project, not because of the extra functionality, but to enable the project group to test a larger system of nodes.
 
-The Raspberry Pi B+ model is used in the solution as the main node and handler of data, based on the need to store, handle, and present data. This device has the capability to display and power user interfaces and show the data received from the sensors, as it has more processing power than the Arduinos, and the ports needed to add a screen. The B+ model is used as it is available to the project group.
+The Raspberry Pi B+ model is used in the solution as the main node, based on the need to store, handle, and present data. This device has the capability to display and power user interfaces and show the data received from the sensors, as it has more processing power than the Arduinos, and the ports needed to add a screen\todo{clusterfuck sætning}.
 
-The communication device chosen for this project is the nRF24L01, as it is sufficient, and because of its documentation, price, and low power consumption. The shorter range is not a problem, as the nodes is used in a relay network. The transfer speed of the module is also good enough for the requirements, which makes this module good for the solution described in the report.
+The communication device chosen for this project is the nRF24L01, because of its documentation, price, and low power consumption. The transfer speed of the module is sufficient to send the small data packets, which makes this module good for the solution described in the report.
 
-With the components chosen and the data sheet for the nRF24L01 examined \cite{nf24datasheet}, the nodes will be connected as seen on Figure \ref{fig:compsketch}.
+With the components chosen and the data sheet for the nRF24L01 examined \cite{nf24datasheet}, the sensor nodes will be assembled as seen on figure \ref{fig:compsketch}.
 
 \begin{figure}[!h]
 	\centering
@@ -20,11 +20,12 @@ With the components chosen and the data sheet for the nRF24L01 examined \cite{nf
 
 \subsection{nRF24L01 Transceiver}
 The chosen radio transceiver module contains multiple features for detecting packets loss. These includes checking hashes and sending acknowledgments\cite{nf24datasheet}.
-These features makes it harder to replace the radio modules in the nodes, as they are platform specific to the nRF24L01. The analysis examined the possibility of using different radio modules in case some requirements changes, which is not possible if using platform specific features. These features also causes more battery to be used, which is a problem in devices being buried, as discussed in Chapter \ref{cha:batcons}.
 
-Because of this, these features have been disabled. This means that the radio packets does not contain a hash, nor does it send acknowledgements when packets arrives. The speed and power have also been turned down, so the device will transfer slower, and use less battery power.
+These features makes it harder to replace the radio modules in the nodes, as they are platform specific to the nRF24L01. The analysis examined the possibility of using different radio modules in case some requirements changes, which is not possible if using platform specific features. These features also causes more battery usage, which is a problem in devices being buried, as discussed in chapter \ref{cha:batcons}.
 
-\figref{raspbuinoTree}.
+Based on this, these features have been disabled. Which means that the radio packets does not contain a hash, nor does it send the default acknowledgements when packets arrives. The speed and power have also been turned down, so the device will transfer slower, and use less battery power.
+
+\figref{raspbuinoTree}.\todo{Er disse brugt nogle steder?}
 
 \begin{figure}[!h]
 	\centering
