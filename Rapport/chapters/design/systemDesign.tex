@@ -1,9 +1,9 @@
-\section{Design intention}\todo{Use described protocols - what}
+\section{Design intention}
 This section contains the description of the system's intended design and usage. The design will be based on the requirement specification in \charef{requirements}. The core function of the solution is to transfer data wirelessly to a main node, and to be used by a person working on a golf course. 
 
 The human aspect has requirements regarding aesthetics and user interface design, but that is secondary to the problem solving task of gathering data. This section will mainly consider the functional requirements to develop a functioning system, whereas data analysis and user experience with the solution are proposed as further work in another project. Nevertheless, a user must be able to utilize the system, and the main characteristics of the solution will be described in the next section.
 
-\subsection{Workflow}
+\subsection{Workflow}\label{cha:workflowDesign}
 % Practical use of the solution
 As the solution's purpose is to support in monitoring a golf course, the solution should make the task less time consuming. The intention is that the data should be gathered and updated on-demand, so that the golf course status is sufficiently new for the greenkeepers' usage.
 
@@ -46,7 +46,7 @@ Synes ikke det giver mening at skrive her - vi har jo interface nok til det er b
 The readings performed by the sensor nodes are the data used in the solution. The solution will monitor the status of the determined properties of the golf course. The observed data needs to be stored and processed to be usable for the greenkeeper in the process of maintaining the golf course. Data from previous requests should be accessible later, making it necessary to store previously received data. To access this data, a user interface is necessary. The data should be presented, enabling greenkeepers to use it.%, without requiring them to read a manual or otherwise study the system. 
 
 % How and where to save data: not nodes
-A method to access the data is to gather them from a single node to display at the main node. This would cause excess communication in the network, by first sending a sensor reading signal, and later gather the data for each representation of data\todo{Soruce}. In addition, because of the limited amount of memory available in the sensor nodes, it is not possible to save all data on each node. This restricts the historical data to the amount of readings accommodable on the sensor nodes. A solution to the unnecessary communication as well as the restriction of stored data is to use the main node as a storage and user interface device.
+There exists several methods to request and receive data. One method could be to request data from a single node in the network, evoking every node along the branch to the node. The other method is to request data from every node at once, evoking the entire network, which is the method chosen to implement. In addition, because of the limited amount of memory available in the sensor nodes, it is not possible to save all data on each node. This restricts the historical data to the amount of readings accommodable on the sensor nodes. A solution to the unnecessary communication as well as the restriction of stored data is to use the main node as a storage and user interface device.
 
 % How and where to save data: main node!
 Storing the data on the main node, requires a sufficient amount of memory to be able to save a significant history of data. Handling and representing the data requires processing power, to be functional for a user. A computer is capable of fulfilling the role of this type of main node. A procedure for this kind of system is to relay all sensor readings to the main node, and develop a user interface to represent the data. 

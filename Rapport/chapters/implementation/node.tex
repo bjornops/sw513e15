@@ -1,23 +1,65 @@
 \subsection{Node}
-The \texttt{Node} class is used as a static class, which means that only one instance of it exists. This class determines the action to take when a packet is received, which takes place in the function \texttt{void handlePacket(Packet packet)}, where a \texttt{switch} statement is used based on the packet type.
+The \texttt{Node} class is used as a static class, which means that no instances of it is made, whereas instead all methods and variables are bound to the class itself. This class determines the action to take when a packet is received, which takes place in the function \texttt{void handlePacket(Packet packet)}, with a \texttt{switch} statement deciding with the packet type as argument.
 
-\texttt{Node} also makes sure that packets are transferrered correctly. This means sending packets until an acknowledgement or other confirmation has arrived. To ensure this, exponential backoff is used, as explained in Chapter \ref{cha:expbackoff}.
+\texttt{Node} also makes sure that packets are transferred correctly. This means sending packets until an acknowledgment or other confirmation is received. To achieve this, exponential backoff is used, as explained in Chapter \ref{cha:expbackoff}.
 
-The implementation of the \texttt{Node} classes are different on the main node and sensor nodes, which are explained in the following two sections.
+The implementation of the \texttt{Node} classes are different on the main node and sensor nodes, which is explained in the following two sections.
 
 \subsection{Sensor nodes} 
-The sensor nodes job is to read sensor data, then send and relay data towards the main node. The sensor nodes passive state is when listening for messages, be it requests or data. When a packet is received, it is handled in \texttt{void handlePacket(Packet packet)}.  \todo{Nu er handlePacket blevet for pæn. Der er jo intet indhold nu? :-( }
+The sensor node's job is to read sensor data, then send or relay data towards the main node. The sensor nodes' passive state is when listening for packets. When a packet is received, it is handled in \texttt{void handlePacket(Packet packet)}.  
 
-
+Listing \ref{lst:mainswitch} contains the main switch determining what actions to take when a packet is received. 
+\begin{lstlisting}[language=C,caption={The packet handling method.},label={lst:mainswitch}]
+void Node::handlePacket(Packet packet)
+{
+    switch (packet.packetType)
+    {
+        case DataRequest: // Received request
+        {
+            if (parentID == -1 && packet.value1 > 0 )
+            {
+                handleDataRequest(packet);
+            }
+        }
+        break;
+        case Data: // Received data to relay
+        {
+            if (parentID != -1 && packet.addressee == Node::nodeID)
+            {
+                handleData(packet);
+            }
+        }
+        break;
+        case PairRequestAcknowledgement: // Received ID
+        {
+            handlePairRequestAcknowledgement(packet);
+        }
+        break;
+        case ClearSignal: // Clear parent and stop sending!
+        {
+            if (parentID != -1)
+            {
+                handleClearSignal(packet);
+            }
+        }
+        break;
+        default: // Handle everything else (Timeout is handler here!)
+        {
+            handleDefault();
+        }
+        break;
+    }
+}
+\end{lstlisting}
+The cases first tests whether to act on the packet first, and then calls the appropriate method. For example when a request is received, the action is only taken if the node has no parent ID, and the packet lifespan is higher than 0. Acknowledgments are not handled in this method, though. It is instead handled in the method that sends data to the node parent, as this is the only place where acknowledgments are relevant, in the method \texttt{void beginBroadcasting(Packet packet)}, which handles both relaying and sending data.
 
 
 \subsubsection*{Exponential backoff}
-Exponential backoff is used in the solution to make sure that conflicts will eventually solve themselves. In the solution, an response is often wanted when sending data, and exponential backoff can be used to make sure that this arrives at some point. For example, this is used when sending data and waiting for an acknowledgement.
+Exponential backoff is used in the solution to handle transmitting conflicts. In the solution, a response is often wanted when sending data, and exponential backoff can be used to make sure that this arrives at some point. This is used when sending data and waiting for an acknowledgement, or listening for a clear signal.
 
-The code in Listing \ref{lst:expbackoff} shows how a delay is calculated based on the current attempt. First, a check is performed to see whether the attempt is too high. An \texttt{attemptNumber} too high could result in the result being too big for its variable type. 
-The biggest possible number is calculated by doing $1 * 1^(attemptNumber-1)$, and the number itself is fould by taking a random number between 1 and the biggest possible number.
+The code in Listing \ref{lst:expbackoff} shows how a delay is calculated based on the current attempt.
+The biggest possible number is calculated by doing $1 * 2^{(attemptNumber-1)}$, and the number itself is chosen by taking a random number between 1 and the biggest possible number.
 
-Before being returned, the values is increased by five. This is done as 1ms is simply not enough time for the devices to send, decode, encode and re-send. Tests showed that packets being sent with a delay of 1 had to be re-sent more often, so 5 was chosen as the smallest possible value.
 \begin{lstlisting}[language=C,caption={Exponential backoff on the sensor nodes. In Node.cpp.},label={lst:expbackoff}]
 unsigned long Node::nextExponentialBackoff(int attemptNumber)
 {
@@ -25,14 +67,16 @@ unsigned long Node::nextExponentialBackoff(int attemptNumber)
     
     unsigned long potentiallyBiggest = ((unsigned long)1 << (attemptNumber - 1));
     unsigned long delay = random(1, potentiallyBiggest);
-    delay += 5;
+    delay = (delay < 5) ? 5 : delay;
     
     return delay;
 }
 \end{lstlisting}
+\texttt{attemptNumber} is capped at 32, as there is 32 bits in the datatype \texttt{long} on the arduino, and bitshifting out of the bound, causing overflow, could cause unwanted results.
 
+Before the delay is returned, the value is set to five if it is lower than five. This is done as 1ms is not enough time for the devices to send, decode, handle, encode and sending a response. Tests showed that acknowledgements for packets being sent with a delay of 1ms were never received, so the packet had to be re-sent. Therefore 5ms was chosen as the lower bound.
 
 \subsection{Main node} \label{cha:signalhandling}
-The main nodes tasks are to request and receive values from nodes. Once the values are received, they are saved, until all nodes have been accounted for, or a timeout is hit.
+The main node's task is to request and receive values from nodes. Once the values are received, they are saved, until all nodes have been accounted for, or a timeout is reached.\todo{add pairing?}
 
-When the request is done, the data is saved to a file with the name of the current date and time. Another file is also saved, which is used for knowing when the request is done in the webinterface, as explained in Chapter \ref{cha:webinterface}. The request is started when a signal of the type \texttt{SIGUSR1} is received. This sets a flag, \texttt{signalReceived} in \texttt{Node} to 1. The next time the main loop is run, the request will be send, and the flag set to 0 again.
+When the request is done, the data is saved to a file with the name of the current date and time. Another file is also saved, which is used for knowing the request is done in the web interface, as explained in Chapter \ref{cha:webinterface}. The request is started when a signal of the type \texttt{SIGUSR1} is received. This sets a flag, \texttt{signalReceived} in \texttt{Node} to 1. The next time the main loop is executed, the request will be send, and the flag set to 0 again.\todo{rephrase / language cleanup}

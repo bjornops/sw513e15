@@ -1,2 +1,22 @@
 \section{Future work}
-Here's what's missing..
+This section contains ideas and requirements for further developing the solution, and even implementing it on a real golf course. Furthermore this system can be used in other cases with a slightly similar problem domain, which will also be described in this section.
+
+\subsection{Functionality}
+For the solution to be finally implemented on a golf course, it would be required to test the solution on an actual golf course with a realistic number of nodes and some actual users. This is the only way to verify that the system actually works in a real situation, compared to the testing done in a lab.
+
+To make the solution work on an actual golf course it would also be required to replace the radio modules because the small modules used in the project have a very limited range. This would, however, only require a hardware replace and class replace in the software because all transmitting and receiving functionality is done within the Radio class.
+
+For the user to understand and use the collected data, it is needed to revise the presentation of the collected data. Now, the interface presents the raw data received from the node, which can confuse the user. Therefore raw data should be converted to data with a meaning, perhaps water percentage in the ground.
+
+Generally the system should utilize the received in a more clever way. For example by constructing graphs or  other presentations involving more data. Another aspect could be implementing weather data and link them to moisture reading. Then, after a certain amount of collected data, the system could predict the amount of watering needed based of weather forecasts. The system could even be implemented to cooperate with an automatic watering system.
+
+The solution could also be expanded to monitor several properties. Since the data packets supports 3 data values, more data could simply be added to a packet and transmitted to the main node.
+
+Finally the system would have to be optimized, when considering power consumption. As it is now the system has not been tested for power consumption \todo{Kilde eller noget}. The nodes should include more sleep functionality to save power when not operating.
+
+\subsection{Other use cases}
+This system is not limited to moisture censoring on golf courses alone. The system can, for example, also be used on fields, enabling farmers to monitor the soil moisture. The system could also be used to monitor gardens or even houseplants - everywhere where water levels is relevant to check regularly.
+
+By changing the sensors the solution could be used in any problem domain consisting of the need for a multiple spot monitoring system, where rolling out cables would be challenging.
+
+Such a domain could be up in the mountains, where rock- or snowslides can occur. To avoid a catastrophe a monitoring solution could warn nearby people, and potentially save lives.
