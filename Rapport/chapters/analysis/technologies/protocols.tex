@@ -48,7 +48,7 @@ Each timeslot is active a short period of time, allowing the assigned node to tr
 	\label{fig:TDMAfigure}
 \end{figure}
 
-On \figref{TDMAfigure} it is seen how the channel is split up into 24 smaller pieces. 
+In \figref{TDMAfigure} it is seen how the channel is split up into 24 smaller pieces. 
 After the queue of timeslot there exists a bit, called the "Sync bit" as seen on the figure, that is used for synchronization.
 Dividing the channel into smaller bites have little effect on the nodes transmission, because the shift between each time slot happens so fast.
 This gives the illusion of each node communicating with no interruptions, even though each one is only assigned 1/24 of the total bandwidth on the channel.
@@ -119,7 +119,7 @@ The packet contains the main node's unique ID and the destination node's unique 
 The packet is then transmitted from the main node to it's neighbours.
 The unique ID of each node is then appended to the packet, to ensure the same node is not transmitting more than once.
 The destination ID is to ensure the nodes in the route knows when the destination node is reached.
-A simple AODV network can be seen on \figref{AODVfigure}, where S and D represent the main node and destination. It is visualized how the route discovery is invoked using the RREQ packet.\cite{AOVD2}
+A simple AODV network can be seen in \figref{AODVfigure}, where S and D represent the main node and destination. It is visualized how the route discovery is invoked using the RREQ packet.\cite{AOVD2}
 
 \begin{figure}[!h]
 	\centering

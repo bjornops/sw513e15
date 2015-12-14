@@ -13,7 +13,7 @@ E(c)=2^{c-1}
 Where c is the current number of collision in transmission between two or more nodes.
 There will be add a range from 1 to the calculated maximum back off, to ensure we have a range to pick a random number from.
 
-Using this equation to calculate the back off, the delays can be seen on table \ref{cha:expbackoff}.
+Using this equation to calculate the back off, the delays can be seen in table \ref{cha:expbackoff}.
 
 \begin{table}[]
 \centering
@@ -42,7 +42,7 @@ Attempt                                                                & Back of
 \label{table:expbackoff}
 \end{table}
 
-Compared on figure \ref{fig:expbackoff} it can be noted how the exponential backoff is ever exponential increasing.
+Compared in figure \ref{fig:expbackoff} it can be noted how the exponential backoff is ever exponential increasing.
 Which is why there will be implemented a limit to the backoff delay, to avoid very long waiting in extreme cases.
 
 \begin{figure}[H]
