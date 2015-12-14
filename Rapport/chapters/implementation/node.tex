@@ -55,10 +55,10 @@ The cases first tests whether to act on the packet first, and then calls the app
 
 
 \subsubsection*{Exponential backoff}
-Exponential backoff is used in the solution to handle transmitting conflicts. In the solution, a response is often wanted when sending data, and exponential backoff can be used to make sure that this arrives at some point. For example, this is used when sending data and waiting for an acknowledgment.\todo{any other places? Name all if few.}
+Exponential backoff is used in the solution to handle transmitting conflicts. In the solution, a response is often wanted when sending data, and exponential backoff can be used to make sure that this arrives at some point. This is used when sending data and waiting for an acknowledgement.
 
 The code in Listing \ref{lst:expbackoff} shows how a delay is calculated based on the current attempt.
-The biggest possible number is calculated by doing $1 * 2^(attemptNumber-1)$, and the number itself is chosen by taking a random number between 1 and the biggest possible number.
+The biggest possible number is calculated by doing $1 * 2^{(attemptNumber-1)}$, and the number itself is chosen by taking a random number between 1 and the biggest possible number.
 
 \begin{lstlisting}[language=C,caption={Exponential backoff on the sensor nodes. In Node.cpp.},label={lst:expbackoff}]
 unsigned long Node::nextExponentialBackoff(int attemptNumber)
@@ -74,7 +74,7 @@ unsigned long Node::nextExponentialBackoff(int attemptNumber)
 \end{lstlisting}
 \texttt{attemptNumber} is capped at 32, as there is 32 bits in the datatype \texttt{long} on the arduino, and bitshifting out of the bound, causing overflow, could cause unwanted results.
 
-Before the delay is returned, the value is set to five if it is lower than five. This is done as 1ms is not enough time for the devices to send, decode, handle, encode and sending a response. Tests showed that packets being sent with a delay of 1ms had to be re-sent more often, so 5ms was chosen as the lower bound.
+Before the delay is returned, the value is set to five if it is lower than five. This is done as 1ms is not enough time for the devices to send, decode, handle, encode and sending a response. Tests showed that acknowledgements for packets being sent with a delay of 1ms were never received, so the packet had to be re-sent. Therefore 5ms was chosen as the lower bound.
 
 \subsection{Main node} \label{cha:signalhandling}
 The main node's task is to request and receive values from nodes. Once the values are received, they are saved, until all nodes have been accounted for, or a timeout is reached.\todo{add pairing?}
