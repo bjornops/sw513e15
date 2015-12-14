@@ -1,15 +1,15 @@
-This chapter contains documentation about the implementation of the protocol designed in Chapter \ref{cha:protocolDesign}. 
+This chapter contains documentation about the implementation of the protocol designed in chapter \ref{cha:protocolDesign}. 
 
 First, the classes used in the implementation are shown and explained. Then important parts of the sourcecode are explained.
  
 
 \section{General}
-The implementation is written in C++. The development of the solution is done in two man teams, using pair programming. Git is used for version control. The implementation is designed with the requirements of the solution along with the components and choices made in Chapter \ref{cha:designintro}. 
+The implementation is written in C++. The development of the solution is done in two man teams, using pair programming. Git is used for version control. The implementation is designed with the requirements of the solution along with the components and choices made in chapter \ref{cha:designintro}. 
 
 Note that the code in the listings does not necessarily contain the same comments and print statements as in the actual code, to make the code fit onto the pages in the report.
 
 \section{Classes}
-The solution contains two different running applications. The main node and the sensor nodes. There are two sets of code due to the different requirements of the nodes. For example, the main node does not have a sensor, as explained in Chapter \ref{cha:workflowDesign}, so it should not be able to handle a sensor, and therefore does not contain the classes used for sensors.
+The solution contains two different running applications. The main node and the sensor nodes. There are two sets of code due to the different requirements of the nodes. For example, the main node does not have a sensor, as explained in chapter \ref{cha:workflowDesign}, so it should not be able to handle a sensor, and therefore does not contain the classes used for sensors.
 
 This section contains the classes contained in each application. UML diagrams showing all fields and methods for both main and sensor nodes can be found in Appendix \ref{cha:fulluml}.
 
