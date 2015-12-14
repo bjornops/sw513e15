@@ -4,16 +4,18 @@ First, the classes used in the implementation are shown and explained. Then impo
  
 
 \section{General}
-The implementation is written in C++. The development of the solution is done in two man teams, using pair programming. Git is used for version control.
+The implementation is written in C++. The development of the solution is done in two man teams, using pair programming. Git is used for version control. The implementation is designed with the requirements of the solution along with the components and choices made in Chapter \ref{cha:designintro}. 
+
+Note that the code in the listings does not necessarily contain the same comments and print statements as in the actual code, to make the code fit onto the pages in the report.
 
 \section{Classes}
-The solution contains two different running applications. The main node and the sensor nodes. There are two sets of code due to the different requirements of the nodes. For example, the main node does not have a sensor, so it should not be able to handle a sensor, and therefore does not contain the classes used for sensors.
+The solution contains two different running applications. The main node and the sensor nodes. There are two sets of code due to the different requirements of the nodes. For example, the main node does not have a sensor, as explained in Chapter \ref{cha:workflowDesign}, so it should not be able to handle a sensor, and therefore does not contain the classes used for sensors.
 
 This section contains the classes contained in each application. UML diagrams showing all fields and methods for both main and sensor nodes can be found in Appendix \ref{cha:fulluml}.
 
 \subsubsection*{Main node}
-The main node is a Raspberry Pi device, running the Raspbian operating system. The classes in the main node application is seen on Figure \ref{fig:mainnodeClass}. 
-The main node pairs nodes, send requests, and handles receiving and handling data.
+The main node is a Raspberry Pi device, running the Raspbian operating system. The classes in the main node application is seen in figure \ref{fig:mainnodeClass}. 
+According to the specification, the main node pairs nodes, sends requests, and handles received data.
 
 \begin{figure}[h!]
 \centering
@@ -25,9 +27,9 @@ The main node pairs nodes, send requests, and handles receiving and handling dat
 
 
 \subsubsection*{Sensor nodes}
-The platform on the sensor nodes are comprised of Arduino Uno or Mega. The difference in the two platforms are the pins used with the sensors and radio modules. Besides that, the code on the platforms are the same. The sensor nodes handles receiving and sending requests, reading and sending sensor data, and relaying data through nodes until they arrive at the main node. 
+The platforms used for the sensor nodes are Arduino Uno and Mega, although one platform per node. The differences between the two platforms are the pins used for the sensor and radio modules. Besides the pin number, the code is identical on the two platform types. 
 
-The classes used in the nodes are seen on Figure \ref{fig:nodeClass}.
+The classes used in the nodes are seen in figure \ref{fig:nodeClass}.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.85\textwidth]{chapters/implementation/figures/nodeClass.png}
@@ -37,27 +39,22 @@ The classes used in the nodes are seen on Figure \ref{fig:nodeClass}.
 
 
 \subsubsection*{Class descriptions}
-This section contains explanations about the classes used in the nodes.
+This section contains explanations about the classes used in the nodes. As the classes are reused on both main and sensor nodes they are only explained once, even though the code may be somewhat different.
 
 \begin{description}
 \item[Node] \hfill \\
-The \textit{Node} class is the entrypoint in the application.
-It Contains one or more \textit{iSensor}s, and a \textit{iRadio} object that are instantiated when the code is run.
+The \texttt{Node} class is the entry point in the application.
+On the sensor node, it contains one or more \texttt{iSensor}s, and a \texttt{iRadio} object that are instantiated when the code is run. The main node contains no sensor, but an \texttt{iRadio} object exists.
 
-The \textit{Node} class determines what action to take when a packet is received. This happens in the method \textit{void determineAction(char* packet)}.
-If data is received from another sensor node that should be relayed, the \textit{Node} begins sending data until an acknowledgement is received. The methods on the \textit{iRadio} object is used for listening and sending.
-If data is needed for a packet, for example when a request is received, the \textit{Node} class fetches data from the sensor, and creates the packet that needs to be sent, and makes sure that the data is sent.
+The \texttt{Node} class determines what action to take when a packet is received. If data is received from another sensor node that should be relayed, the \texttt{Node} begins sending data until an acknowledgment is received. The methods on the \texttt{iRadio} object is used for listening and sending.
+If data is needed for a packet, for example when a request is received, the \texttt{Node} class fetches data from the sensor, and creates the packet that needs to be sent, and makes sure that the data is sent.
 
 \item[iRadio and iSensor] \hfill \\
-The \textit{iSensor} and \textit{iRadio} interfaces are used to create a certain way that all sensors and radio module classes should work. This means that replacing or adding a new sensor or using another radio module is not a problem, as the rest of the application knows that the radio is able to send and receive data, and the sensor is able to return a value. 
-It is not necessary to know how it is done, only that it is possible. These interfaces are used to set a standard on how to communicate with them, whether it is a moisture sensor or a pH sensor.
+The \texttt{iSensor} and \texttt{iRadio} interfaces are used to establish a way that all sensors and radio module classes should work. This means that replacing or adding a new sensor or using another radio module is possible, as long as the new component adheres to one of these interfaces. This makes the rest of the code know how to use these components. 
 
-Every type of radio or sensor added to the node must inherit from these interfaces.
+\texttt{iSensor} only contains the method \texttt{int read()}, that returns the value of the sensor. Sensors can contain different methods internally to verify or handle data, but will be required to have the \texttt{read} method.
 
-
-\textit{iSensor} only contains the method \textit{int read()}, that returns the value of the sensor.
-
-\textit{iRadio} contains the methods:
+\texttt{iRadio} contains the methods needed for receiving and sending packets. A special listen method is needed for implementing exponential backoff as the listen function blocks execution and a way of breaking this blocking is needed to not lock the code.
 \begin{description}
 \item[void broadcast(char *packet)] sends a packet
 \item[char *beginListening()] begins listening
@@ -65,18 +62,18 @@ Every type of radio or sensor added to the node must inherit from these interfac
 \end{description}
 
 \item[Sensor] \hfill \\
-The \textit{Sensor} class can be used for multiple sensors, as long as the sensor class inherits from \textit{iSensor}. This class' job is to read data from a sensor on the node, handle this data, and return it to the class that requested this data.
+The \texttt{Sensor} class can be used for multiple sensors, as long as the sensor class inherits from \texttt{iSensor}. This class' job is to read data from a sensor on the node, handle this data, and return it to the class that requested this data.
 
-In the solution, as the moisture sensor is used, the sensor class is called \textit{MoistureSensor}. This class can only be found on the sensor nodes, and not on the main node.
+In the solution the sensor class is called \texttt{MoistureSensor}, as a moisture sensor is used. This class can only be found on the sensor nodes, and not on the main node.
 
 
-\item[Radio] \hfill \\
-The \textit{Radio} class handles the radio communication. Types of this class should inherit from the \textit{iRadio} interface. The \textit{Radio} class returns an array of char pointers when one is received. It is also able to send packets given from other classes.
+\item[NRF24Radio] \hfill \\
+The \texttt{NRF24Radio} class handles the radio communication. Classes of this class should inherit from the \texttt{iRadio} interface as the application uses this interface to handle all radiocommunication. The \texttt{NRF24Radio} class returns a \texttt{char} pointer when a packet is received, using one of the listening methods explained in the \texttt{iRadio} section. It is also able to send packets given from other classes, using the \texttt{broadcast} method.
 
 \item[Packet] \hfill \\
-The class \textit{Packet} contains the ability to parse a packet from a char array to a \textit{Packet} object, along with the properties required to further handle the packet. This includes the type, and possibly sensor values, from/to values or an identifier from the main node.
+The class \texttt{Packet} has the ability to parse a packet from a \texttt{char} array to a \texttt{Packet} object, along with the properties required to further handle the packet. This includes the type, and possibly sensor values, sender and receiver values or an identifier from the main node.
 
-Instances of this class is created and used in the \textit{Node} class.
+Instances of this class is created and used in the \texttt{Node} class. The objects are created when the radio returns the \texttt{char} array from the listen methods. The packet is then used before it is freed.
 
 This class contains the public methods:
 \begin{description}
@@ -88,7 +85,7 @@ This class contains the public methods:
 \end{description}
 
 
-\section{Code}
+\section{Code}\todo{AAAAHHH!!!!! single lines!?!}
 This section contains explanations for some of the important parts of the code.
 
 First, the \texttt{Packet} implementation is explained, with code showing how values are handled and how CRC is implemented.

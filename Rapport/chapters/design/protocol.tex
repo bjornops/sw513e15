@@ -57,7 +57,7 @@ The controlled flooding has a low memory impact and thus best suited for the sol
 \end{figure}
 
 
-The tree created, in each wave of request broadcasts, can vary in its structure, depending on interference, removal of nodes, or faulty nodes as well as other occurrences. \figref{treeVariation} shows an example of how the tree can vary: first the main node will broadcast \textit{request 1}, which is received by both \textit{node 1} and \textit{node 2}. A sensor node in the system will always handle its own sensor data before it starts relaying data from other nodes. If the main node receives sensor data from \textit{node 1} first, then the resulting tree will match the tree seen to the left in \figref{treeVariation}. If \textit{node 2} connects to the main node first, then the tree will match the tree seen on the right.
+The tree created, in each wave of request broadcasts, can vary in its structure, depending on interference, removal of nodes, or faulty nodes as well as other occurrences. Figure \ref{fig:treeVariation} shows an example of how the tree can vary: first the main node will broadcast \textit{request 1}, which is received by both \textit{node 1} and \textit{node 2}. A sensor node in the system will always handle its own sensor data before it starts relaying data from other nodes. If the main node receives sensor data from \textit{node 1} first, then the resulting tree will match the tree seen to the left in \figref{treeVariation}. If \textit{node 2} connects to the main node first, then the tree will match the tree seen on the right.
 This will effectively solve the requirement of responding appropriately to a disconnecting node, as well as the inclusion of new nodes in the network, since a new tree is constructed with each wave of requests from the main node.
 It will also use the shortest path to every node, due to the fact that each node will connect to its immediate neighbors.
 
@@ -106,7 +106,7 @@ The first level nodes then request data from the nodes within their range.
 The nodes receiving this request firstly verifies that it is a new request, then registers the node that requested data as its parent. 
 These nodes are second level nodes. The second level nodes read from the sensors, and sends data back to their parents. The parents then relay the data to the main node. 
 This procedure continues until all reachable sensors have relayed data back to the main node.
-An illustration showing an example of a tree is seen on Figure \ref{fig:prottree1}.
+An illustration showing an example of a tree is seen on figure \ref{fig:prottree1}.
 
 For each new data request from the main node the tree structure and node levels are assessed again as they might have changed, due to new or disconnected nodes.
 
@@ -182,7 +182,7 @@ In summary, there are seven types of packages: error, data acknowledgement, data
 
 
 \subsection{Addresses}
-Twelve bytes have are used to keep track of a packet. These contain the addresser, addressee and the origin address which can be seen on figure \ref{fig:dataalloc}. 
+Twelve bytes have are used to keep track of a packet. These contain the addresser, addressee and the origin address which can be seen in figure \ref{fig:dataalloc}. 
 
 \textbf{Addresser}\newline
 When a node receives a packet, for instance a packet of the data request type, the node in question need to respond with its sensor data. The node could begin broadcasting its sensor data openly as response, however this could potentially be received by other nodes in range, whereas the sensor data might be irrelevant. This is why a packet contain the id of the sender, which is the addresser. This gives the node knowledge of the node that requested data and can therefore address its data correctly. Other nodes in range might receive the data as well, but they will ignore the this packet since it was not addressed for them.
@@ -201,7 +201,7 @@ The origin address field of a packet will not be altered during the packets life
 
 
 \subsubsection{Data}
-When a data packet is constructed, the sensor data is stored in the "data" fields of the packet as seen on figure \ref{fig:dataalloc}. There are three fields available for sensor data storage. The solution will at this time only contain an implementation of the moisture sensor, but the aim of the three data fields is to add extendability by enabling support for a maximum of tree sensors per node, each with its own field in the packet.
+When a data packet is constructed, the sensor data is stored in the "data" fields of the packet as seen in figure \ref{fig:dataalloc}. There are three fields available for sensor data storage. The solution will at this time only contain an implementation of the moisture sensor, but the aim of the three data fields is to add extendability by enabling support for a maximum of tree sensors per node, each with its own field in the packet.
 
 
 \subsubsection{Checksum}
@@ -245,5 +245,5 @@ Should a node somehow disconnect from the network, the nodes connected to this n
 	\label{fig:prottree2}
 \end{figure}
 
-An example of this can be seen on Figure \ref{fig:prottree2}. This figure shows how node 3 disconnected, and now node 7 is attached to node 4 instead. This, of course, assumes that node 7 was in range of node 4.
+An example of this can be seen in figure \ref{fig:prottree2}. This figure shows how node 3 disconnected, and now node 7 is attached to node 4 instead. This, of course, assumes that node 7 was in range of node 4.
 This means that the next time data is requested, node 7 will be the parent for node 5 and 6, and they will now be a level higher than before.
