@@ -55,7 +55,7 @@ The cases first tests whether to act on the packet first, and then calls the app
 
 
 \subsubsection*{Exponential backoff}
-Exponential backoff is used in the solution to handle transmitting conflicts. In the solution, a response is often wanted when sending data, and exponential backoff can be used to make sure that this arrives at some point. This is used when sending data and waiting for an acknowledgement.
+Exponential backoff is used in the solution to handle transmitting conflicts. In the solution, a response is often wanted when sending data, and exponential backoff can be used to make sure that this arrives at some point. This is used when sending data and waiting for an acknowledgement, or listening for a clear signal.
 
 The code in Listing \ref{lst:expbackoff} shows how a delay is calculated based on the current attempt.
 The biggest possible number is calculated by doing $1 * 2^{(attemptNumber-1)}$, and the number itself is chosen by taking a random number between 1 and the biggest possible number.
