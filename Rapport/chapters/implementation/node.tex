@@ -77,6 +77,8 @@ unsigned long Node::nextExponentialBackoff(int attemptNumber)
 Before the delay is returned, the value is set to five if it is lower than five. This is done as 1ms is not enough time for the devices to send, decode, handle, encode and sending a response. Tests showed that acknowledgements for packets being sent with a delay of 1ms were never received, so the packet had to be re-sent. Therefore 5ms was chosen as the lower bound.
 
 \subsection{Main node} \label{cha:signalhandling}
-The main node's task is to request and receive values from nodes. Once the values are received, they are saved, until all nodes have been accounted for, or a timeout is reached.\todo{add pairing?}
+The main node's task is to pair nodes, and to request and receive values from nodes. Once the values are received, they are saved, until all nodes have been accounted for, or a timeout is reached. If a timeout is reached, the data received from nodes will be saved along with a -1 value for the nodes that have not sent any sensor values.
+
+Pairing nodes is done on the main node by generating a unique ID and sending this back to the sensor node requesting an ID. If no pair requests is received in 10 seconds, a new ID will be generated. A file on the main node contains IDs and names for the nodes.
 
 When the request is done, the data is saved to a file with the name of the current date and time. Another file is also saved, which is used for knowing the request is done in the web interface, as explained in chapter \ref{cha:webinterface}. The request is started when a signal of the type \texttt{SIGUSR1} is received. This sets a flag, \texttt{signalReceived} in \texttt{Node} to 1. The next time the main loop is executed, the request will be send, and the flag set to 0 again.\todo{rephrase / language cleanup}
