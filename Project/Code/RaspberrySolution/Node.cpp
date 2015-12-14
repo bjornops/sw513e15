@@ -86,11 +86,13 @@ void Node::initializeNode()
     {
         int nodeID = 0;
         char nodeName[100];
-    	  while(fscanf(optionsFile, "%d*%s", &nodeID, &nodeName) != EOF)
-    	  {
+    	while(fscanf(optionsFile, "%d*%s", &nodeID, &nodeName) != EOF)
+    	{
             printf("Kendt node: %d, med navn: %s\n", nodeID, nodeName);
             Node::_receivedThisSession[nodeID] = -1;
         }
+        
+        _currentID = Node::_receivedThisSession.size()+1;
     }
 
     //setup rand() til brug i exponential backoff
