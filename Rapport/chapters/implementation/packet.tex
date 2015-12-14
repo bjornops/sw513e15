@@ -1,5 +1,5 @@
 \subsection{Packet}
-The \texttt{Packet} class contains the data that makes a packet. It can be instantiated with a string\todo{why?}, or with every part of the packet as a parameter\todo{why?}, using the constructors in Listing \ref{lst:packetconstructors}.
+The \texttt{Packet} class contains the data that makes a packet. It can be instantiated with a string which is used when receiving a packet in string format from another node using the radio. It can also be instantiated with every part of the packet as a parameter, which is used when a node constructs a new packet to be transmitted. The constructors can be seen in Listing \ref{lst:packetconstructors}.
 \begin{lstlisting}[language=C,label={lst:packetconstructors},caption={Packet constructors}]
 Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t value1Input,
 	uint16_t value2Input, uint16_t value3Input)
@@ -7,10 +7,10 @@ Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t add
 Packet::Packet(char *input)
 \end{lstlisting}
 
-Objects of this class is passed around in \texttt{Node}, where it is used to determine actions based on the type, or being relayed with some new data. \todo{language cleanup}
-The objects contain the variables:
+Objects of this class is passed around in \texttt{Node}, where it is used to determine actions based on the type, or being relayed by changing \texttt{addressee} and \texttt{addresser}.
+
 \begin{figure}
-\begin{lstlisting}
+\begin{lstlisting}[language=C,label={lst:packetvariables},caption={Packet variables}]
 PacketType packetType; // The type of the packet
 uint16_t addresser; // The sender of the packet (node ID)
 uint16_t addressee; // The receiver of the packet (node ID)
@@ -21,8 +21,10 @@ uint16_t value3; // Value 3
 uint16_t checksum; // Checksum value
 \end{lstlisting}
 \end{figure}
-These values cover the components of a packet; the packet type, the sender, the receiver, the origin of the data, data values, and a checksum.
-Every packet has this format, and all values are filled out\todo{why?}. With packets that might not require all these values, they will simply be zero\todo{elaborate. Bytes filled to keep 16 byte packets.}. For example when sending a request, addressee, value2 and value3 will be zero.\todo{but what does it ACTUALLY contain?}
+The datatypes of the members of \texttt{Packet} are all \texttt{uint16\_t}. This is to ensure that the size of the class does not vary on different architectures. The \texttt{uint16\_t} is always of size 2 bytes. The same size as two characters. Together, all members in the class gives a total size of 16 bytes. The final architecture of a packet can be seen on \ref{tab:packetTableFirst} and \ref{tab:packetTableSecond}.
+
+The values shown in Listing \ref{lst:packetvariables} cover the components of a packet; the packet type, the sender, the receiver, the origin of the data, data values, and a checksum.
+Every packet has this format, and all values must be filled to ensure uniform size. With packets that might not require all these values, they will simply be 0. For example when sending a request; addressee, value2 and value3 will be 0.
 
 \begin{table}[]
 \centering
@@ -30,12 +32,11 @@ Every packet has this format, and all values are filled out\todo{why?}. With pac
 \hline
 \textbf{Datatype} & \multicolumn{2}{c|}{Packettype}      & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{c|}{uint16\_t}       \\ \hline
 \textbf{Name}     & \multicolumn{2}{c|}{packetType}      & \multicolumn{2}{c|}{addresser}       & \multicolumn{2}{c|}{addressee}       & \multicolumn{2}{c|}{origin}          \\ \hline
-\textbf{Memory}   & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits \\ \hline
+\textbf{Memory}   & \multicolumn{2}{c|}{16 bits} & \multicolumn{2}{c|}{16 bits} & \multicolumn{2}{c|}{16 bits} & \multicolumn{2}{c|}{16 bits} \\ \hline
 \end{tabular}
 \caption{Overview of first half of a packet. The packet can be directly converted to 16 characters.}
 \label{tab:packetTableFirst}
 \end{table}
-\todo{why are ID's split in 8+8? Why not 16-berg? (\/)(;,,;)(\/)}
 
 \begin{table}[]
 \centering
@@ -43,17 +44,14 @@ Every packet has this format, and all values are filled out\todo{why?}. With pac
 \hline
 \textbf{Datatype} & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{l|}{uint16\_t} & \multicolumn{2}{c|}{uint16\_t}       \\ \hline
 \textbf{Name}     & \multicolumn{2}{c|}{value1}         & \multicolumn{2}{c|}{value2}         & \multicolumn{2}{c|}{value3}   & \multicolumn{2}{c|}{checksum}        \\ \hline
-\textbf{Memory}   & \multicolumn{1}{l|}{8 bits} & 8 bits & \multicolumn{1}{l|}{8 bits} & 8 bits & 8 bits         & 8 bits        & \multicolumn{1}{l|}{8 bits} & 8 bits \\ \hline
+\textbf{Memory}   & \multicolumn{2}{c|}{16 bits} & \multicolumn{2}{c|}{16 bits} & \multicolumn{2}{c|}{16 bits} & \multicolumn{2}{c|}{16 bits} \\ \hline
 \end{tabular}
 \caption{Overview of second half of a packet.}
 \label{tab:packetTableSecond}
 \end{table}
 
-\todo{move the following paragraphs to before the previous?}
-The datatypes of the members of \texttt{Packet} are all \texttt{uint16\_t}. This is to ensure that the size of the class does not vary on different architectures. The \texttt{uint16\_t} is always of size 2 bytes. The same size as two characters. Together, all members in the class gives a total size of 16 bytes. The final architecture of a packet can be seen on \ref{tab:packetTableFirst} and \ref{tab:packetTableSecond}.
-
-\texttt{PacketType} is defined as follows:
-\begin{lstlisting}[language=C]
+\texttt{PacketType} is defined as shown in Listing \ref{lst:packettypes}.
+\begin{lstlisting}[language=C,label={lst:packettypes},caption={Packet types}]
 enum PacketType : uint16_t {
     Error,
     DataAcknowledgement,
@@ -69,18 +67,6 @@ enum PacketType : uint16_t {
 \todo{belongs to design?}
 Only half of the space available in a transmission is occupied, as the radio module used in this project solution supports packets of 32 byte. As the solution is modular, the protocol is supposed to support other modules, also modules only capable of smaller packet sizes. However, a packet size of 16 bytes is required to contain the necessary data from the nodes. 
 
-
-When a \texttt{Packet} is instantiated using the constructor with the \texttt{char *input} as parameter, these values\todo{which values?} are found using the function \texttt{memcpy}, in the \texttt{decode} function, seen in Listing \ref{lst:decodefunc}.
-\begin{lstlisting}[language=C,label={lst:decodefunc},caption={Decode function.}]
-void Packet::decode(char *input)
-{
-    memcpy(this, input, sizeof(Packet));
-}
-\end{lstlisting}
-This copies the memory of the \texttt{char *input} into the memory location where the current \texttt{Packet} object is located. This means that the contents of the packet is set to the content of \texttt{input}.\todo{more explicit/detailed elaboration}
-
-This is possible as every part of the packet has a known, pre-determined size. \texttt{uint16\_t} always has the same size, not depending on the architecture running the code. When a packet is encoded, using the \texttt{char *encode()} function, the returned character array is built in the same way, by setting the contents of the array to the contents of the package.
-
 \begin{lstlisting}[language=C]
 char *Packet::encode()
 {
@@ -92,7 +78,17 @@ char *Packet::encode()
     return returnstring;
 }
 \end{lstlisting}
-The \texttt{encode} function allocates the size necessary for a \texttt{Packet}, but as a \texttt{char *} and uses \texttt{memcpy} to set the contents of the array to the contents of the current \texttt{Packet} and then returning the array. The char array can be seen as a format of the packet object\todo{explain unambiguous} that can be directly transmitted by the radio module without further operations to the array.
+The \texttt{encode} function allocates the size necessary for a \texttt{Packet}, but as a \texttt{char *} and uses \texttt{memcpy} to set the contents of the array to the contents of the current \texttt{Packet} and then returning the array. The \texttt{char} array is a format of the packet object, that can be directly transmitted by the radio module, without further operations to the array, and then decoded on the receiving node.
+
+\begin{lstlisting}[language=C,label={lst:decodefunc},caption={Decode function.}]
+void Packet::decode(char *input)
+{
+    memcpy(this, input, sizeof(Packet));
+}
+\end{lstlisting}
+The decode function, as shown on listing \ref{lst:decodefunc}, copies the memory of the \texttt{char *input} into the memory location where the current \texttt{Packet} object is located. This means that the memory contents of the packet is set to the memory content of \texttt{input}.
+
+This is possible as every part of the packet has a known, pre-determined size. \texttt{uint16\_t} always has the same size, not depending on the architecture running the code. When a packet is encoded, using the \texttt{char *encode()} function, the returned character array is built in the same way, by setting the contents of the array to the contents of the package.
 
 \subsubsection{Checksum}
 \texttt{Packet} objects contains a checksum, used to verify the content's integrity. The checksum uses two functions: \texttt{crcInit()} and \texttt{crcCompute(unsigned char *message, unsigned int nBytes)}. The checksum implementation is based on the description in \texttt{Programming Embedded Systems in C and C++} \cite{crcCode}.
