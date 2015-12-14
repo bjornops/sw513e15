@@ -34,16 +34,16 @@ The solution is developed to gather sensor data from all nodes in a network, and
 As the sensor readings are required on-demand, there must be at least two types of communication. The first being the data request, an outgoing signal from the main node, notifying the data demand. This is a broadcasted packet, as every node is targeted as recipient. The second type is data response, while the sensor readings needs to be returned to the main node for storage and representation. The design of the two types follows.
 
 % Design of data request: individual request
-One data gathering method is to demand data explicitly from each node. That can be done by transmitting a unique data request to every node in the network, addressing each nodes by its identification. This would require the main node to create an individual request to each node in the network, and the network nodes to know the path through the network to the addressee, so that the request can be relayed correctly. This is not appropriate as routing tables would use a significant amount of the network nodes' limited memory if the addressee is a sufficient amount of nodes away. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that actually exist. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy in addition to more memory.
+One data gathering method is to demand data explicitly from each node. That can be done by transmitting a unique data request to every node in the network, addressing each nodes by its identification. This would require the main node to create an request to each individual node in the network, and the network nodes to know the exact path through the network to the addressee, so that the request can be relayed correctly. This is not appropriate as routing tables would use a significant amount of the network nodes' limited memory if the addressee is a sufficient amount of nodes away. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that actually exist and is in range. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy in addition to more memory usage.
 
 % Design of data request: broadcast request
-Another method of data gathering is by a request broadcast. This would work as a flooded request throughout the network.
-A data request will be broadcasted to all nodes in the network, using flooding, and will only require one unique packet. 
-If the broadcast is done by controlled flooding, there will be no cycles, and the outgoing transmit topology will consequently be a tree. 
+Another method of data gathering is by broadcasting a general request. This would work as a flooded request throughout the network.
+A data request will be broadcasted to every node in the network, using flooding, and will only require one unique packet. 
+If the broadcast is done by controlled flooding, there will be no cycles, and the outgoing transmit topology will consequently result in a tree. 
 Flooding will only handle one packet, but the nodes can receive the same packet multiple times and must analyze and discard any duplicate packets.
 
 % Data request method selection template
-The protocol selected for the solution is partly based on the flooding protocol.
+The protocol used in the solution is partly based on the flooding protocol.
 This protocol is a method where the data request can be transmitted by flooding the network, without needing to send a tailored request to every node in the network. 
 
 The controlled flooding has a low memory impact and thus best suited for the solution. The flooding protocol will create a tree which can be utilized to create a return path for the nodes' sensor readings.
@@ -57,21 +57,21 @@ The controlled flooding has a low memory impact and thus best suited for the sol
 \end{figure}
 
 
-The tree created in each request broadcast can vary in its structure, depending on interference, removal of nodes or faulty nodes or by other occurrences. Figure \ref{fig:treeVariation} shows an example of how the tree can vary: first the main node will broadcast "request 1", which is received by both "node 1" and "node 2". An external node in the system will always handle its own sensor data before it starts relaying data from other nodes. If the main node receives data from "node 1" first, then the resulting tree will match the tree seen to the left on \figref{treeVariation}. If "node 2" connects to the main node first, then the tree will match the tree on the right.
-This will effectively solve the requirement of responding appropriately to a disconnecting node, as well as including new nodes in the network, since a new tree is constructed with each wave of requests from the main node.
-It will also use the shortest path to every node, due to each node connecting to its immediate neighbors.
+The tree created, in each wave of request broadcasts, can vary in its structure, depending on interference, removal of nodes, or faulty nodes as well as other occurrences. Figure \ref{fig:treeVariation} shows an example of how the tree can vary: first the main node will broadcast \textit{request 1}, which is received by both \textit{node 1} and \textit{node 2}. A sensor node in the system will always handle its own sensor data before it starts relaying data from other nodes. If the main node receives sensor data from \textit{node 1} first, then the resulting tree will match the tree seen to the left in \figref{treeVariation}. If \textit{node 2} connects to the main node first, then the tree will match the tree seen on the right.
+This will effectively solve the requirement of responding appropriately to a disconnecting node, as well as the inclusion of new nodes in the network, since a new tree is constructed with each wave of requests from the main node.
+It will also use the shortest path to every node, due to the fact that each node will connect to its immediate neighbors.
 
 % Design of data respond
-The tree instantiated by the flood, can be used to create a path from each node to the main node.
+In other words, a tree instantiated by the controlled flooding protocol can be used to construct a tree that spans over all paths from each node to the main node.
 The receiver of a request signal can use the sender as the parent when data is to be returned.
 The child will then repeat the request signal, and be the parent of nodes hearing it.
 
 % Topological consequence of data communication: tree
-The topology of the network will effectively be a tree, although prone to changes in branches.
+The topology of the network will therefore effectively be a tree, although prone to changes in branches.
 Any node receiving a request signal will then be able to respond to its parent, causing all nodes to have a single identifier for the routing towards the destination node, the main node.
 
 \subsection{Sequence}
-The protocol sequence is determined as the following. A flowchart can be seen in the appendix.\todo{add flowchart to appendix}
+The general sequence of the protocol is determined as the following. A flowchart can be seen in the appendix.\todo{add flowchart to appendix}
 
 This is the operation structure for each individual node in the system.
 \begin{enumerate}
@@ -87,13 +87,13 @@ This is the operation structure for each individual node in the system.
 \end{enumerate}
 
 \subsection{Interference handling} \label{cha:crcDesign}
-When utilizing wireless communication, interference can be a problem, as explained in section \ref{cha:floodingSec}. This is also the case when using controlled flooding, but using a protocol can help reduce problems with interference, for instance by validating the transferred data and acting accordingly.
+When utilizing wireless communication, interference can be a problem, as explained in section \ref{cha:floodingSec}. This is also the case when using controlled flooding, but the protocol can potentially help reduce problems with interference, for instance by validating the transferred data and acting accordingly.
 
-Interference might change packets, which makes it impossible to use the received data. Figure \ref{fig:prottree1} shows an example of a possible interference scenario, where nodes 5, 6, and 7 could send packets at the same time, causing node 3 to receive scrambled data.
+Interference might cause a change in packets, which make the received data unusable. Figure \ref{fig:prottree1} shows an example of a possible interference scenario, where nodes 5, 6, and 7 could send packets at the same time, causing node 3 to receive scrambled data.
 
-To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. How the checksum is calculated were explained back in \ref{cha:crcComp}.
+To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. How the checksum is calculated is explained in section \ref{cha:crcComp}.
 
-To ensure that a packet with the correct checksum will arrive at some point, the nodes will wait a random, but longer, interval, between attempting to send data known as exponential backoff. This means that at some point, the data will be transmitted to the receiver without interference. This is possible, as delivery time is not prioritized high. Exponential backoff is further explained in \ref{cha:expbackoff}
+To ensure that a packet with the correct checksum will arrive at some point, the nodes will wait a random, but progressively longer, interval, between attempting to send data. This is known as exponential backoff. This increases the chances of the transmitted data actually reaching the receiver without interference. Exponential backoff is further explained in \ref{cha:expbackoff}.
 
 
 \subsection*{Example}
