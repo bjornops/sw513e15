@@ -91,7 +91,7 @@ void Node::initializeNode()
             printf("Kendt node: %d, med navn: %s\n", nodeID, nodeName);
             Node::_receivedThisSession[nodeID] = -1;
         }
-        
+
         _currentID = Node::_receivedThisSession.size()+1;
     }
 
@@ -335,11 +335,11 @@ void Node::sendRequest()
         unsigned int startTime = bcm2835_millis();
         unsigned int totalTimeWaited = 0;
         while(totalTimeWaited < totalTimeToWait)
-        { 
-            res = _radio->listenFor();
+        {
+            res = _radio->listenFor(totalTimeToWait-totalTimeWaited);
             Packet packet(res);
             Node::handlePacket(packet);
-            totalTimeWaited = bcm2835millis() - startTime
+            totalTimeWaited = bcm2835_millis() - startTime;
         }
     }
 
