@@ -20,7 +20,7 @@ The radio modules selected for the solution are half-duplex and not capable of f
 % Already mentioned in design intention/data handling => move?
 For power consumption and complying to the usage, the network nodes are controlled by the main node, and the nodes will only transmit sensor data on demand.
 %The ideal implementation of the solution will keep the nodes in a low power listening mode until a data request is received to preserve battery life. 
-The nodes transmitting their sensor readings automatically requires some sort of synchronization, so the node data is updated for every node and transmitted back to the main node. \todo{Hvad menes der her?}
+
 There is no requirement for real-time monitoring of the golf course, making it difficult defining a data transfer interval that matches both power consumption as well as the need for information.
 Hence, an on-demand request for data will be sufficient.
 
@@ -80,8 +80,8 @@ The following is the operation structure for each individual node in the system.
 	\item Receive acknowledgement of sent package
 	\item Send data request to all
 	\item Receive data from children
-	\item If no response or acknowledgment within 10 min: (deep) sleep?
-\end{enumerate}\todo{fix det i parrentes}
+	\item If no response or acknowledgment within 10 min: clear all data except nodeID and listed for new request.
+\end{enumerate}
 
 \subsection{Interference handling} \label{cha:crcDesign}
 When utilizing wireless communication, interference can be a problem, as explained in section \todo{ref to the right place}. This is also the case when using controlled flooding, but the protocol can potentially help reduce problems with interference, for instance by validating the transferred data and acting accordingly.
@@ -133,14 +133,13 @@ To be able to discern and utilize received data, it is decided to mark the packe
 The types are used to inform the receiver what type of data the packet contains, so that the receiving node can decide how to handle the received packet. 
 
 % Limitations
-There are multiple types of data needed to make a functioning protocol. The nRF24L01 supports data payloads up to 32 bytes, and is accordingly the limit of data to transfer in each packet.
-Although, a decrease in amount of data can enable the protocol to be implemented on more limited hardware in addition to use less energy on broadcast.
+There are multiple types of data needed to make a functioning protocol. The nRF24L01 supports data payloads up to 32 bytes. Only half of the space available in a transmission is actually occupied. As the solution is modular, the protocol is supposed to support other modules; also modules only capable of smaller packet sizes. Though, a packet size of 16 bytes is required to contain the necessary data from the nodes, which cannot be smaller.
 
 % Meta
 Below is a description of the different packet types:
 
 \textbf{Data}\newline
-The \textit{data} packet fulfills the main requirement of transmitting the sensor readings to the main node. The packet can contains up to three sensor readings, restricted by the 16 byte packet size\todo{Vi har lige skrevet en packet er 32 byte}, the metadata in the packet and the sensor reading resolution of 1024\todo{What}, each requiring 2 bytes in size.
+The \textit{data} packet fulfills the main requirement of transmitting the sensor readings to the main node. The packet can contain up to three sensor readings, since restricted by the 16 byte packet size. Since the sensor readings vary between 0 and 1024, and the network should support up to 1000 nodes, it is required that the values can contain these values, hence using 16 bit integers in the packet.
 
 \textbf{Data request}\newline 
 The \textit{data request} packet is the packet notifying the receiving nodes of a data demand. 
@@ -157,7 +156,7 @@ The \textit{pair request acknowledgement} packet is sent by the main node and us
 
 \textbf{Clear signal}\newline
 The \textit{clear signal} is used to reset every node in the network, which will happen once the main node have received data from all registered nodes in the system.
-The \textit{clear signal} packet let every node in the network know that it should forget any previous information stored, except its own ID, such as\todo{"Such as" har vi andet de skal glemme?} parent information. This is done to add flexibility to the system. When \textit{data request} spread through the network, it forms a tree based on how the nodes are placed. By resetting with the \textit{clear signal}, a new tree is created each time a new wave of \textit{data requests} goes through the network, which in turn means that nodes can be moved around the golf course between waves of \textit{data requests}. How the trees are constructed was explained in section \ref{cha:crcDesign}.
+The \textit{clear signal} packet let every node in the network know that it should forget any previous information stored, except its own ID. This is done to add flexibility to the system. When \textit{data request} spread through the network, it forms a tree based on how the nodes are placed. By resetting with the \textit{clear signal}, a new tree is created each time a new wave of \textit{data requests} goes through the network, which in turn means that nodes can be moved around the golf course between waves of \textit{data requests}. How the trees are constructed was explained in section \ref{cha:crcDesign}.
 
 \textbf{Error}\newline
 Because packets are not always transferred correctly, the receiver node will verify the integrity of a packet whenever a packet is received. Section \ref{cha:crcDesign} describes how this is done. If the checksums do not match, the packet type will be set to \textit{error}.
@@ -202,18 +201,10 @@ To verify the integrity of the received package, a cyclic redundancy check (CRC1
 
 The sizes of the different data to transfer sums up to 16 bytes and the distribution is displayed in \figref{dataalloc} as the data 1, data 2, and data 3 fields.
 
-
-
-
 \subsection{Verification of a packet}
 %Verification of a message
-The received packet is verified by doing one of the two following methods. 
-
-Generate checksum of message m and compare with received checksum r.
-The checksum of a correctly transferred packet $T$ is 0, because a package $T$, if correctly transferred, is some quotient $Q$ times the polynomial $G$, as seen in eqref[earlier] \todo{fix}. If a division has a zero remainder, the packet was transferred correctly.
-
-
-
+The received packet is verified by generating a checksum of message $m$ plus previously generated checksum $r$.
+The new generated checksum of a correctly transferred packet $T$ is 0, because a package $T$, if correctly transferred, is some quotient $Q$ times the polynomial $G$, as seen in \charef{crcComp}. If a division has a zero remainder, the packet was transferred correctly.
 
 \subsection{Adding and removing nodes}
 If a new node is to be added to the network, it needs an identifier in the system so that its sensor reading can be recognized. The identifier is permanent as long as it is in the network.

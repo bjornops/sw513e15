@@ -63,10 +63,6 @@ enum PacketType : uint16_t {
 };
 \end{lstlisting}
 
-
-\todo{belongs to design?}
-Only half of the space available in a transmission is occupied, as the radio module used in this project solution supports packets of 32 byte. As the solution is modular, the protocol is supposed to support other modules, also modules only capable of smaller packet sizes. However, a packet size of 16 bytes is required to contain the necessary data from the nodes. 
-
 \begin{lstlisting}[language=C]
 char *Packet::encode()
 {
