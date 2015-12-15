@@ -28,6 +28,8 @@ Hence, an on-demand request for data will be sufficient.
 % Intention/motivation
 The solution is developed to gather sensor data from all nodes in a network, and this subsection will contain the considerations regarding choice of transfer method and the according topology.
 
+Transfer speed have been considered in terms of power consumption and range. Faster transfer speed consumes more energy, but in a shorter amount of time. Slower transfer speed consumes less energy, but over longer time as defined in \cite{nf24datasheet}. The slower data transfer rate has a significantly longer reach for the nRF24L01, and will therefore be implemented.
+
 %This enables the main node to broadcast data requests throughout the sensor network, and likewise transmitting data readings from the sensor nodes to the main node.
 
 % The two types of communication (data request and data respond)
@@ -56,7 +58,6 @@ The controlled flooding has a low memory impact and thus best suited for the sol
 	\label{fig:treeVariation}
 \end{figure}
 
-
 The tree created, in each wave of request broadcasts, can vary in its structure, depending on interference, removal of nodes, or faulty nodes. Figure \ref{fig:treeVariation} shows an example of how the tree can vary: first the main node will broadcast \textit{request 1}, which is received by both \textit{node 1} and \textit{node 2}. A sensor node in the system will always handle its own sensor data before relaying data from other nodes. If the main node receives sensor data from \textit{node 1} first, then the resulting tree will match the tree seen to the left in \figref{treeVariation}. If \textit{node 2} connects to the main node first, then the tree will match the tree seen on the right.
 This will effectively solve the requirement of responding appropriately to a disconnecting node, as well as the inclusion of new nodes in the network, since a new tree is constructed with each new requests from the main node.
 It will also use the shortest path to every node, due to the fact that each node will connect to its immediate neighbors.\todo{Tror ikke vi kan sige det altid er shortest path}
@@ -67,7 +68,22 @@ The receiver of a request signal can use the sender as the parent when data is t
 The child will then repeat the request signal, and be the parent of nodes hearing it.
 Any node receiving a request signal will then be able to respond to its parent, causing all nodes to have a single identifier for the routing towards the main node.
 
+%\subsection{Overloaded nodes}
+A general thing to note is that nodes close to the main node are prone to receive a larger amount of data since many, if not every data packet, must go though that node. Looking at \ref{fig:overloadtree} it is shown that node 2 will handle every data packet on its way to the main node. Such low level nodes might be overloaded with data packets, causing a bottleneck if not thoughtfully spread out. The danger arises if several higher level nodes are trying to send data packets back to node 2, and node 2 can only handle packets with a certain speed. Another scenario is that since node 2 is relaying data more frequent than other nodes in the system, it consumes more energy and could potentially run out of power quicker than the rest.
+\begin{figure}[!h]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{chapters/design/figures/overloadtree.png}}
+	\caption{Example of a tree.}
+	\label{fig:overloadtree}
+\end{figure}
+
 \subsection{Sequence}
+
+Section - Pairing \todo{MAKE THIS FIT SEQUENCE SECTION}
+In order to add a new node to the network, the node is first needed to be paired up with the main node.
+This way, a node could have assigned a unique identity to be able to recognize its sensor readings from other sensors. 
+The protocol is described more in depth in \ref{cha:floodingSec}
+
 The general sequence of the protocol is determined as the flowchart seen in the appendix.\todo{add flowchart to appendix and ref}
 
 The following is the operation structure for each individual node in the system.
@@ -88,9 +104,12 @@ When utilizing wireless communication, interference can be a problem, as explain
 
 Interference might cause a change in a packet, which make the received data unusable. Figure \ref{fig:prottree1} shows an example of a possible interference scenario, where nodes 5, 6, and 7 could send packets at the same time, causing node 3 to receive scrambled data.
 
-To ensure this is not a problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. How the checksum is calculated is explained in section \ref{cha:crcComp}.
+To ensure combat this problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. How the checksum is calculated is explained in section \ref{cha:crcComp}.
 
 To ensure that a packet with the correct checksum will arrive at some point, the nodes will wait a random, but progressively longer, interval, between attempting to send data. This is known as exponential backoff. This increases the chances for the transmitted data to reach the receiver without interference. Exponential backoff is further explained in \ref{cha:expbackoff}.
+
+%\subsection{Data importance}
+It should be noted that the gathered data is not critical. If a packet is lost, it is negligible. If the user of the system discovers multiple missing data from a certain area or node, the node can be fixed or replaced.
 
 
 \subsection*{Example}

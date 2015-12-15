@@ -16,7 +16,7 @@ The Raspberry Pi B+ model is used in the solution as the main node, based on the
 	\label{fig:compsketch}
 \end{figure}
 
-\subsection{nRF24L01 Transceiver}
+\subsection*{nRF24L01 Transceiver}
 The communication device chosen for this project is the nRF24L01, because of its documentation, price, and low power consumption. The transfer speed of the module is sufficient to send the small data packets, which makes this module good for the solution described in this report.
 
 The nRF24L01 module contains multiple features for detecting packets loss. These includes checking hashes and sending acknowledgments\cite{nf24datasheet}. These features makes it harder to replace the radio modules in the nodes, as they are platform specific to the nRF24L01. The analysis examined the possibility of using different radio modules in case some requirements changes, which is not possible if using platform specific features. These features also causes more battery usage, which is a problem in devices being buried, as discussed in chapter \ref{cha:batcons}.
