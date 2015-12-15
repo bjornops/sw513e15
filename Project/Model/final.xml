@@ -266,146 +266,179 @@ clock timeElapsed;
 
 const int totalDeadline = 10000;
 int requestsToSend;
+int clearsToSend;
 
 packetType_t localPacketType;      //packets
 nodeId_t localPacketAddresser;     //senderId
 nodeId_t localPacketAddressee;     //receiverId
 nodeId_t localPacketSource;        //original source
 
-bool receivedData[nonMainNodeId_t];</declaration>
-		<location id="id15" x="1751" y="102">
+bool receivedData[nonMainNodeId_t];
+
+bool receivedAllData()
+{
+    for (i : nonMainNodeId_t)
+    {
+        if (!receivedData[i])
+        {
+            return false;
+        }
+    }
+    return true;
+}</declaration>
+		<location id="id15" x="850" y="408">
 			<committed/>
 		</location>
-		<location id="id16" x="246" y="68">
+		<location id="id16" x="1802" y="102">
 			<committed/>
 		</location>
-		<location id="id17" x="1964" y="102">
-			<name x="1954" y="68">doneHandlingDataPacket</name>
+		<location id="id17" x="340" y="68">
+			<committed/>
 		</location>
-		<location id="id18" x="960" y="408">
-			<name x="950" y="374">waiting</name>
+		<location id="id18" x="2134" y="102">
+			<name x="2040" y="119">doneHandlingDataPacket</name>
 		</location>
-		<location id="id19" x="408" y="408">
-			<name x="398" y="374">sendClearSignals</name>
-		</location>
-		<location id="id20" x="1292" y="102">
-			<name x="1224" y="-17">handleDataPacket</name>
-		</location>
-		<location id="id21" x="1964" y="408">
-			<name x="1954" y="374">done</name>
-		</location>
-		<location id="id22" x="960" y="102">
-			<name x="909" y="51">handlePacket</name>
+		<location id="id19" x="1130" y="442">
+			<name x="1120" y="408">waiting</name>
 			<urgent/>
 		</location>
-		<location id="id23" x="408" y="102">
-			<name x="357" y="59">listenForPacket</name>
+		<location id="id20" x="578" y="442">
+			<name x="510" y="476">sendClearSignals</name>
 		</location>
-		<location id="id24" x="102" y="102">
+		<location id="id21" x="1462" y="102">
+			<name x="1402" y="0">handleDataPacket</name>
+		</location>
+		<location id="id22" x="2134" y="442">
+			<name x="2124" y="408">done</name>
+		</location>
+		<location id="id23" x="1130" y="102">
+			<name x="1079" y="51">handlePacket</name>
+		</location>
+		<location id="id24" x="578" y="102">
+			<name x="527" y="59">listenForPacket</name>
+			<urgent/>
+		</location>
+		<location id="id25" x="102" y="102">
 			<name x="51" y="59">sendRequests</name>
 		</location>
-		<location id="id25" x="-204" y="102">
+		<location id="id26" x="-204" y="102">
 			<name x="-221" y="59">start</name>
 		</location>
-		<init ref="id25"/>
+		<init ref="id26"/>
 		<transition>
 			<source ref="id15"/>
-			<target ref="id17"/>
-			<label kind="synchronisation" x="1777" y="68">radio!</label>
+			<target ref="id19"/>
+			<label kind="synchronisation" x="926" y="382">radio!</label>
+			<nail x="1054" y="408"/>
 		</transition>
 		<transition>
 			<source ref="id16"/>
-			<target ref="id23"/>
-			<label kind="synchronisation" x="263" y="42">radio!</label>
-			<nail x="340" y="68"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="1938" y="76">radio!</label>
 		</transition>
 		<transition>
 			<source ref="id17"/>
-			<target ref="id23"/>
-			<label kind="comments" x="1053" y="-85">data er handlet</label>
-			<nail x="1896" y="-68"/>
-			<nail x="476" y="-68"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="399" y="42">radio!</label>
+			<nail x="510" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id24"/>
+			<label kind="comments" x="1360" y="-178">data er handlet</label>
+			<nail x="2074" y="-136"/>
+			<nail x="646" y="-136"/>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id16"/>
+			<label kind="assignment" x="1487" y="25">sharedPacketType[nodeId] = dataAcknowledgement,
+sharedPacketAddresser[nodeId] = nodeId,
+sharedPacketAddressee[nodeId] = localPacketAddresser,
+auxId = nodeId</label>
+			<label kind="comments" x="1717" y="0">broadcast acknowledgement</label>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id22"/>
+			<label kind="guard" x="1564" y="416">clearsToSend &lt;= 0</label>
+			<label kind="comments" x="1513" y="391">ikke flere clearsignals at sende</label>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id20"/>
+			<label kind="guard" x="722" y="510">clearsToSend &gt; 0 &amp;&amp; timeElapsed &gt; 1000</label>
+			<label kind="comments" x="739" y="484">more clears to send and waiting done</label>
+			<nail x="1062" y="476"/>
+			<nail x="646" y="476"/>
 		</transition>
 		<transition>
 			<source ref="id20"/>
 			<target ref="id15"/>
-			<label kind="assignment" x="1300" y="34">sharedPacketType[nodeId] = dataAcknowledgement,
-sharedPacketAddresser[nodeId] = nodeId,
-sharedPacketAddressee[nodeId] = localPacketAddresser</label>
-			<label kind="comments" x="1300" y="8">broadcast acknowledgement</label>
-		</transition>
-		<transition>
-			<source ref="id18"/>
-			<target ref="id21"/>
-			<label kind="comments" x="1190" y="391">ikke flere clearsignals at sende</label>
-		</transition>
-		<transition>
-			<source ref="id18"/>
-			<target ref="id19"/>
-			<label kind="comments" x="476" y="442">flere clearsignals at sende</label>
-			<nail x="892" y="442"/>
-			<nail x="476" y="442"/>
-		</transition>
-		<transition>
-			<source ref="id19"/>
-			<target ref="id18"/>
-			<label kind="comments" x="510" y="357">broadcast clear</label>
-			<nail x="476" y="374"/>
-			<nail x="892" y="374"/>
-		</transition>
-		<transition>
-			<source ref="id23"/>
-			<target ref="id19"/>
-			<label kind="comments" x="416" y="255">har data fra alle kendte knuder, eller har ramt timeout</label>
-		</transition>
-		<transition>
-			<source ref="id22"/>
-			<target ref="id23"/>
-			<label kind="guard" x="484" y="170">localPacketType != data</label>
-			<label kind="comments" x="484" y="144">packet ikke af typen data</label>
-			<nail x="892" y="136"/>
-			<nail x="476" y="136"/>
-		</transition>
-		<transition>
-			<source ref="id22"/>
-			<target ref="id20"/>
-			<label kind="guard" x="1028" y="68">localPacketType == data</label>
-			<label kind="comments" x="1028" y="42">packet har typen "data"</label>
-		</transition>
-		<transition>
-			<source ref="id23"/>
-			<target ref="id22"/>
-			<label kind="synchronisation" x="484" y="-26">radio?</label>
-			<label kind="assignment" x="484" y="-9">localPacketType = sharedPacketType[auxId],
-localPacketAddresser = sharedPacketAddresser[auxId],
-localPacketAddressee = sharedPacketAddressee[auxId],
-localPacketSource = sharedPacketSource[auxId]</label>
-			<label kind="comments" x="484" y="-51">packet modtaget</label>
-			<nail x="484" y="68"/>
-			<nail x="892" y="68"/>
-		</transition>
-		<transition>
-			<source ref="id23"/>
-			<target ref="id24"/>
-			<label kind="comments" x="127" y="238">timeout men flere requests at sende</label>
-			<nail x="340" y="136"/>
-			<nail x="170" y="136"/>
+			<label kind="assignment" x="663" y="331">sharedPacketType[nodeId] = dataAcknowledgement,
+clearsToSend--,
+auxId = nodeId,
+timeElapsed := 0</label>
+			<label kind="comments" x="790" y="306">broadcast clears</label>
+			<nail x="646" y="408"/>
 		</transition>
 		<transition>
 			<source ref="id24"/>
-			<target ref="id16"/>
-			<label kind="assignment" x="119" y="8">sharedPacketType[nodeId] = dataRequest,
-auxId = nodeId,
-timeElapsed := 0</label>
-			<label kind="comments" x="119" y="-17">broadcast request</label>
-			<nail x="170" y="68"/>
+			<target ref="id20"/>
+			<label kind="guard" x="586" y="255">receivedAllData() || totalTimeElapsed &gt; totalDeadline</label>
+			<label kind="comments" x="586" y="229">har data fra alle kendte knuder, eller har ramt timeout</label>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id24"/>
+			<label kind="guard" x="654" y="170">localPacketType != data</label>
+			<label kind="comments" x="654" y="144">packet ikke af typen data</label>
+			<nail x="1062" y="136"/>
+			<nail x="646" y="136"/>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id21"/>
+			<label kind="guard" x="1198" y="76">localPacketType == data</label>
+			<label kind="comments" x="1198" y="51">packet har typen "data"</label>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id23"/>
+			<label kind="synchronisation" x="654" y="-26">radio?</label>
+			<label kind="assignment" x="654" y="-9">localPacketType = sharedPacketType[auxId],
+localPacketAddresser = sharedPacketAddresser[auxId],
+localPacketAddressee = sharedPacketAddressee[auxId],
+localPacketSource = sharedPacketSource[auxId]</label>
+			<label kind="comments" x="654" y="-51">packet modtaget</label>
+			<nail x="654" y="68"/>
+			<nail x="1062" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id25"/>
+			<label kind="guard" x="195" y="170">requestsToSend &gt; 0 &amp;&amp; timeElapsed &gt; 1000</label>
+			<label kind="comments" x="195" y="144">timeout and more requests to send</label>
+			<nail x="510" y="136"/>
+			<nail x="170" y="136"/>
 		</transition>
 		<transition>
 			<source ref="id25"/>
-			<target ref="id24"/>
-			<label kind="assignment" x="-144" y="59">requestsToSend = 12,
+			<target ref="id17"/>
+			<label kind="assignment" x="195" y="-9">sharedPacketType[nodeId] = dataRequest,
+requestsToSend--,
+auxId = nodeId,
+timeElapsed := 0</label>
+			<label kind="comments" x="195" y="-34">broadcast request</label>
+			<nail x="170" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id25"/>
+			<label kind="assignment" x="-144" y="42">requestsToSend = 12,
+clearsToSend = 12,
 totalTimeElapsed := 0</label>
-			<label kind="comments" x="-144" y="34">modtager signal til start</label>
+			<label kind="comments" x="-144" y="17">modtager signal til start</label>
 		</transition>
 	</template>
 	<system>main = Main(0);
