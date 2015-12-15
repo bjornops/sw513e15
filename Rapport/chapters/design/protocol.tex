@@ -157,7 +157,7 @@ The \textit{pair request acknowledgement} packet is sent by the main node and us
 
 \textbf{Clear signal}\newline
 The \textit{clear signal} is used to reset every node in the network, which will happen once the main node have received data from all registered nodes in the system.
-The \textit{clear signal} packet let every node in the network know that it should forget any previous information stored, except its own ID, such as\todo{"Such as" har vi andet de skal glemme?} parent information. This is done to add flexibility to the system. When \textit{data request} spread through the network, it forms a tree based on how the nodes are placed. By resetting with the \textit{clear signal}, a new tree is created each time a new wave of \textit{data requests} goes through the network, which in turn means that nodes can be moved around the golf course between waves of \textit{data requests}. How the trees are constructed was explained in section \ref{cha:crcDesign}.
+The \textit{clear signal} packet let every node in the network know that it should forget any previous information stored, except its own ID. This is done to add flexibility to the system. When \textit{data request} spread through the network, it forms a tree based on how the nodes are placed. By resetting with the \textit{clear signal}, a new tree is created each time a new wave of \textit{data requests} goes through the network, which in turn means that nodes can be moved around the golf course between waves of \textit{data requests}. How the trees are constructed was explained in section \ref{cha:crcDesign}.
 
 \textbf{Error}\newline
 Because packets are not always transferred correctly, the receiver node will verify the integrity of a packet whenever a packet is received. Section \ref{cha:crcDesign} describes how this is done. If the checksums do not match, the packet type will be set to \textit{error}.
@@ -202,18 +202,10 @@ To verify the integrity of the received package, a cyclic redundancy check (CRC1
 
 The sizes of the different data to transfer sums up to 16 bytes and the distribution is displayed in \figref{dataalloc} as the data 1, data 2, and data 3 fields.
 
-
-
-
 \subsection{Verification of a packet}
 %Verification of a message
-The received packet is verified by doing one of the two following methods. 
-
-Generate checksum of message m and compare with received checksum r.
-The checksum of a correctly transferred packet $T$ is 0, because a package $T$, if correctly transferred, is some quotient $Q$ times the polynomial $G$, as seen in eqref[earlier] \todo{fix}. If a division has a zero remainder, the packet was transferred correctly.
-
-
-
+The received packet is verified by generating a checksum of message $m$ plus previously generated checksum $r$.
+The new generated checksum of a correctly transferred packet $T$ is 0, because a package $T$, if correctly transferred, is some quotient $Q$ times the polynomial $G$, as seen in \charef{crcComp}. If a division has a zero remainder, the packet was transferred correctly.
 
 \subsection{Adding and removing nodes}
 If a new node is to be added to the network, it needs an identifier in the system so that its sensor reading can be recognized. The identifier is permanent as long as it is in the network.
