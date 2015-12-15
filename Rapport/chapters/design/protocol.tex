@@ -80,8 +80,8 @@ The following is the operation structure for each individual node in the system.
 	\item Receive acknowledgement of sent package
 	\item Send data request to all
 	\item Receive data from children
-	\item If no response or acknowledgment within 10 min: (deep) sleep?
-\end{enumerate}\todo{fix det i parrentes}
+	\item If no response or acknowledgment within 10 min: clear all data except nodeID and listed for new request.
+\end{enumerate}
 
 \subsection{Interference handling} \label{cha:crcDesign}
 When utilizing wireless communication, interference can be a problem, as explained in section \todo{ref to the right place}. This is also the case when using controlled flooding, but the protocol can potentially help reduce problems with interference, for instance by validating the transferred data and acting accordingly.
