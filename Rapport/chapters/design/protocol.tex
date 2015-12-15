@@ -26,7 +26,7 @@ Hence, an on-demand request for data will be sufficient.
 
 \subsection{Packet Transfer}
 % Intention/motivation
-The solution is developed to gather sensor data from all nodes in a network, and this subsection will contain the considerations regarding choice of method and the according topology. \todo{Hvad menes der med choice of method}
+The solution is developed to gather sensor data from all nodes in a network, and this subsection will contain the considerations regarding choice of transfer method and the according topology.
 
 %This enables the main node to broadcast data requests throughout the sensor network, and likewise transmitting data readings from the sensor nodes to the main node.
 
@@ -34,7 +34,7 @@ The solution is developed to gather sensor data from all nodes in a network, and
 As the sensor readings are required on-demand, there must be at least two types of communication. The first being the data request, an outgoing signal from the main node, notifying the data demand. This is a broadcasted packet, as every node is targeted as recipient. The second type is data response, while the sensor readings needs to be returned to the main node for storage and representation. The design of the two types follows.
 
 % Design of data request: individual request
-One data gathering method is to demand data explicitly from each node. That can be done by transmitting a unique data request to every node in the network, addressing each nodes by its identification. This would require the main node to create an request to each individual node in the network, and the network nodes to know the exact path through the network to the addressee, so that the request can be relayed correctly. This is not appropriate as routing tables would use a significant amount of the network nodes' limited memory if the addressee is a sufficient amount of nodes away. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that actually exist and is in range. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy in addition to more memory usage.\todo{Hvorfor beskrives det her i design når vi ikke implenmentere det?}
+One data gathering method is to demand data explicitly from each node. That can be done by transmitting a unique data request to every node in the network, addressing each nodes by its identification. This would require the main node to create an request to each individual node in the network, and the network nodes to know the exact path through the network to the addressee, so that the request can be relayed correctly. This is not appropriate as routing tables would use a significant amount of the network nodes' limited memory if the addressee is a sufficient amount of nodes away. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that actually exist and is in range. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy in addition to more memory usage.
 
 % Design of data request: broadcast request
 Another method of data gathering is by broadcasting a general request. This would work as a flooded request throughout the network.
@@ -196,9 +196,9 @@ There is a possibility that a packet is not transferred correctly. This could be
 \subsubsection{Packet allocation}
 The limitation of the network size is 1000 nodes. This means the addresser, addressee and origin address fields need to support 1000 unique addresses, which requires 9 bits. The allocated size for the addresses are accordingly 2 bytes(16 bits) each to maintain usage of whole bytes. This is done because it is more efficient to manipulate a byte instead of a bit \cite{bytevsbit}. The addresses requires 6 bytes in total.
 
-The readings of the moisture sensor have a resolution\todo{Et andet ord} of 1024 values, and the required size allocated for the sensor reading data is 10 bits. The allocated data size in the transfer is therefore 2 bytes.
+The readings of the moisture sensor have a range of 1024 values, and the required size allocated for the sensor reading data is 10 bits. The allocated data size in the transfer is therefore 2 bytes.
 
-To verify the integrity of the received package, a cyclic redundancy check (CRC16) is appended. CRC16 uses 2 bytes to distinguish a successfully transfered packet from an erroneous one. \todo{ref til checksum}
+To verify the integrity of the received package, a cyclic redundancy check (CRC16) is appended. CRC16 uses 2 bytes to distinguish a successfully transfered packet from an erroneous one.
 
 The sizes of the different data to transfer sums up to 16 bytes and the distribution is displayed in \figref{dataalloc} as the data 1, data 2, and data 3 fields.
 
