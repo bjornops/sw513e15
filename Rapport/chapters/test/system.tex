@@ -44,4 +44,4 @@ The main node now had data from all sensor nodes. This data was saved to a file,
 
 This proved that the sensor nodes and main nodes completed their tasks. Testing showed an error in the implementation of exponential backoff, which made it possible for the delay to go out of bounds on the Arduino platforms. This was fixed after discovery.
 
-Figure \ref{fig:systest} shows the setup of the test. The \texttt{Raspberry Pi} was inside the group room with both sensor nodes being outside. When started, \texttt{Sensor1} received the request from the Pi. This made  \texttt{Sensor1} send data back to the Pi and then send requests. \texttt{Sensor2} then send data to \texttt{Sensor1} which were then relayed to the Pi, which then cleared the system.
+Figure \ref{fig:systest} shows the setup of the test. The \texttt{Raspberry Pi} was inside the group room with both sensor nodes being outside. When started, \texttt{Sensor1} received the request from the \texttt{Pi}. This made \texttt{Sensor1} send data back to the \texttt{Pi} and then send requests. \texttt{Sensor2} then send data to \texttt{Sensor1} which were then relayed to the \texttt{Pi}, which then cleared the system.
