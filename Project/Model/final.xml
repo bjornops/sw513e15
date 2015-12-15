@@ -1,19 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
 <nta>
-	<declaration>//Total nodecount, including main node
-    const int NODES = 100;
+	<declaration>
+const int NODES = 10;                         //Total nodecount, including main node
 
-//Range of integers representing all nodes
-    typedef int[0,NODES-1] nodeId_t;
+typedef int[0,NODES-1] nodeId_t;              //Range of integers representing all nodes
+typedef int[1,NODES-1] nonMainNodeId_t;       //Range of integers representing all non-main nodes.
+typedef int[0,3] packetType_t;                //0: Error, 1: DataRequest, 2: Data, 3: DataAcknowledgement
+const int error = 0;
+const int dataRequest = 1;
+const int data = 2;
+const int dataAcknowledgement = 3;
 
-//Range of integers representing all non-main nodes.
-    typedef int[1,NODES-1] nonMainNodeId_t;
+nodeId_t auxId;                               //auxId for intermediate storage of "who's transmitting"
 
+broadcast chan radio;                         //channel
+
+packetType_t sharedPacketType[nodeId_t];      //packets
+nodeId_t sharedPacketAddresser[nodeId_t];     //senderId
+nodeId_t sharedPacketAddressee[nodeId_t];     //receiverId
+nodeId_t sharedPacketSource[nodeId_t];        //original source
 </declaration>
 	<template>
 		<name>Sensor</name>
-		<parameter>const nodeId_t id</parameter>
+		<parameter>const nodeId_t nodeId</parameter>
+		<declaration>packetType_t localPacketType;      //packets
+nodeId_t localPacketAddresser;     //senderId
+nodeId_t localPacketAddressee;     //receiverId
+nodeId_t localPacketSource;        //original source</declaration>
 		<location id="id0" x="-170" y="-34">
 			<name x="-187" y="-68">updateLastPacketTimer</name>
 		</location>
@@ -246,113 +260,152 @@
 	</template>
 	<template>
 		<name x="5" y="5">Main</name>
-		<parameter>const nodeId_t id</parameter>
+		<parameter>const nodeId_t nodeId</parameter>
 		<declaration>clock totalTimeElapsed;
+clock timeElapsed;
 
-const int totalDeadline = 10000;</declaration>
-		<location id="id15" x="1326" y="102">
-			<name x="1316" y="68">doneHandlingDataPacket</name>
+const int totalDeadline = 10000;
+int requestsToSend;
+
+packetType_t localPacketType;      //packets
+nodeId_t localPacketAddresser;     //senderId
+nodeId_t localPacketAddressee;     //receiverId
+nodeId_t localPacketSource;        //original source
+
+bool receivedData[nonMainNodeId_t];</declaration>
+		<location id="id15" x="1751" y="102">
+			<committed/>
 		</location>
-		<location id="id16" x="714" y="408">
-			<name x="704" y="374">waiting</name>
+		<location id="id16" x="246" y="68">
+			<committed/>
 		</location>
-		<location id="id17" x="408" y="408">
+		<location id="id17" x="1964" y="102">
+			<name x="1954" y="68">doneHandlingDataPacket</name>
+		</location>
+		<location id="id18" x="960" y="408">
+			<name x="950" y="374">waiting</name>
+		</location>
+		<location id="id19" x="408" y="408">
 			<name x="398" y="374">sendClearSignals</name>
 		</location>
-		<location id="id18" x="1020" y="102">
-			<name x="1010" y="68">handleDataPacket</name>
+		<location id="id20" x="1292" y="102">
+			<name x="1224" y="-17">handleDataPacket</name>
 		</location>
-		<location id="id19" x="1326" y="408">
-			<name x="1316" y="374">done</name>
+		<location id="id21" x="1964" y="408">
+			<name x="1954" y="374">done</name>
 		</location>
-		<location id="id20" x="714" y="102">
-			<name x="704" y="68">handlePacket</name>
+		<location id="id22" x="960" y="102">
+			<name x="909" y="51">handlePacket</name>
+			<urgent/>
 		</location>
-		<location id="id21" x="408" y="102">
-			<name x="398" y="68">listenForPacket</name>
+		<location id="id23" x="408" y="102">
+			<name x="357" y="59">listenForPacket</name>
 		</location>
-		<location id="id22" x="102" y="102">
-			<name x="92" y="68">sendRequests</name>
+		<location id="id24" x="102" y="102">
+			<name x="51" y="59">sendRequests</name>
 		</location>
-		<location id="id23" x="-204" y="102">
-			<name x="-214" y="68">start</name>
+		<location id="id25" x="-204" y="102">
+			<name x="-221" y="59">start</name>
 		</location>
-		<init ref="id23"/>
+		<init ref="id25"/>
 		<transition>
 			<source ref="id15"/>
-			<target ref="id21"/>
-			<label kind="comments" x="807" y="-85">data er handlet</label>
-			<nail x="1258" y="-68"/>
-			<nail x="476" y="-68"/>
-		</transition>
-		<transition>
-			<source ref="id18"/>
-			<target ref="id15"/>
-			<label kind="comments" x="1071" y="85">broadcast acknowledgement</label>
-		</transition>
-		<transition>
-			<source ref="id16"/>
-			<target ref="id19"/>
-			<label kind="comments" x="918" y="391">ikke flere clearsignals at sende</label>
-		</transition>
-		<transition>
-			<source ref="id16"/>
 			<target ref="id17"/>
-			<label kind="comments" x="476" y="442">flere clearsignals at sende</label>
-			<nail x="646" y="442"/>
-			<nail x="476" y="442"/>
+			<label kind="synchronisation" x="1777" y="68">radio!</label>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id23"/>
+			<label kind="synchronisation" x="263" y="42">radio!</label>
+			<nail x="340" y="68"/>
 		</transition>
 		<transition>
 			<source ref="id17"/>
-			<target ref="id16"/>
-			<label kind="comments" x="510" y="357">broadcast clear</label>
-			<nail x="476" y="374"/>
-			<nail x="646" y="374"/>
+			<target ref="id23"/>
+			<label kind="comments" x="1053" y="-85">data er handlet</label>
+			<nail x="1896" y="-68"/>
+			<nail x="476" y="-68"/>
 		</transition>
 		<transition>
-			<source ref="id21"/>
-			<target ref="id17"/>
+			<source ref="id20"/>
+			<target ref="id15"/>
+			<label kind="assignment" x="1300" y="34">sharedPacketType[nodeId] = dataAcknowledgement,
+sharedPacketAddresser[nodeId] = nodeId,
+sharedPacketAddressee[nodeId] = localPacketAddresser</label>
+			<label kind="comments" x="1300" y="8">broadcast acknowledgement</label>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id21"/>
+			<label kind="comments" x="1190" y="391">ikke flere clearsignals at sende</label>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id19"/>
+			<label kind="comments" x="476" y="442">flere clearsignals at sende</label>
+			<nail x="892" y="442"/>
+			<nail x="476" y="442"/>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id18"/>
+			<label kind="comments" x="510" y="357">broadcast clear</label>
+			<nail x="476" y="374"/>
+			<nail x="892" y="374"/>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id19"/>
 			<label kind="comments" x="416" y="255">har data fra alle kendte knuder, eller har ramt timeout</label>
 		</transition>
 		<transition>
-			<source ref="id20"/>
-			<target ref="id21"/>
-			<label kind="comments" x="476" y="136">packet ikke af typen data</label>
-			<nail x="646" y="136"/>
-			<nail x="561" y="136"/>
+			<source ref="id22"/>
+			<target ref="id23"/>
+			<label kind="guard" x="484" y="170">localPacketType != data</label>
+			<label kind="comments" x="484" y="144">packet ikke af typen data</label>
+			<nail x="892" y="136"/>
 			<nail x="476" y="136"/>
 		</transition>
 		<transition>
-			<source ref="id20"/>
-			<target ref="id18"/>
-			<label kind="comments" x="782" y="85">packet har typen "data"</label>
-		</transition>
-		<transition>
-			<source ref="id21"/>
-			<target ref="id20"/>
-			<label kind="comments" x="501" y="51">packet modtaget</label>
-			<nail x="484" y="68"/>
-			<nail x="646" y="68"/>
-		</transition>
-		<transition>
-			<source ref="id21"/>
-			<target ref="id22"/>
-			<label kind="comments" x="127" y="136">timeout men flere requests at sende</label>
-			<nail x="340" y="136"/>
-			<nail x="170" y="136"/>
-		</transition>
-		<transition>
 			<source ref="id22"/>
-			<target ref="id21"/>
-			<label kind="comments" x="187" y="51">broadcast request</label>
-			<nail x="170" y="68"/>
-			<nail x="340" y="68"/>
+			<target ref="id20"/>
+			<label kind="guard" x="1028" y="68">localPacketType == data</label>
+			<label kind="comments" x="1028" y="42">packet har typen "data"</label>
 		</transition>
 		<transition>
 			<source ref="id23"/>
 			<target ref="id22"/>
-			<label kind="synchronisation" x="-136" y="76">totalTimeElapsed := 0</label>
-			<label kind="comments" x="-144" y="0">modtager signal til start</label>
+			<label kind="synchronisation" x="484" y="-26">radio?</label>
+			<label kind="assignment" x="484" y="-9">localPacketType = sharedPacketType[auxId],
+localPacketAddresser = sharedPacketAddresser[auxId],
+localPacketAddressee = sharedPacketAddressee[auxId],
+localPacketSource = sharedPacketSource[auxId]</label>
+			<label kind="comments" x="484" y="-51">packet modtaget</label>
+			<nail x="484" y="68"/>
+			<nail x="892" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id24"/>
+			<label kind="comments" x="127" y="238">timeout men flere requests at sende</label>
+			<nail x="340" y="136"/>
+			<nail x="170" y="136"/>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id16"/>
+			<label kind="assignment" x="119" y="8">sharedPacketType[nodeId] = dataRequest,
+auxId = nodeId,
+timeElapsed := 0</label>
+			<label kind="comments" x="119" y="-17">broadcast request</label>
+			<nail x="170" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id24"/>
+			<label kind="assignment" x="-144" y="59">requestsToSend = 12,
+totalTimeElapsed := 0</label>
+			<label kind="comments" x="-144" y="34">modtager signal til start</label>
 		</transition>
 	</template>
 	<system>main = Main(0);
