@@ -62,7 +62,7 @@ This will effectively solve the requirement of responding appropriately to a dis
 It will also use the shortest path to every node, due to the fact that each node will connect to its immediate neighbors.\todo{Tror ikke vi kan sige det altid er shortest path}
 
 % Design of data respond
-In other words, a tree instantiated by the controlled flooding protocol can be used to construct a tree that spans over all paths from each node to the main node. \todo{ALL paths?}
+In other words, a tree instantiated by the controlled flooding protocol can be used to construct a tree that spans over all paths\todo{ALL paths?} from each node to the main node.
 The receiver of a request signal can use the sender as the parent when data is to be returned.
 The child will then repeat the request signal, and be the parent of nodes hearing it.
 Any node receiving a request signal will then be able to respond to its parent, causing all nodes to have a single identifier for the routing towards the main node.
