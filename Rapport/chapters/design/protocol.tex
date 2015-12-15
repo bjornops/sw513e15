@@ -38,7 +38,7 @@ One data gathering method is to demand data explicitly from each node. That can 
 
 % Design of data request: broadcast request
 Another method of data gathering is by broadcasting a general request. This would work as a flooded request throughout the network.
-A data request will be broadcasted to every node in the network, using flooding, and will only require one unique packet.\todo{Er dette ikke forkert? - det er da ikke en unique packet}
+A data request will be broadcasted to every node in the network, using flooding, and will only require one unique packet.
 If the broadcast is done by controlled flooding, there will be no cycles, and the outgoing transmit topology will consequently result in a tree. 
 Flooding will only handle one packet, but the nodes can receive the same packet multiple times and must analyze and discard any duplicate packets.
 
@@ -46,7 +46,7 @@ Flooding will only handle one packet, but the nodes can receive the same packet 
 The protocol used in the solution is partly based on the controlled flooding protocol.
 This protocol is a method where the data request can be transmitted by flooding the network, without needing to send a tailored request to every node in the network. 
 
-The controlled flooding has a low memory impact and thus best suited for the solution. The flooding protocol will create a tree which can be utilized to create a return path for the nodes' sensor readings.\todo{Er det ikke ret double læsning, i forhold til "cha:floodingSec"? }
+The controlled flooding has a low memory impact and thus best suited for the solution. The flooding protocol will create a tree which can be utilized to create a return path for the nodes' sensor readings.
 
 % Practical implementation of data request
 \begin{figure}[h!]
@@ -57,12 +57,12 @@ The controlled flooding has a low memory impact and thus best suited for the sol
 \end{figure}
 
 
-The tree created, in each wave of request broadcasts, can vary in its structure, depending on interference, removal of nodes, or faulty nodes as well as other occurrences\todo{bad occurrences er meget løst}. Figure \ref{fig:treeVariation} shows an example of how the tree can vary: first the main node will broadcast \textit{request 1}, which is received by both \textit{node 1} and \textit{node 2}. A sensor node in the system will always handle its own sensor data before relaying data from other nodes. If the main node receives sensor data from \textit{node 1} first, then the resulting tree will match the tree seen to the left in \figref{treeVariation}. If \textit{node 2} connects to the main node first, then the tree will match the tree seen on the right.
+The tree created, in each wave of request broadcasts, can vary in its structure, depending on interference, removal of nodes, or faulty nodes. Figure \ref{fig:treeVariation} shows an example of how the tree can vary: first the main node will broadcast \textit{request 1}, which is received by both \textit{node 1} and \textit{node 2}. A sensor node in the system will always handle its own sensor data before relaying data from other nodes. If the main node receives sensor data from \textit{node 1} first, then the resulting tree will match the tree seen to the left in \figref{treeVariation}. If \textit{node 2} connects to the main node first, then the tree will match the tree seen on the right.
 This will effectively solve the requirement of responding appropriately to a disconnecting node, as well as the inclusion of new nodes in the network, since a new tree is constructed with each new requests from the main node.
 It will also use the shortest path to every node, due to the fact that each node will connect to its immediate neighbors.\todo{Tror ikke vi kan sige det altid er shortest path}
 
 % Design of data respond
-In other words, a tree instantiated by the controlled flooding protocol can be used to construct a tree that spans over all paths\todo{ALL paths?} from each node to the main node.
+In other words, a tree instantiated by the controlled flooding protocol can be used to construct a tree that spans over a single path from each node to the main node.
 The receiver of a request signal can use the sender as the parent when data is to be returned.
 The child will then repeat the request signal, and be the parent of nodes hearing it.
 Any node receiving a request signal will then be able to respond to its parent, causing all nodes to have a single identifier for the routing towards the main node.
