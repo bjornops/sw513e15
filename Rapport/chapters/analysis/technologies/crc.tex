@@ -1,6 +1,6 @@
 \section{Data verification}
 %Why checksum
-Wireless communication is prone to noise and shit\cite{source}\todo{Fix plox}. To be able to discern correct packets from incorrect packets, a detection method is necessary. There are multiple ways to verify a packet's integrity and this section will contain a description of some methods and the reasoning behind the selected solution.
+Wireless communication is prone to noise and interference\cite{radiointerference}. To be able to discern correct packets from incorrect packets, a detection method is necessary. There are multiple ways to verify a packet's integrity and this section will contain a description of some methods and the reasoning behind the selected solution.
 
 \subsection{Definition and types}
 %What is a checksum
@@ -11,7 +11,7 @@ A single bit checksum can only distinguish between two messages, and is not able
 A simple algorithm for producing a checksum is to use the digit sum and store it in a byte. This algorithm is efficient, but has several flaws, therein the uniqueness of the checksum of only 256 values and that two bit flips could cancel each other out and cause the same checksum. The error detection level is regarded as too small, and the this algorithm will not be used in the protocol.
 
 \subsection*{MD5}
-MD5 is a widespread checksum algorithm. It produces a 128 bit checksum, which is 16 bytes. MD5 is designed to run efficiently on 32 bit processors, which is a disadvantage on the Arduino boards used in the solution, since these posses an 8 bit processor. The 16 byte checksum uses half of the possible payload of the nRF24L01, and makes the protocol less scalable to other systems. \todo{how?} The MD5 algorithm is therefore discarded as the checksum generator for this project. \cite[p.~308]{boyles2010ccna}.
+MD5 is a widespread checksum algorithm. It produces a 128 bit checksum, which is 16 bytes. MD5 is designed to run efficiently on 32 bit processors, which is a disadvantage on the Arduino boards used in the solution, since these posses an 8 bit processor. The 16 byte checksum uses half of the possible payload of the nRF24L01, which is to much. The MD5 algorithm is therefore discarded as the checksum generator for this project. \cite[p.~308]{boyles2010ccna}.
 
 \subsection*{Cyclic redundancy check}
 Cyclic redundancy check/code is a checksum algorithm, hereafter referenced to as \textit{CRC}. This exists in several forms, based on the parameters. The checksum size is variable as well as internal algorithm parameters. \todo{wat} CRC can detect single error, more than a single error and burst error \cite[p.~31]{elahi2001network}. The CRC meets the criteria for the solution, hence the selected checksum generator is CRC.

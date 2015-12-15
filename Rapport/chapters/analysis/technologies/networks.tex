@@ -3,7 +3,7 @@ There are several terms in the network domain, and this section will contain des
 
 The implementation of a communication network is necessary, as the sensor system is supposed to reduce the amount of work for measuring the soil status over the golf course. The current method of measurement is time-consuming, because of the travel time used to cover the designated area of the golf course. A network implementation of the sensor system can transmit the data gathered from each sensor to an end point, also referred to as an detestation, where the data can be analyzed or processed.
 
-A computer network is a collection of computers and devices connected so that they can share information and services \cite{mansfield2009computer}. Devices and connections in computer networks can be modeled with graphs, and therefore the network terminology used will be similar to graph terminology. Further on in this report, a device connected in a network will be called a node and the connection from one node to another will be called an edge.\todo{Make sure "edge" terminology throughout the report.}
+A computer network is a collection of computers and devices connected so that they can share information and services \cite{mansfield2009computer}. Devices and connections in computer networks can be modeled with graphs, and therefore the network terminology used will be similar to graph terminology. Further on in this report, a device connected in a network will be called a node and the connection from one node to another will be called an edge.
 
 %The communication structure the devices use to exchange information over a medium is called protocol, which will be described in another section.
 
@@ -29,7 +29,6 @@ A topology is any arrangement of objects that can be connected with edges \cite[
 \end{itemize}
 
 A selection can be seen in figure \ref{fig:topologies}. The bus topology will not be considered, because it is not suited for a wireless network implementation \cite{engst2003wireless}. 
-%The topologies considered for this use case are star, mesh, tree and ring networks. 
 
 \begin{figure}[h!]
 	\centering
@@ -38,7 +37,7 @@ A selection can be seen in figure \ref{fig:topologies}. The bus topology will no
 	\label{fig:topologies}
 \end{figure}
 
-The star topology, seen in figure \ref{fig:topologies}, has one main node that the other nodes are directly connected to. An example of a star topology network is wifi, typically with a wireless router to which other devices are connected to gain network access. The wireless router will handle the network communication and redirect the information to the correct device. A limitation of the star network is that all nodes must have a direct connection to the main node, and should therefore be within transmitting range of the main node. %and therefore be clustered within the reach of the main node coverage. 
+The star topology, seen in figure \ref{fig:topologies}, has one main node that the other nodes are directly connected to. An example of a star topology network is wifi, typically with a wireless router to which other devices are connected to gain network access. The wireless router will handle the network communication and redirect the information to the correct device. A limitation of the star network is that all nodes must have a direct connection to the main node, and should therefore be within transmitting range of the main node.
 
 A tree topology, seen in figure \ref{fig:topologies}, also utilizes a main node, called the root of the tree. The devices in the network do not necessarily connect directly to the main node, but rather connect to another node that relays to the main node. This can repeat over multiple levels, so that information is relayed through several nodes, before reaching the main node. The tree network has a fixed node structure, and the nodes will relay and route the information towards the destination \cite{kizza2015guide}. It has a reach advantage over the star topology, as data of nodes, not directly within reach of the main node, still can be delivered at the destination node.
 
