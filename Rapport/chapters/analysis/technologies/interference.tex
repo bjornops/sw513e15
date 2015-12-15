@@ -1,8 +1,6 @@
 \section{Exponential Backoff}\label{cha:expbackoff}
 The technique \textit{exponential back off} is a method used for handling interference or collisions. This technique works by incrementing the interval between sending packets, which at some points means the packet will get transferred without any other node interfering. 
 
-For example, if node 1 and 2 are trying to relay data to the main node at the same time, the packet may get corrupt and are therefore not usable. This means that neither node 1 or 2 will get an acknowledgment, and they will both continue sending data. Though, instead of sending data right away, they will wait a small, random but increasing, amount of time before sending again.\todo{move to protocol design - why? It is an example of E-Backoff}
-
 A random interval is needed as the nodes need different intervals. If both nodes have the same interval each time, the packets will continue colliding and the data will never transmit correctly. The random interval will improve the chances that, at some point, one of the sensors will send while the other is waiting. 
 Without the random interval the two nodes could collide on the first back off, and both nodes will then back off with the same amount. Resulting in another collision. This can keep occurring since the two nodes keeps backing off with the same interval.
 
