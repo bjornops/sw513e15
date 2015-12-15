@@ -133,14 +133,13 @@ To be able to discern and utilize received data, it is decided to mark the packe
 The types are used to inform the receiver what type of data the packet contains, so that the receiving node can decide how to handle the received packet. 
 
 % Limitations
-There are multiple types of data needed to make a functioning protocol. The nRF24L01 supports data payloads up to 32 bytes, and is accordingly the limit of data to transfer in each packet.
-Although, a decrease in amount of data can enable the protocol to be implemented on more limited hardware in addition to use less energy on broadcast.
+There are multiple types of data needed to make a functioning protocol. The nRF24L01 supports data payloads up to 32 bytes. Only half of the space available in a transmission is actually occupied. As the solution is modular, the protocol is supposed to support other modules; also modules only capable of smaller packet sizes. Though, a packet size of 16 bytes is required to contain the necessary data from the nodes, which cannot be smaller.
 
 % Meta
 Below is a description of the different packet types:
 
 \textbf{Data}\newline
-The \textit{data} packet fulfills the main requirement of transmitting the sensor readings to the main node. The packet can contains up to three sensor readings, restricted by the 16 byte packet size\todo{Vi har lige skrevet en packet er 32 byte}, the metadata in the packet and the sensor reading resolution of 1024\todo{What}, each requiring 2 bytes in size.
+The \textit{data} packet fulfills the main requirement of transmitting the sensor readings to the main node. The packet can contain up to three sensor readings, since restricted by the 16 byte packet size. Since the sensor readings vary between 0 and 1024, and the network should support up to 1000 nodes, it is required that the values can contain these values, hence using 16 bit integers in the packet.
 
 \textbf{Data request}\newline 
 The \textit{data request} packet is the packet notifying the receiving nodes of a data demand. 
