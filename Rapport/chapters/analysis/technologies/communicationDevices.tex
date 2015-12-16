@@ -1,28 +1,28 @@
 \section{Communication devices}
-In the following section, different types of communication devices relevant to the project are examined.
+In the following section, different types of communication technologies and devices relevant to the project are examined.
 
 \subsection{Bluetooth}
 Bluetooth is a wireless technology standard designed to transfer data over short distances\cite{bluetoothbasics}. Bluetooth is often used in phones and computers, but are suitable for embedded systems requiring wireless transfer of data.
 
 The number of devices that can be on a Bluetooth network is almost unlimited, and the the built-in interference reduction makes the technology usable for the solution\cite{bluetoothbasics}.
 Bluetooth devices have to be paired in order to exchange data, which makes it hard to create a hot pluggable network of devices, as all devices communicating will have to be paired together, and not just added to the network. 
-This, and the short maximum range of 100m\cite{bluetoothbasics}, could provide problems with Bluetooth.
+This, and the short maximum range of 100m\cite{bluetoothbasics}, could provide problems with using Bluetooth.
 
 \subsection{XBee}
 XBee is a radio module by Digi. Multiple versions of the XBee modules exists, with differences in power usage, range, built-in/external antenna, and some with processors \cite{sparkfunXbeeGuide}.
-XBees often use the ZigBee protocol. The ZigBee protocol is made for low-power devices, such as the product described in this report\cite{zigbee}.
+XBees often use the ZigBee protocol. The ZigBee protocol is made for low-power devices\cite{zigbee}.
 
-XBees are fast and predictable, making them a good choice for a project such as this. They can cooperate with the Arduino platform using the serial pins. There also exists special XBee shields made for Arduino.
+XBees are fast and predictable, making them a good choice for the solution in this project. They can cooperate with the Arduino platform using the serial pins. There also exists special XBee shields made for Arduino.
 
 XBees are quite expensive, which makes them unfit for this project. If the solution had to interface with other devices using the ZigBee protocol or XBee modules they could be implemented.
 
 \subsection{nRF24L01 Transceiver}
-The nRF24L01 transceiver module is a radio module used for exchanging data between modules of the same frequency. As with most of the XBee modules, the RF24 uses the 2.4GHz band, which is license-free in the whole world\cite{itubands}. It is well documented, and multiple libraries exists for using the device with Arduino.
+The nRF24L01 transceiver module is a radio module used for exchanging data between modules of the same frequency. As with most of the XBee modules, the RF24 uses the 2.4GHz band, which is license-free in the entire world\cite{itubands}. It is well documented, and multiple libraries exists for using the device with Arduino.
 
-nRF24L01 is what is call a half-duplex device, which means it can only transmit or receive data at any giving time. An example of a full-duplex devices could be a telephone where both devices can transmit and receive data simultaneously.
+nRF24L01 is a half-duplex device, which means it can either only transmit or receive data at any given time. An example of a full-duplex devices could be a telephone where both devices can transmit and receive data simultaneously.
 
 The nRF24L01 is cheaper than the XBees, and has shorter range and is potentially slower, depending on the communication protocol.
 
-The full specifications can be seen on the attached DVD, or at \cite{nf24datasheet}
+The full specifications can be seen at\cite{nf24datasheet}
 
 % The RF24 allows packets of up to 32 bytes, and is fast enough 
