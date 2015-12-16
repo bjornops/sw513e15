@@ -9,7 +9,7 @@ On startup, the program attempts to fetch the process ID of the main node progra
 
 When \texttt{kill} is issued, the program redirects to a waiting page. On this page, an AJAX request is performed every second to ping for a file in \texttt{/var/www/html/}. This ping will fail until the file \texttt{ping.txt} exists at this location. When the request is finished in the main node software, this file is created and the contents is set to the result name. When the file is written and closed by the main node software, the ping will succeed and the contents will be available. The browser can now be redirected to the result from the waiting screen. The ping file is then deleted as it is no longer needed.
 
-The full sequence is shown in figure \ref{fig:sigsequence}.
+The full sequence is shown in figure \ref{fig:sigsequence}. The diagram starts at the webinterface, and the sequence follows the numbers presented on the diagram.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=1.1\textwidth]{chapters/implementation/figures/sigsequence.png}
