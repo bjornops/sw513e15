@@ -13,28 +13,27 @@ There will be add a range from 1 to the calculated maximum back off, to ensure w
 
 Using this equation to calculate the back off, the delays can be seen in table \ref{cha:expbackoff}.
 
-\begin{table}[]
+\begin{table}[ht!]
+\rowcolors{2}{gray!25}{gray!7}
 \centering
-\begin{tabular}{|lllll|}
-\hline
-Attempt                                                                & Back off range                                         & Best case                                       & Average case                                        & Worst case \\ \hline
-\rowcolor[HTML]{EFEFEF} 
-\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}1}                        & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}1 to 1}    & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}1}  & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}1}      & 1          \\
-\multicolumn{1}{|l|}{2}                                                & \multicolumn{1}{l|}{1 to 2}                            & \multicolumn{1}{l|}{1}                          & \multicolumn{1}{l|}{1.5}                            & 2          \\
-\rowcolor[HTML]{EFEFEF} 
-\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{333333} 3}} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}1 to 4}    & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}2}  & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}3.5}    & 7          \\
-\multicolumn{1}{|l|}{4}                                                & \multicolumn{1}{l|}{1 to 8}                            & \multicolumn{1}{l|}{3}                          & \multicolumn{1}{l|}{7.5}                            & 15         \\
-\rowcolor[HTML]{EFEFEF} 
-\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}5}                        & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}1 to 16}   & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}4}  & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}15.5}   & 31         \\
-\multicolumn{1}{|l|}{6}                                                & \multicolumn{1}{l|}{1 to 32}                           & \multicolumn{1}{l|}{5}                          & \multicolumn{1}{l|}{31.5}                           & 63         \\
-\rowcolor[HTML]{EFEFEF} 
-\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}7}                        & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}1 to 64}   & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}6}  & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}63.5}   & 127        \\
-\multicolumn{1}{|l|}{8}                                                & \multicolumn{1}{l|}{1 to 128}                          & \multicolumn{1}{l|}{7}                          & \multicolumn{1}{l|}{127.5}                          & 255        \\
-\rowcolor[HTML]{EFEFEF} 
-\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}9}                        & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}1 to 256}  & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}8}  & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}255.5}  & 511        \\
-\multicolumn{1}{|l|}{10}                                               & \multicolumn{1}{l|}{1 to 512}                          & \multicolumn{1}{l|}{9}                          & \multicolumn{1}{l|}{511.5}                          & 1023       \\
-\rowcolor[HTML]{EFEFEF} 
-\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}11}                       & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}1 to 1024} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}10} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}1023.5} & 2047       \\ \hline
+\begin{tabular}{ l l l l l }
+Attempt                                                                & Back off range                                         & Best case                                       & Average case                                        & Worst case \\ \hline 
+\multicolumn{1}{l}{1}                        & \multicolumn{1}{l}{1 to 1}    & \multicolumn{1}{l}{1}  & \multicolumn{1}{l}{1}      & 1          \\
+\multicolumn{1}{l}{2}                                                & \multicolumn{1}{l}{1 to 2}                            & \multicolumn{1}{l}{1}                          & \multicolumn{1}{l}{1.5}                            & 2          \\
+ 
+\multicolumn{1}{l}{{ 3}} & \multicolumn{1}{l}{1 to 4}    & \multicolumn{1}{l}{2}  & \multicolumn{1}{l}{3.5}    & 7          \\
+\multicolumn{1}{l}{4}                                                & \multicolumn{1}{l}{1 to 8}                            & \multicolumn{1}{l}{3}                          & \multicolumn{1}{l}{7.5}                            & 15         \\
+ 
+\multicolumn{1}{l}{5}                        & \multicolumn{1}{l}{1 to 16}   & \multicolumn{1}{l}{4}  & \multicolumn{1}{l}{15.5}   & 31         \\
+\multicolumn{1}{l}{6}                                                & \multicolumn{1}{l}{1 to 32}                           & \multicolumn{1}{l}{5}                          & \multicolumn{1}{l}{31.5}                           & 63         \\
+ 
+\multicolumn{1}{l}{7}                        & \multicolumn{1}{l}{1 to 64}   & \multicolumn{1}{l}{6}  & \multicolumn{1}{l}{63.5}   & 127        \\
+\multicolumn{1}{l}{8}                                                & \multicolumn{1}{l}{1 to 128}                          & \multicolumn{1}{l}{7}                          & \multicolumn{1}{l}{127.5}                          & 255        \\
+ 
+\multicolumn{1}{l}{9}                        & \multicolumn{1}{l}{1 to 256}  & \multicolumn{1}{l}{8}  & \multicolumn{1}{l}{255.5}  & 511        \\
+\multicolumn{1}{l}{10}                                               & \multicolumn{1}{l}{1 to 512}                          & \multicolumn{1}{l}{9}                          & \multicolumn{1}{l}{511.5}                          & 1023       \\
+ 
+\multicolumn{1}{l}{11}                       & \multicolumn{1}{l}{1 to 1024} & \multicolumn{1}{l}{10} & \multicolumn{1}{l}{1023.5} & 2047       \\ 
 \end{tabular}
 \caption{Exponential backoff in milliseconds.}
 \label{table:expbackoff}
