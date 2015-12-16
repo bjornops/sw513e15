@@ -22,7 +22,7 @@ Because of this, multiple BERT runs was executed.
 \subsubsection*{Executing BERT} 
 The test was executed by sending packets from an Arduino to a Raspberry Pi, using the nRF24L01 modules.
 
-The code running on the devices for the test can be found in Appendix \ref{cha:bertcode}.
+The code running on the devices for the test can be found in appendix \ref{cha:bertcode}.
 The sender code transmits some deterministic value, and the receiver checks whether the received packet is the same as the one expected. If the two packets match, the 'successes' value is incremented, if not, the 'errors' value is incremented.
 
 The BERT was executed four times. The first three times with 1.000.000 packets transmitted, and the fourth time with 10.000.000 packets. For every 1.000 packet received, the number of errors and successes were printed for those 1.000 packets. 
