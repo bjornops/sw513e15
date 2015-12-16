@@ -142,8 +142,6 @@ The algorithm then selects this neighbour as the currently best next hop to the 
 
 \subsection{Protocol comparison}
 
-\todo{actually compare the protocols?}
-
 \begin{table}[!ht]
 \caption{Protocol comparison.}
 \label{tab:protComparisonTable}
@@ -162,8 +160,8 @@ B.A.T.M.A.N\cite{BATMAN} & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shor
 
 Table \ref{tab:protComparisonTable} shows comparisons between the protocols discussed in this chapter. The four different protocols is compared in what route metric they are using, if they are loop free, support of load balancing, how reliable they are, and the estimated throughput.
 
-One of the difference to notice on table \ref{tab:protComparisonTable} is that TDMA is the only protocol with load balancing. Each of the other protocols have no such feature, which can result in some nodes in the network, handling a heavy load, ultimately creating a bottleneck.
+One big difference to notice in table \ref{tab:protComparisonTable} is that TDMA is the only protocol with load balancing. None of the other protocols have no such feature, which can result in some nodes in the network handling a heavy load, ultimately creating a bottleneck.
 
-B.A.T.M.A.N is the protocol which scales the best, the other have trouble keeping up as more nodes are added. In addition is B.A.T.M.A.N together with AOVD the two protocols with the fastest routing algorithm as they always utilize the shortest path.
+B.A.T.M.A.N is the protocol which scales the best, the others have troubles keeping up as more nodes are added. In addition is B.A.T.M.A.N together with AOVD the two protocols with the fastest routing algorithm as they always utilize the shortest path.
 
 The information gathered in this section will ensure a good foundation when designing a protocol for a network specified to work on a golf course.
