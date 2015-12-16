@@ -2,24 +2,24 @@
 This section contains information about other potential issues that have not been directly encountered through the analysis, but still could be relevant for the final system.
 
 \subsection{Power consumption and range consideration} \label{cha:batcons}
-To be able to transmit data wirelessly, from all areas of a golf course to a main node, the wireless range of the devices is to be considered.
+To be able to transmit data wirelessly, from all areas of a golf course to a node, the wireless range of the devices is considered.
 
-Modules with a long range usually requires more power than a short range module, which would require more of a power supply. Furthermore, the modules could physically become larger, because of a bigger antenna, which would increase the amount of work in burying the devices in the ground. Because of the risk of being hit, and destroyed, by either a stray golf ball, or a lawn mower, it is not an option to place the entire the device above ground. Using big antennas would make it easier to establish a direct wireless connection to the main node which would be optimal communication wise.
+Modules with a long range can require more power than a short range module, which would require more of a power supply. Furthermore, the modules could physically become larger, because of a bigger antenna, which would increase the amount of work in burying the devices in the ground. Because of the risk of being hit, and destroyed, by either a golf ball, or a lawn mower, it is not an option to place the entire device above ground. Using big antennas would make it easier to establish a direct wireless connection between nodes.
 
-Instead another approach with short range modules can be considered. Smaller radio modules usually requires less power than a long range module, thereby lowering the requirements of a power supply. It would also require less work to bury a small device compared to a device with a big antenna. The only problem in such a solution is the radio module range. If some devices were to be placed on a far corner of a golf course, the device might not be able to transmit its data to the main node. 
+Another approach with short range modules can be considered. Short range radio modules usually requires less power than a long range module, thereby lowering the requirements of the power supply. It would also require less work to bury a device with a small antenna, compared to a device with a big antenna. A problem in such a solution is the radio module range. If some devices were to be placed on a far corner of a golf course, the devices might not be able to transmit its data to a central node. 
 
 \subsection{Security}
-In software systems it can be important to evaluate the security to avoid unauthorized access, data loss or theft. This project is not excluded from such evaluation, and in this section the relevant security issues will be considered.
+This section contains the security considerations regarding unauthorized access, data loss or theft.
 
-The main functions of the system is to transmit data wirelessly through a network. Since the data is sent wirelessly on a radio frequency, it can easily be manipulated or interfered resulting in incorrect data.
+The main function of the system is to transmit data wirelessly through a network. Since the data is sent wirelessly, it can be intercepter or interfered resulting in incorrect data.
 
-Another problem could be the process of connecting a new device to the network. If a device is connected without any authentication, it could become a problem if a neighbouring network is using the same frequency which could result in the two networks exchanging data unintentionally. A malicious device could also easily inject data into the system, if it were first paired up.
+A problem could be the process of connecting a new device to the network. If a device is connected without any authentication, it could become a problem if a neighbouring network is using the same frequency which could result in the two networks exchanging data unintentionally. A malicious device could also inject data into the system.
 
-Considering the hardware design of a measuring device, it would also be relevant to analyze if a device can be physically reconstructed to intentionally transmit malicious data to the network. Though being more a question of physical security, by preventing access to the device, this could still be relevant.
+Considering the hardware design of a device, it would also be relevant to analyze if the device can be physically reconstructed to intentionally transmit malicious data to the network. Though being more a question of physical security, by preventing access to the device, this could still be relevant.
 
-There could potentially be a lot of minor security issues, but the major issue in the system is that data is transmitted wirelessly and it is therefore exposed to malicious input. This could be taken into account in the design of a final solution.
+The major issue in the system is that data is transmitted wirelessly and it is therefore exposed to malicious input. This should be taken into account in the design of a final solution.
 
 \subsection{User interface}
-As the main problem is to transfer data from sensors to an end node, where a user can read and react appropriately, it would be necessary to present this data for the user. Since it is practically impossible for humans to decipher bytestreams, a user interface with a more simple way of presenting the data would be practical, by giving a better overview of the data.
+As the main purpose of the system is to transfer data from sensors to an end node, where a user can read and react appropriately, it would be necessary to present this data for the user. Since it is practically impossible for humans to decipher bytestreams, a user interface with a more simple way of presenting the data would be practical, by giving a better overview of the data.
 
-An excessive amount of interactions with the user interface would be unnecessary, as the system would only serve as a way for reading and understanding the collected data. Therefore a simple interface for one-way communicating the data to the user would be sufficient.
+An excessive amount of interactions with the user interface would be unnecessary, as the system would only serve as a way for reading and understanding the collected data.
