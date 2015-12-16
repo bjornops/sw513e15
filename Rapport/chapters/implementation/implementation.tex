@@ -1,6 +1,6 @@
-This chapter contains documentation about the implementation of the protocol designed in chapter \ref{cha:protocolDesign}. 
+This chapter contains documentation about the implementation of the protocol designed in chapter \ref{cha:protocolDesign}. The code in this chapter might not be the most exciting parts of the code, but it is the most important. The shown parts are chosen as they are often used and server an important role in the solution.
 
-First, the classes used in the implementation are shown and explained. Then important parts of the sourcecode are explained.
+First, the classes used in the implementation are shown and explained along with their methods. Secondly, important parts of the sourcecode are explained. 
  
 
 \section{General}
@@ -11,7 +11,7 @@ Note that the code in the listings does not necessarily contain the same comment
 \section{Classes}
 The solution contains two different running applications. The main node and the sensor nodes. There are two sets of code due to the different requirements of the nodes. For example, the main node does not have a sensor, as explained in chapter \ref{cha:workflowDesign}, so it should not be able to handle a sensor, and therefore does not contain the classes used for sensors.
 
-This section contains the classes contained in each application. UML diagrams showing all fields and methods for both main and sensor nodes can be found in Appendix \ref{cha:fulluml}.
+This section contains the classes contained in each application. UML diagrams showing all fields and methods for both main and sensor nodes can be found in appendix \ref{cha:fulluml}.
 
 \subsubsection*{Main node}
 The main node is a Raspberry Pi device, running the Raspbian operating system. The classes in the main node application is seen in figure \ref{fig:mainnodeClass}. 

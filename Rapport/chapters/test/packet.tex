@@ -52,6 +52,7 @@ The tests showed that all cases succeeded, and that packet encoding and decoding
 \subsubsection*{Valid and invalid packets}
 The solution uses a checksum to validate packets received, as explained in chapter \ref{cha:crcDesign}. Testing whether the implementation of checksums work is done by using the code found in Appendix \ref{cha:checksumtest}.
 
+
 The code initializes a \texttt{Packet} object and verifies that the checksum matches the content of the packet. The values in the packet is then changed, one by one, and the checksum is tested again. After each test, the result is printed and the value is set to the initial value. After testing each changing each value, the packet is tested again with all the default values.
 
 The tests showed that any value being changed will make the packet invalid. When all values are set to the initial value again, the packet is now valid.

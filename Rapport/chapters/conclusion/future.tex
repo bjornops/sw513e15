@@ -2,13 +2,11 @@
 This section contains ideas and requirements for further developing the solution, and even implementing it on a real golf course. Furthermore this system can be used in other cases with a slightly similar problem domain, which will also be described in this section.
 
 \subsection{Functionality}
-For the solution to be finally implemented on a golf course, it would be required to test the solution on an actual golf course with a realistic number of nodes and some actual users. This is the only way to verify that the system actually works in a real situation, compared to the testing done in a lab.
-
 To make the solution work on an actual golf course it would also be required to replace the radio modules because the small modules used in the project have a very limited range. This would, however, only require a hardware replace and class replace in the software because all transmitting and receiving functionality is done within the Radio class.
 
 For the user to understand and use the collected data, it is needed to revise the presentation of the collected data. Now, the interface presents the raw data received from the node, which can confuse the user. Therefore raw data should be converted to data with a meaning, perhaps water percentage in the ground.
 
-Generally the system should utilize the received in a more clever way. For example by constructing graphs or  other presentations involving more data. Another aspect could be implementing weather data and link them to moisture reading. Then, after a certain amount of collected data, the system could predict the amount of watering needed based of weather forecasts. The system could even be implemented to cooperate with an automatic watering system.
+Generally the system should utilize the received data in a more clever way. For example by constructing graphs or  other presentations involving more data. Another aspect could be implementing weather data and link them to moisture reading. Then, after a certain amount of collected data, the system could predict the amount of watering needed based of weather forecasts. The system could even be implemented to cooperate with an automatic watering system.
 
 The solution could also be expanded to monitor several properties. Since the data packets supports 3 data values, more data could simply be added to a packet and transmitted to the main node.
 
