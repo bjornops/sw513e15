@@ -59,7 +59,6 @@ The controlled flooding has a low memory impact and thus best suited for the sol
 
 The tree created, in each wave of request broadcasts, can vary in its structure, depending on interference, removal of nodes, or faulty nodes. Figure \ref{fig:treeVariation} shows an example of how the tree can vary: first the main node will broadcast \textit{request 1}, which is received by both \textit{node 1} and \textit{node 2}. A sensor node in the system will always handle its own sensor data before relaying data from other nodes. If the main node receives sensor data from \textit{node 1} first, then the resulting tree will match the tree seen to the left in \figref{treeVariation}. If \textit{node 2} connects to the main node first, then the tree will match the tree seen on the right.
 This will effectively solve the requirement of responding appropriately to a disconnecting node, as well as the inclusion of new nodes in the network, since a new tree is constructed with each new requests from the main node.
-It will use the shortest path to every node, due to the fact that each node will connect to its immediate neighbors.\todo{Tror ikke vi kan sige det altid er shortest path}\todo{Det synes jeg godt vi kan}
 
 % Design of data respond
 In other words, a tree instantiated by the controlled flooding protocol can be used to construct a tree that spans over a single path from each node to the main node.
