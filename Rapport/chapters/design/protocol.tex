@@ -76,13 +76,7 @@ A general thing to note is that nodes close to the main node are prone to receiv
 \end{figure}
 
 \subsection{Sequence}
-
-Section - Pairing \todo{MAKE THIS FIT SEQUENCE SECTION}
-In order to add a new node to the network, the node is first needed to be paired up with the main node.
-This way, a node could have assigned a unique identity to be able to recognize its sensor readings from other sensors. 
-The protocol is described more in depth in \ref{cha:floodingSec}
-
-The general sequence of the protocol is determined as the flowchart seen in the appendix.\todo{add flowchart to appendix and ref}
+The general sequence of the protocol is determined as the flowchart seen in the appendix/ref{cha:flowchart}.
 
 The following is the operation structure for each individual node in the system.
 \begin{enumerate}
@@ -96,6 +90,7 @@ The following is the operation structure for each individual node in the system.
 	\item Receive data from children
 	\item If no response or acknowledgment within 10 min: clear all data except nodeID and listed for new request.
 \end{enumerate}
+\todo{Fix det er i parrentes}
 
 \subsection{Interference handling} \label{cha:crcDesign}
 When utilizing wireless communication, interference can be a problem, as explained in Chapter \ref{cha:dutuVurufucutiun}. This is also the case when using controlled flooding, but the protocol can potentially help reduce problems with interference, for instance by validating the transferred data and acting accordingly.
@@ -139,7 +134,7 @@ The packet overview can be seen in \figref{dataalloc}, where each block represen
 \begin{figure}[h!]
 	\centering
 	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth,trim={0 3cm 0 8cm},clip]{figures/dataalloc.png}}
-	\caption{Data allocation in packets.}
+	\caption{Data allocation in packets. Each slot is 1 byte.}
 	\label{fig:dataalloc}
 \end{figure}
 

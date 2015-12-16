@@ -142,8 +142,6 @@ The algorithm then selects this neighbour as the currently best next hop to the 
 
 \subsection{Protocol comparison}
 
-\todo{actually compare the protocols?}
-
 \begin{table}[!ht]
 \caption{Protocol comparison.}
 \label{tab:protComparisonTable}
@@ -161,27 +159,9 @@ B.A.T.M.A.N\cite{BATMAN} & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shor
 \end{table}
 
 Table \ref{tab:protComparisonTable} shows comparisons between the protocols discussed in this chapter. The four different protocols is compared in what route metric they are using, if they are loop free, support of load balancing, how reliable they are, and the estimated throughput.
-This table is to create an overview of the protocols and to support a later choice of protocol of implementation.
 
-\iffalse %temporary removed
-\subsection{Flooding as a routing algorithm}\label{cha:floodingSec}
-Flooding in networks, is a routing algorithm used to deliver data out though a system.
-There exists two kind of flooding, uncontrolled flooding and controlled flooding.
-Uncontrolled flooding is a kind of "brute force", where every node, in a network, keeps sending the same packets indefinitely out to all its neighbours within range, creating what is known as a broadcast storm.
-The packet will eventually the packet will reach its destination, without knowing when\cite{flooding}.
+One big difference to notice in table \ref{tab:protComparisonTable} is that TDMA is the only protocol with load balancing. None of the other protocols have no such feature, which can result in some nodes in the network handling a heavy load, ultimately creating a bottleneck.
 
-Controlled flooding is modified algorithms to make it reliable, some of algorithms are knows as Sequence Number Controlled Flooding(SNCF) and Reverse Path Flooding(RPF).
-With SNCF each node have its own address that is delivered with each data packet it transmits.
-If a node receive a packet twice or more with the same address, the packet is discarded, so only one instants of the packet is working its way though the network.
-In RPF, the node will forward a copy of a received packet, no matter the origin.
-RPF except that the original transmitted packet will be copied by the right nodes and eventually end at the destination\cite{RPF}.
+B.A.T.M.A.N is the protocol which scales the best, the others have troubles keeping up as more nodes are added. In addition is B.A.T.M.A.N together with AOVD the two protocols with the fastest routing algorithm as they always utilize the shortest path.
 
-Advantaged of flooding, is that if there exists a route from the main node to the destination, a packet will be delivered, and possible multiple times.
-Since some flooding algorithms utilized every route in the network, it will also transfer packets though the shortest path\cite{flooding}.
-
-Disadvantages can be that the bandwidth is wasted, since flooding is a very costly algorithm since it utilize every route.
-Packets can be duplicated in the network, future increasing bandwidth load.
-Duplicate packet may loop in the system forever, if no prevention is made\cite{flooding}.
-
-\todo{flooding: take 2}
-\fi
+The information gathered in this section will ensure a good foundation when designing a protocol for a network specified to work on a golf course.
