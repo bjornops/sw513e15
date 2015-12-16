@@ -29,7 +29,7 @@ Testing these tasks can be done by observing a node that is part of the system, 
 Due to the long range of the radio modules, relaying had to be tested using special code to ensure that a direct transmission between the main node and all sensor nodes. This meant that one of the sensor node were running code that ignored packets from the main node, to force that node into becoming a subnode of the other sensor node used in the test.
 
 \subsubsection*{Results}
-By monitoring sensor nodes while a request was underway, it was possible to see that the nodes reacted in the correct way to requests. First, by sending their own data to the parent node, whose ID was saved when the request arrived, and then stopping when an acknowledgement was received from the parent.
+By monitoring sensor nodes while a request was underway, it was possible to see that the nodes reacted in the correct way to requests. First, by sending their own data to the parent node, whose ID was saved when the request arrived, and then stopping when an acknowledgment was received from the parent.
 
 The sensor node then sent out requests, but with itself as the addresser. The other node received the request and then followed the same procedure as the first node. Upon receiving data, the first node relayed this data to the main node.
 
