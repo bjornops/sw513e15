@@ -76,21 +76,43 @@ A general thing to note is that nodes close to the main node are prone to receiv
 \end{figure}
 
 \subsection{Sequence}
-The general sequence of the protocol is determined as the flowchart seen in the appendix/ref{cha:flowchart}.
+The general sequence of the protocol is determined as the flowchart seen in the appendix \ref{cha:flowchart}.
 
 The following is the operation structure for each individual node in the system.
+
+\textbf{Sensor nodes} \\
 \begin{enumerate}
-	\item Receive data request (Wireless request for nodes, user input at the main node)
-	\subitem Ignore if (already received or not recipient of package)
-	\item Remember parent (MN skip)
-	\item Acquire sensor data
-	\item Send sensor data to parent (if silence?)
-	\item Receive acknowledgement of sent package
-	\item Send data request to all
-	\item Receive data from children
-	\item If no response or acknowledgment within 10 min: clear all data except nodeID and listed for new request.
+\item If the node have not yet been paired up with the main node.
+	\subitem Send a pair request to the main node.
+	\subitem Await acknowledgement from the main node and remember the assigned ID.
+
+\item Receive a data request and remember the addresser as parent.
+
+\item Acquire data from sensor and send it to parent.
+
+\item Await acknowledgment from parent.
+	\subitem Resend data if no acknowledgement is received.
+
+\item Send its own data request to signal possible child nodes.
+
+\item Await data from subnodes.
+	\subitem Respond to subnodes with acknowledgement.
+	\subitem Received data is relayed to parent.
+	
+\item If no response or acknowledgment within 10 min is received, or a clear signal have been received: clear all data except its own ID, relay the clear signal, and await new data request.
 \end{enumerate}
-\todo{Fix det er i parrentes}
+
+
+\subsubsection*{Main node}
+\begin{itemize}
+\item When receiving pair request, assign and save ID for the requesting node and respond with an acknowledgement containing the ID.
+\item When the greenkeeper requests data in the interface, broadcast a data request.
+\item When receiving data from a subnode, save the data and respond with an acknowledgement to the subnode.
+
+\item When data have been received from all registered nodes, broadcast a clear signal and show the data for the greenkeeper.
+\end{itemize}
+
+
 
 \subsection{Interference handling} \label{cha:crcDesign}
 When utilizing wireless communication, interference can be a problem, as explained in Chapter \ref{cha:dutuVurufucutiun}. This is also the case when using controlled flooding, but the protocol can potentially help reduce problems with interference, for instance by validating the transferred data and acting accordingly.
