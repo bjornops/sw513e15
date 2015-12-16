@@ -19,6 +19,7 @@ One of the most common Arduino boards is the Uno, seen in figure \ref{fig:arduin
 \bgroup
 \def\arraystretch{1.1}
 \begin{table}[ht!]
+\rowcolors{2}{gray!25}{gray!7}
 %	\centering
 	\begin{tabular}{p{15em} c c}
 		Unit                        & Arduino Uno                                                                 & Arduino Mega                                                               \\ \hline
@@ -39,28 +40,6 @@ One of the most common Arduino boards is the Uno, seen in figure \ref{fig:arduin
 \end{table}\label{tab:arduspecs}
 \egroup
 
-\iffalse%udkommenteret
-\begin{table}
-\begin{tabular}{| l | l |}
-\hline
-Microcontroller & ATmega328\\
-Operating Voltage & 5V\\
-Input Voltage (recommended) & 7-12V\\
-Input Voltage (limits) & 6-20V\\
-Digital I/O Pins & 14 (of which 6 provide PWM output)\\
-Analog Input Pins & 6\\
-DC Current per I/O Pin & 40 mA\\
-DC Current for 3.3V Pin & 50 mA\\
-Flash Memory & 32 KB (ATmega328) of which 0.5 KB is used by bootloader\\
-SRAM & 2 KB (ATmega328)\\
-EEPROM & 1 KB (ATmega328)\\
-Clock Speed & 16 MHz\\
-\hline
-\end{tabular}
-\caption{Specifications for the Arduino Uno\cite{arduinouno}.}
-\end{table}
-\label{tab:unospec}
-\fi
 
 \textbf{Arduino Mega}\\
 The Arduino Mega is a larger version of the Uno. The Mega has more memory and pins, which makes it better for handling larger programs and amounts of data, and also allows more components to be connected to the board. Since the clock speed is the same as the Uno, the Mega will not process data faster\cite{ardcomp}.
@@ -71,30 +50,6 @@ The Arduino Mega is a larger version of the Uno. The Mega has more memory and pi
 \caption{The Arduino Mega board\cite{arduinomegaimg}.}
 \label{fig:arduinomega}
 \end{figure}
-
-\iffalse%udkommenteret
-\begin{table}[h!]
-\begin{tabular}{| l | l |}
-\hline
-Microcontroller & ATmega1280\\
-Operating Voltage & 5V\\
-Input Voltage (recommended) & 7-12V\\
-Input Voltage (limits) & 6-20V\\
-Digital I/O Pins & 54 (of which 15 provide PWM output)\\
-Analog Input Pins & 16\\
-DC Current per I/O Pin & 40 mA\\
-DC Current for 3.3V Pin & 50 mA\\
-Flash Memory & 128 KB of which 4 KB used by bootloader\\
-SRAM & 8 KB\\
-EEPROM & 4 KB\\
-Clock Speed & 16 MHz\\
-\hline
-\end{tabular}
-\caption{Specifications for the Arduino Mega\cite{arduinomega}.}
-\end{table}
-\label{tab:megaspec}
-\fi
-
 
 \subsection{Raspberry Pi}
 Raspberry Pi is a series of single board computers. The Raspberry Pi series contains some powerful controllers compared to other pocket sized processing units.
@@ -124,9 +79,11 @@ The Raspberry Pi B+ specifications are shown in table \ref{tab:pibplusspec}. Fut
 \label{fig:pibplus}
 \end{figure}
 
-\begin{table}[H]
+\def\arraystretch{1.1}
+\begin{table}[ht!]
+\rowcolors{2}{gray!25}{gray!7}
 \centering
-\begin{tabular}{| l | l |}
+\begin{tabular}{ l  l }
 \hline
 Microcontroller & Broadcom BCM2835\\
 RAM & 512MB\\
@@ -136,5 +93,5 @@ Clock Speed & 700 MHz\\
 \hline
 \end{tabular}
 \caption{Specifications for Raspberry Pi B+\cite{pispecs}.}
-\end{table}
 \label{tab:pibplusspec}
+\end{table}

@@ -142,12 +142,11 @@ The algorithm then selects this neighbour as the currently best next hop to the 
 
 \subsection{Protocol comparison}
 
-\begin{table}[!ht]
-\caption{Protocol comparison.}
-\label{tab:protComparisonTable}
+\def\arraystretch{1.1}
+\begin{table}[ht!]
+\rowcolors{2}{gray!25}{gray!7}
 \makebox[\linewidth]{
-\begin{tabular}{|l|c|c|c|c|c|c|}
-\hline
+\begin{tabular}{ l c c c c c c }
             & Ad hoc & Route metrics                                                                     & \begin{tabular}[c]{@{}c@{}}Loop \\ Free\end{tabular} & \begin{tabular}[c]{@{}c@{}}Load \\ balancing\end{tabular} & Reliability & Throughput                                                                    \\ \hline%cline{1-1}
 \rowcolor[HTML]{EFEFEF} 
 TDMA\cite{TDMATable}        & Yes    & \begin{tabular}[c]{@{}c@{}}Routes ensuring\\  guaranteed bandwidth\end{tabular} & Yes                                                  & Yes                                                       & High        & \begin{tabular}[c]{@{}c@{}}Decreases as more \\ nodes are added\end{tabular} \\
@@ -156,6 +155,8 @@ DSR\cite{ProtocolTable}\cite{DSR}         & Yes    & Source routing             
 AOVD\cite{ProtocolTable}        & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shortest path\end{tabular}               & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Poor for more\\  than 20 nodes\end{tabular}       \\
 B.A.T.M.A.N\cite{BATMAN} & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shortest path\end{tabular}               & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Good - scales\\ well with more nodes\end{tabular} \\ \hline
 \end{tabular}}
+\caption{Protocol comparison.}
+\label{tab:protComparisonTable}
 \end{table}
 
 Table \ref{tab:protComparisonTable} shows comparisons between the protocols discussed in this chapter. The four different protocols is compared in what route metric they are using, if they are loop free, support of load balancing, how reliable they are, and the estimated throughput.
