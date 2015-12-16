@@ -9,31 +9,27 @@ The answer to the initializing problem statement is, based on the analysis chapt
 Before development of the solution can begin, the requirements found throughout the analysis, will be evaluated and sorted in order to form a requirement specification.
 
 \section{Requirements}\label{cha:requirements}
-In this section the requirements of the project will be sorted based on different priorities. First a full listing with the requirements and their priorities, followed by a description for the contents of each category.
+In this section the requirements of the project is sorted based on different priorities.
 
-Requirements are an essential part of developing a system that fulfills its purpose. All requirements can be considered important, but some might be more beneficial for systems core purpose than others, and since this project has a limited time frame it is required to limit the project size correspondingly. By categorizing the requirements it becomes possible to identify and separate the important criteria from the lesser ones.
+Requirements are an essential part of developing a system that fulfills its purpose. All requirements can be considered important, but some might be more beneficial for the core purpose of the system. Since this project has a limited time frame it is required to limit the project size correspondingly. By categorizing the requirements it becomes possible to identify and separate the important criteria from the lesser ones.
 
 The MoSCoW (Must-have, Should-have, Could-have and Wont-have) analysis method has been used to sort the requirements found in the analysis chapter. This method is used to ensure that the project will result in a working solution, by finding the core requirements for a working solution. These are the ones listed as 'must-have'.
 
-If the the time-frame of the project is then longer that the time required for developing the core system, other requirements can be considered. These are the ones listed in should have and could have. 
+If the the time-frame of the project is then longer than the time required for developing the core system, other requirements can be considered. These are the ones listed in 'should have' and 'could have'. 
 
-Finally the Won't-have category are requirements left out, by being unrealistic to develop or not relevant for the project. In this project the wont-have category has been left out, because no requirements met the criteria for that category. The requirements are summarized below:
+Finally the 'won't have' category are requirements left out, by being unrealistic to develop or not relevant for the project. In this project the wont-have category has been left out, because no requirements met the criteria for that category. The requirements are summarized below:
 
 \textbf{Must have:}
 \begin{itemize}
 \item Correct, wireless transfer of data between nodes.
 \end{itemize}
-The core purpose of the system is to transfer data between nodes correctly. Without this, the system would not be able to fulfill its purpose. This also implies that the transferred data will be verified. The amount of nodes can be considered somewhat unclear, but covers a big amount of devices to cover a whole golf course. In this solution this amount is a minimum of 100 devices, to atleast cover the greens of 18 holes, which gives atleast 5 devices for each hole. 
+The core purpose of the system is to transfer data between nodes correctly. Without this, the system would not be able to fulfill its purpose. This also implies that the transferred data will be verified. A communication protocol is needed to ensure that the data is treated correctly.
+
+The amount of nodes can be considered somewhat unclear, but should be enough to cover the entire golf course. In this solution this amount is a minimum of 100 devices, to at least cover the greens of 18 holes, which gives at least 5 devices for each hole.
 
 
 \begin{itemize}
-\item Communication protocol.
-\end{itemize}
-The system will transfer data wirelessly, and it is therefore required of each node that it can atleast send data. A communication protocol is needed to ensure that the data is treated correctly.
-
-
-\begin{itemize}
-\item Appropriate handle of a disconnecting node.
+\item Appropriate handling of a disconnecting node.
 \end{itemize}
 Since nodes are to be dug down at different places on a golf course, it becomes necessary to ensure that the entire system does not break down if one node were to disconnect. If each node were to be dug up and reset if one node in the whole system got disconnected, the maintenance cost could quickly become too great.
 
@@ -54,23 +50,25 @@ The requirement aims to add flexibility both during the installation of the syst
 \begin{itemize}
 \item Modular build.
 \end{itemize}
-The embedded system will consist of multiple parts, for the different purposes. Something for wireless connectivity, something to sensor the ground parameters, a power supply, and finally something to do the computation. These parts should be put together in such a way that if a part breaks down, it would be a simple task to replace it. 
+The embedded system will consist of multiple parts, for the different purposes. A component for wireless connectivity, a sensor to monitor the soil properties, a power supply, and finally a processing unit. These parts should be put together in such a way that if a part breaks down, it would be a simple task to replace it. 
 
 \begin{itemize}
 \item Low power consumption.
 \end{itemize}
-With a low power consumption can the final system run whiteout maintenance for a longer period of time. Less maintenance is to preferred since less digging in the golf course would be needed to retrieved the devices and replace the batteries.
+With low power consumption the final system can run without maintenance for a longer period of time.
 
 \textbf{Could have:}
-\begin{itemize}
-\item Separate networks.
-\end{itemize}
-If the final system includes the hot-plugging functionality, the individual nodes should stay connected to a particular network and not accidentally interfere another nearby network, by being added to that. This requirement could potentially become very complex, as this is a question of security, which is not the goal of this project. 
 
 \begin{itemize}
 \item Graphical user interface.
 \end{itemize}
-The data collected by the system could be processed by the main node and presented through a graphical user interface to give a better overview of all the data collected. This could be done with a monitor connected to the main node or through a smartphone application.
+The data collected by the system could be processed by the main node and presented through a graphical user interface to give a better overview of all the data collected.
+
+
+\begin{itemize}
+\item Separate networks.
+\end{itemize}
+If the final system includes the hot-plugging functionality, the individual nodes should stay connected to a particular network and not accidentally interfere another nearby network, by being added to that. This requirement could potentially become very complex, as this is a question of security, which is not the goal of this project. 
 
 
 

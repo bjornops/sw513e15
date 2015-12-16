@@ -1,15 +1,13 @@
 \section{Platforms}
-The suitable platforms for this project are examined in the following section. These platforms are capable of executing instructions and reading or writing to ports available on the board. These ports can connect to components such as sensors and actuators.
+The suitable platforms for this project are examined in the following section. These platforms are capable of executing instructions as well as reading or writing to pins available on the board. These pins can be connect to components such as sensors and actuators.
 
 \subsection{Arduino}\label{sec:arduino}
 Arduino is an open source platform, which makes the software and hardware documentation available to the public. The name "Arduino" covers both the software platform and the range of hardware platforms with boards of different sizes, from the smaller Arduino Nano up to the Arduino Mega. One of the more popular Arduino boards is the Arduino Uno which is a medium sized board, often used by starters \cite{arduinouno}.
 
 How the Arduino handles or reacts to input is implemented by the user and uploaded to the Arduino board by using the Arduino IDE.
 
-In the following sections, the Uno and Mega will be described.
-
 \textbf{Arduino Uno}\\
-One of the most common boards is the Arduino Uno, seen in figure \ref{fig:arduinouno}, which uses the ATmega328 microcontroller \cite{arduinouno}. It has 14 digital input/output pins, and 6 analog inputs for connecting the different components. Considering specifications, which is shown in table \ref{tab:arduspecs}, the Uno is limited on its resources. Therefore it is needed to limit both program and data size, and also the amount of complex tasks.
+One of the most common Arduino boards is the Uno, seen in figure \ref{fig:arduinouno}, which uses the ATmega328 microcontroller \cite{arduinouno}. It has 14 digital input/output pins, and 6 analog inputs for connecting different components. Considering specifications, which is shown in table \ref{tab:arduspecs}, the Uno is limited on its resources. Therefore it is needed to limit both program and data size, and also the amount of complex tasks.
 
 \begin{figure}[h!]
 \centering
@@ -65,7 +63,7 @@ Clock Speed & 16 MHz\\
 \fi
 
 \textbf{Arduino Mega}\\
-The Arduino Mega is a larger version of the Uno. The Mega has more memory and pins, which makes it better for handling larger programs or amounts of data, and also allows more components to be connected to the board. Since the clock speed is the same as the Uno, the Mega will not process data faster\cite{ardcomp}.
+The Arduino Mega is a larger version of the Uno. The Mega has more memory and pins, which makes it better for handling larger programs and amounts of data, and also allows more components to be connected to the board. Since the clock speed is the same as the Uno, the Mega will not process data faster\cite{ardcomp}.
 
 \begin{figure}[h!]
 \centering
@@ -99,25 +97,25 @@ Clock Speed & 16 MHz\\
 
 
 \subsection{Raspberry Pi}
-Raspberry Pi is a series of single board computers. The Raspberry Pi series contains some rather powerful controllers compared to other pocket sized processing units.
+Raspberry Pi is a series of single board computers. The Raspberry Pi series contains some powerful controllers compared to other pocket sized processing units.
 
-The Raspberry Pi got a set of pins for connecting to external hardware. There are 4 different pin types available; 2 5v power, 2 3.3v power, 5 ground and 17 GPIO. In \figref{abPins} the placement of the pins is shown. 
+The Raspberry Pi has a set of pins for connecting to external hardware. There are four different pin types available; two 5v power, two 3.3v power, five ground and 17 GPIO. In \figref{abPins} the placement of the pins is shown. 
 
-The GPIO, or "general purpose input/output" pins can be used, as the name suggests to either send or receive digital signals. It is however stricly digital, unlike the Arduinos it does not have a build in analog to digital converter, so if analog input processing is needed, this will have to be done externally.
+The GPIO, or "general purpose input/output" pins can be used to either send or receive digital signals. Unlike the Arduinos it is stricly digital, as it does not have a build in analog to digital converter. If analog input processing is needed, this will have to be done externally.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{chapters/analysis/figs/rpiABPins.png}
-\caption{Raspberry Pi pins as is on model A and B.}
+\caption{Raspberry Pi pins on model A and B.}
 \label{fig:abPins}
 \end{figure}
 
 Because of the computing power and memory of a Raspberry Pi, a Linux OS is usually installed on the Raspberry Pi\cite{Arduino_linux}. A Raspberry Pi also has a GPU, video output, and USB port.
 
-In the following subsection a Raspberry Pi B+ will be described as these were available to use in the project. The different models usually differs on CPU speed and memory.
-
 \textbf{Raspberry Pi B+}\\
-The Raspberry Pi B+ specifications' are shown in table \ref{tab:pibplusspec}. Along with HDMI video output and Ethernet connectivity. As main storage a micro SD card must be installed, which contains the OS.
+In this subsection a Raspberry Pi B+ will be described as these were available to use in the project. The different models usually differs on CPU speed and memory.
+
+The Raspberry Pi B+ specifications are shown in table \ref{tab:pibplusspec}. Futhermore the B+ also contains HDMI video output and Ethernet connectivity. A micro SD card is used as main storage a micro, which contains the OS.
 
 \begin{figure}[H]
 \centering
