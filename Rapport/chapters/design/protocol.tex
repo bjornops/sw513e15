@@ -1,47 +1,34 @@
-\section{Protocol communication}\label{cha:protocolDesign}
-To transmit the data from the nodes to the main node, a protocol will be implemented.
-The protocol will support the chosen hardware components and be designed to work within their limitations. 
+\section{Protocol communication} \label{cha:protocolDesign}
+To transmit the data from the sensor nodes to the main node, a protocol will be implemented. The protocol is built to be hardware independant, and should thereby work on other components than the ones chosen for the solution.
 
 % Background/meta
-The protocol to be developed for the solution will be based on the networks examined in Section \ref{fig:topologies} and the protocols described in Section \ref{cha:comprot}.
-There are a number of considerations to be made to develop a protocol that complies to the requirements.
+The protocol to be developed for the solution will be based on the networks examined in chapter \ref{cha:networksprot} and protocols examined in chapter \ref{cha:comprot}.
+There are a number of considerations to be made to develop a protocol that statisfies the requirements.
 Because the sensor nodes are battery driven, most of the choices are done with power consumption as a priority, to increase the battery longevity.
 
 % Range limitations
-A restriction of the radio modules is their relatively short communication range. The reach of the system can be extended by introducing relaying, so that a sequence of nodes can interconnect and transfer data through the branch in the tree. Therefore, relaying must be supported by the protocol as stated in \ref{cha:requirements}. 
+A restriction of the radio modules is their relatively short communication range. The reach of the system can be extended by introducing relaying, so that a sequence of nodes can interconnect and transfer data through the branch in the tree. Therefore, relaying must be supported by the protocol as stated in chapter \ref{cha:requirements}. 
 
 % Other limitations and considerations
 % To fulfill the requirements found in \ref{cha:requirements}, there is no demand to request data for only one specific node at a time.
-There are multiple methods to request data from the network nodes, some of the most used ones have been discussed in \ref{cha:comprot}.
 
-The radio modules selected for the solution are half-duplex and not capable of full-duplexing, and this limitation needs to be addressed in the development of the transmission part of the protocol. 
+The radio modules selected for the solution are half-duplex and not capable of full-duplexing, and this limitation needs to be addressed in the development of the protocol. 
 
 % Already mentioned in design intention/data handling => move?
-For power consumption and complying to the usage, the network nodes are controlled by the main node, and the nodes will only transmit sensor data on demand.
-%The ideal implementation of the solution will keep the nodes in a low power listening mode until a data request is received to preserve battery life. 
-
-There is no requirement for real-time monitoring of the golf course, making it difficult defining a data transfer interval that matches both power consumption as well as the need for information.
-Hence, an on-demand request for data will be sufficient.
+For power consumption and complying to the usage, the network nodes are controlled by the main node, and the sensor nodes will only transmit data on demand. There is no requirement for real-time monitoring of the golf course, making it difficult to define a data transfer interval that matches both power consumption as well as the need for information.
+Hence, an on-demand request for data is be sufficient.
 
 \subsection{Packet Transfer}
 % Intention/motivation
 The solution is developed to gather sensor data from all nodes in a network, and this subsection will contain the considerations regarding choice of transfer method and the according topology.
 
-Transfer speed have been considered in terms of power consumption and range. Faster transfer speed consumes more energy, but in a shorter amount of time. Slower transfer speed consumes less energy, but over longer time as defined in \cite{nf24datasheet}. The slower data transfer rate has a significantly longer reach for the nRF24L01, and will therefore be implemented.
-
 %This enables the main node to broadcast data requests throughout the sensor network, and likewise transmitting data readings from the sensor nodes to the main node.
 
 % The two types of communication (data request and data respond)
-As the sensor readings are required on-demand, there must be at least two types of communication. The first being the data request, an outgoing signal from the main node, notifying the data demand. This is a broadcasted packet, as every node is targeted as recipient. The second type is data response, while the sensor readings needs to be returned to the main node for storage and representation. The design of the two types follows.
+As the sensor readings are required on-demand, there must be at least two types of communication. The first being the data request; an outgoing signal from the main node, notifying the sensor nodes of the data demand. This is a broadcasted packet, as every node is targeted as recipient. The second type is data response, as the sensor readings needs to be returned to the main node for storage and representation.
 
 % Design of data request: individual request
-One data gathering method is to demand data explicitly from each node. That can be done by transmitting a unique data request to every node in the network, addressing each nodes by its identification. This would require the main node to create an request to each individual node in the network, and the network nodes to know the exact path through the network to the addressee, so that the request can be relayed correctly. This is not appropriate as routing tables would use a significant amount of the network nodes' limited memory if the addressee is a sufficient amount of nodes away. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that actually exist and is in range. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy in addition to more memory usage.
-
-% Design of data request: broadcast request
-Another method of data gathering is by broadcasting a general request. This would work as a flooded request throughout the network.
-A data request will be broadcasted to every node in the network, using flooding, and will only require one unique packet.
-If the broadcast is done by controlled flooding, there will be no cycles, and the outgoing transmit topology will consequently result in a tree. 
-Flooding will only handle one packet, but the nodes can receive the same packet multiple times and must analyze and discard any duplicate packets.
+Sending individual requests is not appropriate as routing tables would use a significant amount of the limited memory of the network nodes, if the addressee is a sufficient amount of nodes away. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that actually exist and is within range. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy in addition to more memory usage.
 
 % Data request method selection template
 The protocol used in the solution is partly based on the controlled flooding protocol.
