@@ -42,6 +42,6 @@ The sensor node then sent out requests, but with itself as the addresser. The ot
 
 The main node now had data from all sensor nodes. This data was saved to a file, and clear requests were sent. The clear requests were then relayed from the first level sensor node to the second one and the request was complete. Figure \ref{fig:systest} shows the setup of the test. The \texttt{Raspberry Pi} was inside the group room with both sensor nodes being outside.
 
-This proved that the sensor nodes and main nodes completed their tasks. Testing showed an error in the implementation of exponential backoff, which made it possible for the delay to go out of bounds on the Arduino platforms. This was fixed after discovery.
+This proved that the sensor nodes and main nodes completed their tasks. Testing showed an error in the implementation of exponential backoff, which made it possible for the delay to go out of bounds on the Arduino platforms. This was corrected after discovery.
 
 

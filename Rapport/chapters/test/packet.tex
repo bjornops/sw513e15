@@ -25,9 +25,7 @@ else
 \end{lstlisting}
 The code in Listing \ref{lst:packetcode} starts out by encoding and decoding a single \texttt{Packet}, to do a simple test. The variable \texttt{packet2} is created from the encoding of \texttt{packet1}. 
 
-After the initial test, a test using loops was performed. First, the variable  \texttt{loopPacket1} was initialized to some values. The loop iterates ten times, and each time the following occurs: \texttt{loopPacket2} is initialized with the encoding of \texttt{loopPacket1}. If the two packets are equal, then \texttt{loopPacket1} is initialized from the encoding of \texttt{loopPacket2}. 
-
-The tests showed that all cases succeeded, and that packet encoding and decoding works on both devices.
+The tests showed that packet encoding and decoding works in the solution.
 
 \subsubsection*{Valid and invalid packets}
 The solution uses a checksum to validate packets received, as explained in chapter \ref{cha:crcDesign}. Testing whether the implementation of checksums work is done by using the code found in Appendix \ref{cha:checksumtest}.
