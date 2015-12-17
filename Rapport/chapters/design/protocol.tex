@@ -111,9 +111,9 @@ It should be noted that the monitored data is not critical. If a packet is lost,
 %If the user of the system discovers missing data from a certain area or node, the node can be fixed or replaced.
 
 
-\subsection*{Example}
+\subsection{Summary}
 The protocol uses flooding to distribute the data request through the network. 
-When data is requested by the user, the main node sends a packet containing a sensor reading request. 
+When data is requested by the user, the main node sends a packet containing a data request. 
 The nodes that receive this packet directly from the main node is the first level of nodes in the tree, as seen in figure \ref{fig:prottree1}. 
 These nodes then read the moisture values from their sensors and transmit these back to the main node. 
 
@@ -133,17 +133,8 @@ For each new data request from the main node the tree structure and node levels 
 \end{figure}
 
 
-\section{Protocol packet}
+\section{Packet}
 This section covers the descriptions and decisions regarding the packets sent wirelessly in the network.
-
-The packet overview can be seen in \figref{dataalloc}, where each block represents 1 byte.
-\begin{figure}[h!]
-	\centering
-	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth,trim={0 3cm 0 8cm},clip]{figures/dataalloc.png}}
-	\caption{Data allocation in packets. Each slot is 1 byte.}
-	\label{fig:dataalloc}
-\end{figure}
-
 
 \subsection{Packet types}
 % Motivation
@@ -151,66 +142,65 @@ To be able to discern and utilize received data, it is decided to mark the packe
 The types are used to inform the receiver what type of data the packet contains, so that the receiving node can decide how to handle the received packet. 
 
 % Limitations
-There are multiple types of data needed to make a functioning protocol. The nRF24L01 supports data payloads up to 32 bytes. Only half of the space available in a transmission is actually occupied. As the solution is modular, the protocol is supposed to support other modules; also modules only capable of smaller packet sizes. Though, a packet size of 16 bytes is required to contain the necessary data from the nodes, which cannot be smaller.
+There are multiple types of data used in the protocol. As the solution is modular, the protocol is supposed to support other modules; also modules only capable of smaller packet sizes. Though, a packet size of 16 bytes is required to contain the necessary data from the nodes.
 
 % Meta
 Below is a description of the different packet types:
 
 \textbf{Data}\newline
-The \textit{data} packet fulfills the main requirement of transmitting the sensor readings to the main node. The packet can contain up to three sensor readings, since restricted by the 16 byte packet size. Since the sensor readings vary between 0 and 1024, and the network should support up to 1000 nodes, it is required that the values can contain these values, hence using 16 bit integers in the packet.
+The \textit{data} packet fulfills the main requirement of transmitting the sensor readings to the main node.
 
 \textbf{Data request}\newline 
 The \textit{data request} packet is the packet notifying the receiving nodes of a data demand. 
-The packet contains the transmitting node's ID, so that sensor nodes receiving the packet knows the transmitter, thus enabling the receiving nodes to set a parent ID.
+The packet contains the transmitting the ID of the node, so that sensor nodes receiving the packet knows the sender, thus enabling the receiving nodes to set a parent ID. 
+
+A lifespan variable is also contained in this packet, used for determining when to stop relaying requests. When the main node requests data, the contents of lifespan is the number of known nodes in the network. The lifespan variable gets decremented by one with every relay. This prevents potential request loops.
 
 \textbf{Data acknowledgement}\newline
 A \textit{data acknowledgment} packet is used to confirm that the sent \textit{data} packet has been received correctly. The parent node is responsible for sending a \textit{data acknowledgment} to the addresser of the received packet. 
 
 \textbf{Pair request}\newline
-A \textit{pair request} packet is sent by a new sensor node and handled directly by the main node, which mean it must be whit in range of the main node. The purpose is to assign an ID to the sensor node, so every sensor node is registered in the system. The ID's enables the main node to confirm that data is collected from all sensor nodes for the current data gathering, and to identify the origin of the collected data. The ID also provides a capability of a parent-child hierarchy.
+A \textit{pair request} packet is sent by an unregistered sensor node and handled directly by the main node, which means it must be within range of the main node. The purpose is to assign an ID to the sensor node, so that every sensor node is registered in the system. The ID's enables the main node to confirm that data is collected from all sensor nodes for the current data gathering, and to identify the origin of the collected data. The ID also provides the capability of a parent-child hierarchy.
 
 \textbf{Pair request acknowledgement}\newline
-The \textit{pair request acknowledgement} packet is sent by the main node and used to confirm that the \textit{pair request} has been received and accepted. A \textit{pair request acknowledgement} packet also contain the assigned ID that have been assigned to the specific node. When the two nodes, main and sensor node, are paired, can the sensor node then be deployed in the field as a park of the network. 
+The \textit{pair request acknowledgement} packet is sent by the main node and used to confirm that the \textit{pair request} has been received and accepted. A \textit{pair request acknowledgement} packet also contain the ID that have been assigned to the specific node. When the two nodes, main and sensor node, are paired, the sensor node can then be deployed on the golf course. 
 
 \textbf{Clear signal}\newline
 The \textit{clear signal} is used to reset every node in the network, which will happen once the main node have received data from all registered nodes in the system.
-The \textit{clear signal} packet let every node in the network know that it should forget any previous information stored, except its own ID. This is done to add flexibility to the system. When \textit{data request} spread through the network, it forms a tree based on how the nodes are placed. By resetting with the \textit{clear signal}, a new tree is created each time a new wave of \textit{data requests} goes through the network, which in turn means that nodes can be moved around the golf course between waves of \textit{data requests}. How the trees are constructed was explained in section \ref{cha:crcDesign}.
+The \textit{clear signal} packet lets every node in the network know that it should forget any previous information stored, except its own ID. This is done to add flexibility to the system. When \textit{data requests} spread through the network, it forms a tree based on how the nodes are placed. By resetting with the \textit{clear signal}, a new tree could be created each time a new wave of \textit{data requests} goes through the network, which in turn means that nodes can be moved around the golf course between waves of \textit{data requests}.
 
 \textbf{Error}\newline
-Because packets are not always transferred correctly, the receiver node will verify the integrity of a packet whenever a packet is received. Section \ref{cha:crcDesign} describes how this is done. If the checksums do not match, the packet type will be set to \textit{error}.
+Because packets are not always transferred correctly, the receiver node will verify the integrity of a packet whenever a packet is received. Section \ref{cha:crcDesign} describes how this is done. If the checksums do not match, the packet type will be set to \textit{error} and discarded.
 
-In summary, there are seven types of packages: error, data acknowledgement, data request, data, pair request, pair request acknowledgement, and clear signal. 1 byte will be sufficient to store the packet type.
-
-
-
+% Adresses
 \subsection{Addresses}
-12 bytes are used to keep track of a packet. These contain the addresser, addressee and the origin address which can be seen in figure \ref{fig:dataalloc}. 
+The packet contains the addresser, addressee and the origin address which can be seen in figure \ref{fig:dataalloc}. Due to the potential number of sensor nodes in the network, atleast 2 bytes is required for each address.
 
 \textbf{Addresser}\newline
-When a node receives a packet, for instance a packet of the data request type, the node in question need to respond with its sensor data. The node could begin broadcasting its sensor data openly as response, however this could potentially be received by other nodes in range, whereas the sensor data might be irrelevant. This is why a packet contain the ID of the sender, which is the addresser. This gives the node knowledge of the node that requested data and can therefore address its data correctly. Other nodes in range might receive the data as well, but they will ignore the packet since it was not addressed for them.
+When a node receives a packet, for instance a packet of the \textit{data request} type, the node needs to respond with its sensor data. The node could begin broadcasting its sensor data openly as response, however this could potentially be received by other nodes in range, whereas the sensor data might be irrelevant. This is why a packet contain the ID of the sender, which is the addresser. The addresser address gives the node knowledge of which node requested data and can therefore address its data correctly. Other nodes in range might receive the data as well, but they will ignore the packet since it was not addressed for them.
 
 The addresser field of a packet will change during the packets lifetime. This happens when a node forwards a packet from another node. The addresser ID will be replaced by the ID of the node relaying the data.
 
 \textbf{Addressee}\newline
-When a node wants to send a packet with its sensor data, a data type packet in this case, it need to specify who this data is meant for, which is the node that requested the data. The ID of the node that requested the data will be marked in the packet as the addressee. This is done to ensure that the packet reaches the intended node. When a node, that are expecting a data packet, receives such a packet, it compare the addressee of the packet with its own ID. The packet will be ignored by the node if the addressee and ID does not match.
+When a node wants to send a packet with its sensor data, a data type packet in this case, it need to specify who this data is meant for, which is the node that requested the data. The ID of the node that requested the data will be marked in the packet as the addressee. This is done to ensure that the packet reaches the intended node. When a node, that is expecting a data packet, receives such a packet, it compares the addressee of the packet with its own ID. The packet will be ignored by the node if the addressee and the ID of the sensor node do not match.
 
 The addressee field of a packet will change during the packets lifetime. This is the case when the packet is relayed, in the same way that the addresser changes.
 
-\textbf{Origin address}\newline
-The origin address contains the ID of the node where the data of a specific packet originated. This data is used by both the main/central node and the external nodes to differentiate the data.
+\textbf{Origin}\newline
+The origin contains the ID of the node where the data of a specific packet originated. This data is used by both the main node and the external nodes to differentiate the data.
 
-The origin address field of a packet will not be altered during the packets lifetime.
+The origin field of a packet will not be altered during the packets lifetime.
 
 
-\subsubsection{Data}
+\subsection{Data}
 When a data packet is constructed, the sensor data is stored in the "data" fields of the packet as seen in figure \ref{fig:dataalloc}. There are three fields available for sensor data storage. The solution will at this time only contain an implementation of the moisture sensor, but the aim of the three data fields is to add extendibility by enabling support for a maximum of tree sensors per node, each with its own field in the packet.
 
 
-\subsubsection{Checksum}
+\subsection{Checksum}
 There is a possibility that a packet is not transferred correctly. This could be due to interference. The packets checksum is stored in the checksum field of the packet and is used for verification. Interference handling was discussed in section \ref{cha:crcDesign}.
 
 
-\subsubsection{Packet allocation}
+\subsection{Packet allocation}
 The limitation of the network size is 1000 nodes. This means the addresser, addressee and origin address fields need to support 1000 unique addresses, which requires 9 bits. The allocated size for the addresses are accordingly 2 bytes(16 bits) each to maintain usage of whole bytes. This is done because it is more efficient to manipulate a byte instead of a bit \cite{bytevsbit}. The addresses requires 6 bytes in total.
 
 The readings of the moisture sensor have a range of 1024 values, and the required size allocated for the sensor reading data is 10 bits. The allocated data size in the transfer is therefore 2 bytes.
@@ -223,6 +213,14 @@ The sizes of the different data to transfer sums up to 16 bytes and the distribu
 %Verification of a message
 The received packet is verified by generating a checksum of message $m$ plus previously generated checksum $r$.
 The new generated checksum of a correctly transferred packet $T$ is 0, because a package $T$, if correctly transferred, is some quotient $Q$ times the polynomial $G$, as seen in \charef{crcComp}. If a division has a zero remainder, the packet was transferred correctly.
+
+The nRF24L01 supports data payloads up to 32 bytes. Only half of the space available in a transmission is actually occupied. The packet overview can be seen in \figref{dataalloc}, where each block represents 1 byte.
+\begin{figure}[h!]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1\textwidth,trim={0 3cm 0 8cm},clip]{figures/dataalloc.png}}
+	\caption{Data allocation in packets, where each slot is 1 byte.}
+	\label{fig:dataalloc}
+\end{figure}
 
 \subsection{Adding and removing nodes}
 If a new node is to be added to the network, it needs an identifier in the system so that its sensor reading can be recognized. The identifier is permanent as long as it is in the network.
