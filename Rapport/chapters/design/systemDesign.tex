@@ -1,26 +1,26 @@
 \section{Design intention}
-This section contains the description of the system's intended design and usage. The design will be based on the requirement specification in \charef{requirements}. The core function of the solution is to transfer data wirelessly from several sensor nodes to a main node, and to be used by a person working on a golf course. 
+This section contains the description of the intended design and usage of the system. The design is based on the requirement specification in \charef{requirements}. The core function of the solution is to transfer data wirelessly from several sensor nodes to a main node, and to be used by greenkeepers. 
 
-The human aspect has requirements regarding aesthetics and user interface design, but that is secondary to the problem solving task of gathering data. This section will mainly consider the functional requirements to develop a functioning system, whereas data analysis and user experience with the solution are proposed as further work in another project. Nevertheless, a user must be able to utilize the system, and the main characteristics of the solution will be described in the next section.
+The human aspect has requirements regarding aesthetics and user interface design, but that is secondary to the task of gathering data. This section will mainly consider the functional requirements to develop a functioning system. Nevertheless, a user must be able to utilize the system, and the main characteristics of the solution will be described in the next section.
 
 \subsection{Workflow}\label{cha:workflowDesign}
 % Practical use of the solution
-As the solution's purpose is to support in monitoring a golf course, the solution should make the task less time consuming. The intention is that the data should be gathered and updated on-demand, so that the golf course status is sufficiently new for the greenkeepers' usage.
+As the purpose of the solution is to support in monitoring a golf course, the solution should make the task less time-consuming. The intention is that the data should be gathered and updated on demand, so that the properties of the golf course is sufficiently new for the greenkeepers to use.
+
+An on-demand solution has an advantageous property: The system components can save energy by not updating data unnecessarily, and the user is able to evaluate the age of the last measurements and decide whether to request new data or decide if the previous is sufficient. The on-demand solution, however, relies on the time required to gather the sensor readings to be useful. The current reference point is the time it takes to manually check the status of the golf course. Therefore, the data collecting time should be strictly less than time used to do it manually.
+
+A fully automated solution means, that the system could be set to gather data periodically, so that sensor readings are available once or multiple times during a given time frame. This ensures that the data is always up to date. An automated solution, however, has the disadvantages that the system could waste energy on readings that are not needed, or not having readings available when needed, if the time frame is incorrect.
 
 The solution is designed to function according to the following procedure:
 \begin{enumerate}
 	\item The system user will use an simple interface to demand readings from the sensors in the network.
 	\item The main node responds to the demand by broadcasting a request signal in the network.
-	\item The network nodes receives the request signal, gathers data from its sensors and sends it back to the main node before creating a new request signal to broadcast.
-	\item The main node collects all data and append each reading to the respective origin node in a data sheet made available to the user.
-	\item The user can evaluate further action based on the results.
+	\item The network nodes receive the request signal, gather data from their sensors and send it back to the main node before creating a new request signal to broadcast.
+	\item The main node collects all data and appends each reading to the respective origin node in a data sheet made available to the user.
+	\item The user can evaluate data and take action based on the results.
 \end{enumerate}
 
-An on-demand solution has an advantageous property. The system components can save energy by not updating data unnecessarily, and the user is able to evaluate the age of the last measurements and decide whether to request new data or decide if the previous is sufficient. The on-demand solution, although, relies on the time required to gather the sensor readings to be useful. The current reference point is the time it takes to manually check the golf course status. Therefore should the data collecting time be strictly less than time used doing it manually.
-
-A fully automated solution, means that the system could be set to gather data periodically, so that sensor readings are available once or multiple times during a given time frame. This ensures that the data is always up to date. An automated solution, however, has the disadvantages that the system could waste energy on readings that are not needed, or not having readings available when needed, if the time frame is incorrect.
-
-The solution is deemed on-demand, because of the flexibility it provides. It can also be automated, by simulating a user request at a given time, in addition to let the users request readings whenever desired.
+The solution is deemed on-demand, because of the flexibility it provides. It could also be automated, by simulating a user request at a given time, in addition of letting the users request readings whenever desired.
 
 
 \subsection{Data handling and storage}
