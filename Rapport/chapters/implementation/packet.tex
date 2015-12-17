@@ -70,6 +70,7 @@ enum PacketType : uint16_t {
 \end{lstlisting}
 \end{figure}
 
+\begin{figure}
 \begin{lstlisting}[language=C, caption={Packet encode function.}]
 char *Packet::encode()
 {
@@ -81,14 +82,17 @@ char *Packet::encode()
     return returnstring;
 }
 \end{lstlisting}
+\end{figure}
 The \texttt{encode} function allocates the size necessary for a \texttt{Packet}, but as a \texttt{char*} and uses \texttt{memcpy} to set the contents of the array to the contents of the current \texttt{Packet} and then returning the array. The \texttt{char} array is a format of the packet object, that can be directly transmitted by the radio module, without further operations to the array, and then decoded on the receiving node.
 
+\begin{figure}
 \begin{lstlisting}[language=C,label={lst:decodefunc},caption={Decode function.}]
 void Packet::decode(char *input)
 {
     memcpy(this, input, sizeof(Packet));
 }
 \end{lstlisting}
+\end{figure}
 The decode function, as shown in listing \ref{lst:decodefunc}, copies the memory of the \texttt{char* input} into the memory location where the current \texttt{Packet} object is located. This means that the memory contents of the packet is set to the memory content of \texttt{input}. This is possible as every part of the packet has a known, pre-determined size. \texttt{uint16\_t} always has the same size, not depending on the architecture running the code.
 
 \subsubsection{Checksum}
