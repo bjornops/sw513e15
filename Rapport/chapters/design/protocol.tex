@@ -189,30 +189,29 @@ The addressee field of a packet will change during the packets lifetime. This is
 \textbf{Origin}\newline
 The origin contains the ID of the node where the data of a specific packet originated. This data is used by both the main node and the external nodes to differentiate the data.
 
-The origin field of a packet will not be altered during the packets lifetime.
+The origin field of a packet will not be altered during the lifetime of the packet.
 
 
 \subsection{Data}
-When a data packet is constructed, the sensor data is stored in the "data" fields of the packet as seen in figure \ref{fig:dataalloc}. There are three fields available for sensor data storage. The solution will at this time only contain an implementation of the moisture sensor, but the aim of the three data fields is to add extendibility by enabling support for a maximum of tree sensors per node, each with its own field in the packet.
+When a data packet is constructed, the sensor data is stored in the "data" blocks of the packet as seen in figure \ref{fig:dataalloc}. There are three blocks available for sensor data storage. The solution will, at this time, only contain an implementation of the moisture sensor, but the aim of the three data fields is to add extendibility by enabling support for a maximum of tree sensors per node, each with its own field in the packet.
 
 
 \subsection{Checksum}
-There is a possibility that a packet is not transferred correctly. This could be due to interference. The packets checksum is stored in the checksum field of the packet and is used for verification. Interference handling was discussed in section \ref{cha:crcDesign}.
+There is a possibility that a packet is not transferred correctly. The packets checksum is stored in the checksum field of the packet and is used for verification.
 
 
 \subsection{Packet allocation}
-The limitation of the network size is 1000 nodes. This means the addresser, addressee and origin address fields need to support 1000 unique addresses, which requires 9 bits. The allocated size for the addresses are accordingly 2 bytes(16 bits) each to maintain usage of whole bytes. This is done because it is more efficient to manipulate a byte instead of a bit \cite{bytevsbit}. The addresses requires 6 bytes in total.
+The limitation of the network size is 1000 nodes. This means the addresser, addressee and origin address fields need to support 1000 unique addresses, which requires 9 bits. The allocated size for the addresses are accordingly 2 bytes(16 bits) each to maintain usage of whole bytes. This is done because it is more efficient to manipulate a byte instead of bits \cite{bytevsbit}. The addresses requires 6 bytes in total.
 
 The readings of the moisture sensor have a range of 1024 values, and the required size allocated for the sensor reading data is 10 bits. The allocated data size in the transfer is therefore 2 bytes.
 
-To verify the integrity of the received package, a cyclic redundancy check (CRC16) is appended. CRC16 uses 2 bytes to distinguish a successfully transfered packet from an erroneous one.
-
-The sizes of the different data to transfer sums up to 16 bytes and the distribution is displayed in \figref{dataalloc} as the data 1, data 2, and data 3 fields.
+The sizes of the different data to transfer sums up to 16 bytes and the distribution is displayed in figure \figref{dataalloc} as the data 1, data 2, and data 3 fields.
 
 \subsection{Verification of a packet}
 %Verification of a message
 The received packet is verified by generating a checksum of message $m$ plus previously generated checksum $r$.
 The new generated checksum of a correctly transferred packet $T$ is 0, because a package $T$, if correctly transferred, is some quotient $Q$ times the polynomial $G$, as seen in \charef{crcComp}. If a division has a zero remainder, the packet was transferred correctly.
+
 
 The nRF24L01 supports data payloads up to 32 bytes. Only half of the space available in a transmission is actually occupied. The packet overview can be seen in \figref{dataalloc}, where each block represents 1 byte.
 \begin{figure}[h!]
@@ -224,18 +223,6 @@ The nRF24L01 supports data payloads up to 32 bytes. Only half of the space avail
 
 \subsection{Adding and removing nodes}
 If a new node is to be added to the network, it needs an identifier in the system so that its sensor reading can be recognized. The identifier is permanent as long as it is in the network.
-The identifier is provided by the main node by pairing the device with the main node before adding it to the network. 
+The identifier is provided by the main node by pairing the device with the main node. 
 
-The identifier is used to address parent nodes to relay the packets when transmitting sensor data. In figure \ref{fig:prottree1}, the nodes 5, 6, and 7 would send and address packets to the parent by the identifier 3. This means that other nodes in the vicinity would ignore these packets, and only node 3 reacts on the packets. Node 3 would then relay the data to node 2, as 2 is 3's parent, and finally 2 would relay to MN.
-
-Should a node somehow disconnect from the network, the nodes connected to this node will receive the packets from another node first, and from that point on use that as the parent. This is if there are any nodes in range of the disconnected nodes' children. 
-
-\begin{figure}[!h]
-	\centering
-	\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{chapters/design/figures/prottree2.png}}
-	\caption{Example of a where node 3 disconnected.}
-	\label{fig:prottree2}
-\end{figure}
-
-An example of this can be seen in figure \ref{fig:prottree2}. This figure shows how node 3 disconnected, and now node 7 is attached to node 4 instead. This, of course, assumes that node 7 was in range of node 4.
-This means that the next time data is requested, node 7 will be the parent for node 5 and 6, and they will now be a level higher than before.
+Should a node somehow disconnect from the network, the nodes connected to this node will receive the packets from another node instead, and from that point on use that as the parent. This is valid if there are any nodes in range of the disconnected children of the nodes. 
