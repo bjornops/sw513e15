@@ -1,8 +1,13 @@
 \subsection{Packet}
-The \texttt{Packet} class contains the data that makes a packet. It can be instantiated with a string which is used when receiving a packet in string format from another node using the radio. It can also be instantiated with every part of the packet as a parameter, which is used when a node constructs a new packet to be transmitted. The constructors can be seen in Listing \ref{lst:packetconstructors}.
+The \texttt{Packet} class contains the data that makes a packet. It can be instantiated with a string which is used when receiving a packet in string format from another node using the radio. It can also be instantiated with every part of the packet as a parameter, which is used when a node constructs a new packet to be transmitted. The constructors can be seen in listing \ref{lst:packetconstructors}.
 \begin{lstlisting}[language=C,label={lst:packetconstructors},caption={Packet constructors}]
-Packet::Packet(PacketType packetTypeInput, uint16_t addresserInput, uint16_t addresseeInput, uint16_t originInput, uint16_t value1Input,
-	uint16_t value2Input, uint16_t value3Input)
+Packet::Packet(PacketType packetTypeInput, 
+    uint16_t addresserInput, 
+    uint16_t addresseeInput, 
+    uint16_t originInput, 
+    uint16_t value1Input,
+    uint16_t value2Input, 
+    uint16_t value3Input)
 	
 Packet::Packet(char *input)
 \end{lstlisting}
@@ -21,20 +26,20 @@ uint16_t value3; // Value 3
 uint16_t checksum; // Checksum value
 \end{lstlisting}
 \end{figure}
-The datatypes of the members of \texttt{Packet} are all \texttt{uint16\_t}. This is to ensure that the size of the class does not vary on different architectures. The \texttt{uint16\_t} is always of size 2 bytes. The same size as two characters. Together, all members in the class gives a total size of 16 bytes. The final architecture of a packet can be seen on \ref{tab:packetTableFirst} and \ref{tab:packetTableSecond}.
+The datatypes of the members of \texttt{Packet} are all \texttt{uint16\_t}. This is to ensure that the size of the class does not vary on different architectures. The \texttt{uint16\_t} is always of size 2 bytes. The same size as two characters. Together, all members in the class gives a total size of 16 bytes. The final architecture of a packet can be seen on table \ref{tab:packetTableFirst} and table \ref{tab:packetTableSecond}.
 
-The values shown in Listing \ref{lst:packetvariables} cover the components of a packet; the packet type, the sender, the receiver, the origin of the data, data values, and a checksum.
-Every packet has this format, and all values must be filled to ensure uniform size. With packets that might not require all these values, they will simply be 0. For example when sending a request; addressee, value2 and value3 will be 0.
+The values shown in listing \ref{lst:packetvariables} cover the components of a packet; the \texttt{packetType}, the \texttt{addresser}, the \texttt{addressee}, the \texttt{origin} of the data, \texttt{data} values, and a \texttt{checksum}.
+Every packet has this format, and all values must be filled to ensure uniform size. With packets that might not require all these values, they will simply be 0. For example when sending a request; \texttt{addressee}, \texttt{value2} and \texttt{value3} will be 0.
 
 \begin{table}[]
 \centering
 \begin{tabular}{|l|c|l|c|l|c|l|c|l|}
 \hline
-\textbf{Datatype} & \multicolumn{2}{c|}{Packettype}      & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{c|}{uint16\_t}       \\ \hline
 \textbf{Name}     & \multicolumn{2}{c|}{packetType}      & \multicolumn{2}{c|}{addresser}       & \multicolumn{2}{c|}{addressee}       & \multicolumn{2}{c|}{origin}          \\ \hline
+\textbf{Datatype} & \multicolumn{2}{c|}{Packettype}      & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{c|}{uint16\_t}       \\ \hline
 \textbf{Memory}   & \multicolumn{2}{c|}{16 bits} & \multicolumn{2}{c|}{16 bits} & \multicolumn{2}{c|}{16 bits} & \multicolumn{2}{c|}{16 bits} \\ \hline
 \end{tabular}
-\caption{Overview of first half of a packet. The packet can be directly converted to 16 characters.}
+\caption{Overview of first half of a packet.}
 \label{tab:packetTableFirst}
 \end{table}
 
@@ -42,15 +47,16 @@ Every packet has this format, and all values must be filled to ensure uniform si
 \centering
 \begin{tabular}{|l|c|l|c|l|c|l|c|l|}
 \hline
-\textbf{Datatype} & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{l|}{uint16\_t} & \multicolumn{2}{c|}{uint16\_t}       \\ \hline
 \textbf{Name}     & \multicolumn{2}{c|}{value1}         & \multicolumn{2}{c|}{value2}         & \multicolumn{2}{c|}{value3}   & \multicolumn{2}{c|}{checksum}        \\ \hline
+\textbf{Datatype} & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{c|}{uint16\_t}       & \multicolumn{2}{l|}{uint16\_t} & \multicolumn{2}{c|}{uint16\_t}       \\ \hline
 \textbf{Memory}   & \multicolumn{2}{c|}{16 bits} & \multicolumn{2}{c|}{16 bits} & \multicolumn{2}{c|}{16 bits} & \multicolumn{2}{c|}{16 bits} \\ \hline
 \end{tabular}
 \caption{Overview of second half of a packet.}
 \label{tab:packetTableSecond}
 \end{table}
 
-\texttt{PacketType} is defined as shown in Listing \ref{lst:packettypes}.
+\texttt{PacketType} is defined as shown in listing \ref{lst:packettypes}.
+\begin{figure}
 \begin{lstlisting}[language=C,label={lst:packettypes},caption={Packet types}]
 enum PacketType : uint16_t {
     Error,
@@ -62,8 +68,9 @@ enum PacketType : uint16_t {
     ClearSignal
 };
 \end{lstlisting}
+\end{figure}
 
-\begin{lstlisting}[language=C]
+\begin{lstlisting}[language=C, caption={Packet encode function.}]
 char *Packet::encode()
 {
     char *returnstring;
@@ -74,7 +81,7 @@ char *Packet::encode()
     return returnstring;
 }
 \end{lstlisting}
-The \texttt{encode} function allocates the size necessary for a \texttt{Packet}, but as a \texttt{char *} and uses \texttt{memcpy} to set the contents of the array to the contents of the current \texttt{Packet} and then returning the array. The \texttt{char} array is a format of the packet object, that can be directly transmitted by the radio module, without further operations to the array, and then decoded on the receiving node.
+The \texttt{encode} function allocates the size necessary for a \texttt{Packet}, but as a \texttt{char*} and uses \texttt{memcpy} to set the contents of the array to the contents of the current \texttt{Packet} and then returning the array. The \texttt{char} array is a format of the packet object, that can be directly transmitted by the radio module, without further operations to the array, and then decoded on the receiving node.
 
 \begin{lstlisting}[language=C,label={lst:decodefunc},caption={Decode function.}]
 void Packet::decode(char *input)
@@ -82,12 +89,10 @@ void Packet::decode(char *input)
     memcpy(this, input, sizeof(Packet));
 }
 \end{lstlisting}
-The decode function, as shown on listing \ref{lst:decodefunc}, copies the memory of the \texttt{char *input} into the memory location where the current \texttt{Packet} object is located. This means that the memory contents of the packet is set to the memory content of \texttt{input}.
-
-This is possible as every part of the packet has a known, pre-determined size. \texttt{uint16\_t} always has the same size, not depending on the architecture running the code. When a packet is encoded, using the \texttt{char *encode()} function, the returned character array is built in the same way, by setting the contents of the array to the contents of the package.
+The decode function, as shown in listing \ref{lst:decodefunc}, copies the memory of the \texttt{char* input} into the memory location where the current \texttt{Packet} object is located. This means that the memory contents of the packet is set to the memory content of \texttt{input}. This is possible as every part of the packet has a known, pre-determined size. \texttt{uint16\_t} always has the same size, not depending on the architecture running the code.
 
 \subsubsection{Checksum}
-\texttt{Packet} objects contains a checksum, used to verify the content's integrity. The checksum uses two functions: \texttt{crcInit()} and \texttt{crcCompute(unsigned char *message, unsigned int nBytes)}. The checksum implementation is based on the description in \texttt{Programming Embedded Systems in C and C++} \cite{crcCode}.
+\texttt{Packet} objects contains a checksum, used to verify the content's integrity. The checksum uses two functions: \texttt{crcInit()} and \texttt{crcCompute(unsigned char* message, unsigned int nBytes)}. The checksum implementation is based on the description in \texttt{Programming Embedded Systems in C and C++} \cite{crcCode}.
 
 The CRC functions share the following data, and this data should be implemented so that it is accessible by the functions without instantiating them multiple times to reduce memory and time consumption.
 
@@ -101,7 +106,7 @@ The CRC functions share the following data, and this data should be implemented 
 
 The \texttt{crcInit()} is executed once initially to instantiate a table of remainders to expedite the computation of the checksum. The computation is accelerated because the remainder can be calculated byte-wise instead of bit-wise, by the cost of 256 bytes in the memory.  
 
-\begin{lstlisting}[language=C]
+\begin{lstlisting}[language=C, caption={Initializes CTC table.}]
 void Packet::crcInit()
 {
     unsigned short remainder; // 2 byte remainder (according to CRC16/CCITT standard)
@@ -132,7 +137,7 @@ The function iterates over all binary combinations of the 16 bits for the divide
 
 However, the main CRC function is the \texttt{getChecksum(unsigned char *message, unsigned int nBytes)}. It utilizes the \texttt{crcTable} and computes and returns the checksum of the transfer message based on the arguments \texttt{unsigned char *message} and its size, \texttt{unsigned int nBytes}.
 
-\begin{lstlisting}[language=C]
+\begin{lstlisting}[language=C, caption={Determines and returns the checksum.}]
 uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
 {
     unsigned int offset;
@@ -160,4 +165,4 @@ uint16_t Packet::getChecksum(unsigned char *message, unsigned int nBytes)
 
 \texttt{getChecksum} uses an \texttt{int offset} to keep track of the iterative progress through the message, a \texttt{char byte} to contain a byte of the \texttt{message} and a \texttt{uint16\_t remainder} instantiated by the \texttt{INITIAL\_REMAINDER} value. 
 
-The function iterates over each byte in the \texttt{message}, according to the algorithm described in Section \ref{cha:crcComp}. The current \texttt{byte} is the remainder right shifted by 8 then XOR'ed with the \texttt{message}'s offset byte. The \texttt{remainder} is then calculated by XOR'ing the value already stored in \texttt{crcTable} at the current byte, with the remainder left shifted by 8.
+The function iterates over each byte in the \texttt{message}, according to the algorithm described in section \ref{cha:crcComp}. The current \texttt{byte} is the remainder right shifted by 8 then XOR'ed with the offset byte of the \texttt{message}. The \texttt{remainder} is then calculated by XOR'ing the value already stored in \texttt{crcTable} at the current byte, with the remainder left shifted by 8.
