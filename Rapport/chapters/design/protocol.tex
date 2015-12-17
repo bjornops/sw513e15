@@ -31,39 +31,34 @@ As the sensor readings are required on-demand, there must be at least two types 
 Sending individual requests is not appropriate as routing tables would use a significant amount of the limited memory of the network nodes, if the addressee is a sufficient amount of nodes away. In case of disconnected nodes, the routing tables must be reconfigured, to make sure packets are relayed in a path that actually exist and is within range. This would accordingly require nodes to somehow broadcast that they are still alive, and thereby consume more energy in addition to more memory usage.
 
 % Data request method selection template
-The protocol used in the solution is partly based on the controlled flooding protocol.
-This protocol is a method where the data request can be transmitted by flooding the network, without needing to send a tailored request to every node in the network. 
+The protocol used in the solution is partially based on the controlled flooding protocol, as described in chapter \ref{cha:floodingSec}.
+This protocol is a method where the data request can be transmitted by flooding the network, without the need of sending a tailored request to every node in the network. 
 
-The controlled flooding has a low memory impact and thus best suited for the solution. The flooding protocol will create a tree which can be utilized to create a return path for the nodes' sensor readings.
+The controlled flooding has a low memory impact and thus best suited for the solution. The flooding protocol will create a tree which can be utilized to create a return path for the sensor readings of the sensor nodes.
 
 % Practical implementation of data request
 \begin{figure}[h!]
 	\centering
 	\makebox[\textwidth][c]{\includegraphics[scale=0.4]{chapters/design/figures/branchExample.png}}
-	\caption{The tree's structure can vary depending on the node that connects to the main node first.}
+	\caption{The tree structure can vary depending on the node that gets a reuqest to a subnode first.}
 	\label{fig:treeVariation}
 \end{figure}
 
-The tree created, in each wave of request broadcasts, can vary in its structure, depending on interference, removal of nodes, or faulty nodes. Figure \ref{fig:treeVariation} shows an example of how the tree can vary: first the main node will broadcast \textit{request 1}, which is received by both \textit{node 1} and \textit{node 2}. A sensor node in the system will always handle its own sensor data before relaying data from other nodes. If the main node receives sensor data from \textit{node 1} first, then the resulting tree will match the tree seen to the left in \figref{treeVariation}. If \textit{node 2} connects to the main node first, then the tree will match the tree seen on the right.
+The tree created, in each wave of request broadcasts, can vary in its structure, depending on interference, removal of nodes, or faulty nodes. Figure \ref{fig:treeVariation} shows an example of how the tree can vary: first the main node will broadcast \textit{request 1}, which is received by both \textit{node 1} and \textit{node 2}. A sensor node in the system will always handle its own sensor data before relaying data from other nodes. If the main node receives sensor data from \textit{node 1} first, the resulting tree will match the tree seen to the left in \figref{treeVariation}. If \textit{node 2} connects to the main node first, the tree will match the tree seen on the right.
 This will effectively solve the requirement of responding appropriately to a disconnecting node, as well as the inclusion of new nodes in the network, since a new tree is constructed with each new requests from the main node.
 
 % Design of data respond
 In other words, a tree instantiated by the controlled flooding protocol can be used to construct a tree that spans over a single path from each node to the main node.
 The receiver of a request signal can use the sender as the parent when data is to be returned.
-The child will then repeat the request signal, and be the parent of nodes hearing it.
+The subnode will then repeat the request signal, and be the parent of nodes hearing it.
 Any node receiving a request signal will then be able to respond to its parent, causing all nodes to have a single identifier for the routing towards the main node.
 
 %\subsection{Overloaded nodes}
-A general thing to note is that nodes close to the main node are prone to receive a larger amount of data since many, if not every data packet, must go though that node. Looking at \ref{fig:overloadtree} it is shown that node 2 will handle every data packet on its way to the main node. Such low level nodes might be overloaded with data packets, causing a bottleneck if not thoughtfully spread out. The danger arises if several higher level nodes are trying to send data packets back to node 2, and node 2 can only handle packets with a certain speed. Another scenario is that since node 2 is relaying data more frequent than other nodes in the system, it consumes more energy and could potentially run out of power quicker than the rest.
-\begin{figure}[!h]
-	\centering
-	\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{chapters/design/figures/overloadtree.png}}
-	\caption{Example of a tree.}
-	\label{fig:overloadtree}
-\end{figure}
+Observe that nodes close to the main node are prone to receive a large amount of data since many, if not every, data packet must go though that node. Looking at figure \ref{fig:prottree1} it is shown that \textit{node 2} will handle every data packet on the path to the main node. Such low level nodes might be overloaded with data packets, causing a bottleneck if not thoughtfully spread out. The risk of collisions rise if several higher level nodes are trying to send data packets back to \textit{node 2}, but \textit{node 2} has a limited packet throughput. Another scenario is that since \textit{node 2} is relaying data more frequent than other nodes in the system, it consumes more energy and could  run out of power before subnodes. This could result in the loss of an entire branch.
 
 \subsection{Sequence}
-The general sequence of the protocol is determined as the flowchart seen in the appendix \ref{cha:flowchart}.
+In this subsection the sequence of how the main and sensor nodes behaves after receiving a packet will be described.
+The general sequence of the protocol is determined as the flowchart seen in appendix \ref{cha:flowchart}.
 
 The following is the operation structure for each individual node in the system.
 
@@ -76,42 +71,44 @@ The following is the operation structure for each individual node in the system.
 \item Receive a data request and remember the addresser as parent.
 
 \item Acquire data from sensor and send it to parent.
+\subitem Await acknowledgment from parent.
+	\subsubitem Resend data if no acknowledgement is received.
 
-\item Await acknowledgment from parent.
-	\subitem Resend data if no acknowledgement is received.
-
-\item Send its own data request to signal possible child nodes.
+\item Generate and broadcast request.
 
 \item Await data from subnodes.
 	\subitem Respond to subnodes with acknowledgement.
 	\subitem Received data is relayed to parent.
 	
-\item If no response or acknowledgment within 10 min is received, or a clear signal have been received: clear all data except its own ID, relay the clear signal, and await new data request.
+\item If no response or acknowledgment within timeout limit is received, or a clear signal have been received: clear all data except its own ID, relay the clear signal, and await new data request.
 \end{enumerate}
 
 
 \subsubsection*{Main node}
-\begin{itemize}
+\begin{enumerate}
 \item When receiving pair request, assign and save ID for the requesting node and respond with an acknowledgement containing the ID.
 \item When the greenkeeper requests data in the interface, broadcast a data request.
 \item When receiving data from a subnode, save the data and respond with an acknowledgement to the subnode.
 
 \item When data have been received from all registered nodes, broadcast a clear signal and show the data for the greenkeeper.
-\end{itemize}
+
+\item If the timeout limit is reached without being finished, the data is sent and a clear signal is broadcasted.
+\end{enumerate}
 
 
 
 \subsection{Interference handling} \label{cha:crcDesign}
-When utilizing wireless communication, interference can be a problem, as explained in Chapter \ref{cha:dutuVurufucutiun}. This is also the case when using controlled flooding, but the protocol can potentially help reduce problems with interference, for instance by validating the transferred data and acting accordingly.
+When utilizing wireless communication, interference can be a problem, as explained in chapter \ref{cha:dutuVurufucutiun}. This is also the case when using controlled flooding, but the protocol can potentially help reduce problems with interference, for instance by validating the transferred data and acting accordingly.
 
-Interference might cause a change in a packet, which make the received data unusable. Figure \ref{fig:prottree1} shows an example of a possible interference scenario, where nodes 5, 6, and 7 could send packets at the same time, causing node 3 to receive scrambled data.
+Interference might cause a change in a packet, which will make the received data unusable. Figure \ref{fig:prottree1} shows an example of a possible interference scenario, where nodes 5, 6, and 7 could send packets at the same time, causing node 3 to receive scrambled data.
 
-To ensure combat this problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, this checksum is calculated, and compared to the one in the packet. How the checksum is calculated is explained in section \ref{cha:crcComp}.
+To counteract this problem, a checksum is used for verifying packets. This checksum is transmitted with the data and recipient. When a node receives a packet, the checksum is calculated, hence verifying the contents of the packet. How the checksum is calculated is explained in section \ref{cha:crcComp}.
 
-To ensure that a packet with the correct checksum will arrive at some point, the nodes will wait a random, but progressively longer, interval, between attempting to send data. This is known as exponential backoff. This increases the chances for the transmitted data to reach the receiver without interference. Exponential backoff is further explained in \ref{cha:expbackoff}.
+To ensure that a packet eventually is received, the nodes will wait a random, but progressively longer, interval, between attempting to send data. This increases the chances for the transmitted data to reach the receiver without interference. Exponential backoff is further explained in chapter \ref{cha:expbackoff}.
 
 %\subsection{Data importance}
-It should be noted that the gathered data is not critical. If a packet is lost, it is negligible. If the user of the system discovers multiple missing data from a certain area or node, the node can be fixed or replaced.
+It should be noted that the monitored data is not critical. If a packet is lost, it is negligible. If data is not received from one or multiple sensor nodes, a new request can be sent or the node can be repaired or replaced.
+%If the user of the system discovers missing data from a certain area or node, the node can be fixed or replaced.
 
 
 \subsection*{Example}
