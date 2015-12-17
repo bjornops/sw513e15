@@ -1,17 +1,16 @@
 \section{Exponential Backoff}\label{cha:expbackoff}
-The technique \textit{exponential back off} is a method used for handling interference or collisions. This technique works by incrementing the interval between sending packets, which at some points means the packet will get transferred without any other node interfering. 
+The technique \textit{exponential backoff} is a method used for reducing interference or collisions. The technique works by incrementing the interval between sending packets which will increase the probability that the packet will get transferred without any other node interference. 
 
-A random interval is needed as the nodes need different intervals. If both nodes have the same interval each time, the packets will continue colliding and the data will never transmit correctly. The random interval will improve the chances that, at some point, one of the sensors will send while the other is waiting. 
-Without the random interval the two nodes could collide on the first back off, and both nodes will then back off with the same amount. Resulting in another collision. This can keep occurring since the two nodes keeps backing off with the same interval.
+A random interval is needed as the nodes need different intervals. The random interval will improve the chances that one of the sensors will send while the other is waiting. 
+Without the random interval the two nodes could collide on the first back off, and both nodes will then back off with the same amount, resulting in another collision. This can keep occurring since the two nodes keeps backing off with the same interval.
 
-The equation used to calculate the maximum back off interval in milliseconds, is the following:
 \begin{equation}
+\label{eq:backoff}
 E(c)=2^{c-1}
 \end{equation}
-Where c is the current number of collision in transmission between two or more nodes.
-There will be add a range from 1 to the calculated maximum back off, to ensure we have a range to pick a random number from.
-
-Using this equation to calculate the back off, the delays can be seen in table \ref{cha:expbackoff}.
+The equation used to calculate the maximum backoff interval in milliseconds as stated in equation \ref{eq:backoff}, where $c$ is the current number of collision in transmission between two or more nodes.
+There will be added a range from 1 to the calculated maximum backoff, to ensure a range to pick a random number from. Using this equation to calculate the backoff, the delays can be seen in table \ref{cha:expbackoff}.
+Figure \ref{fig:expbackoff} shows how exponential backoff is exponentially increasing.
 
 \begin{table}[ht!]
 \rowcolors{2}{gray!25}{gray!7}
@@ -38,9 +37,6 @@ Attempt                                                                & Back of
 \caption{Exponential backoff in milliseconds.}
 \label{table:expbackoff}
 \end{table}
-
-Compared in figure \ref{fig:expbackoff} it can be noted how the exponential backoff is ever exponential increasing.
-Which is why there will be implemented a limit to the backoff delay, to avoid very long waiting in extreme cases.
 
 \begin{figure}[H]
 \centering
