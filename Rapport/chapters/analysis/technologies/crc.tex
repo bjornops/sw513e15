@@ -1,30 +1,28 @@
+\clearpage
 \section{Data verification} \label{cha:dutuVurufucutiun}
 %Why checksum
-Wireless communication is prone to noise and interference\cite{radiointerference}. To be able to discern correct packets from incorrect packets, a detection method is necessary. There are multiple ways to verify a packet's integrity and this section will contain a description of some methods and the reasoning behind the selected solution.
+Wireless communication is prone to noise and interference\cite{radiointerference}. To be able to discern correct packets from incorrect packets, a detection method is necessary. There are multiple ways to verify the integrity of a packet and this section contains a description of some methods and the reasoning behind the solution.
 
 \subsection{Definition and types}
 %What is a checksum
-A checksum is a unique value that can be used to verify that a message is received correctly \cite{datapakke}. The checksum is based on all parts of the message and unique to the resolution of the checksum. 
-A single bit checksum can only distinguish between two messages, and is not able to verify with more than 50\% accuracy, as an error could affect the transferred message so that the checksum calculation still produces the same checksum. Checksums can variate by multiple properties, for example by how it is calculated or by its length. 
+A checksum is a unique value that can be used to verify that a message is received correctly \cite{datapakke}. The checksum is based on all parts of the message and unique to the length of the checksum. 
+A single bit checksum can only distinguish between two messages, and is not able to verify with more than 50\% probability, as an error could affect the transferred message, so that the checksum calculation still produces the same checksum. Checksums can variate by multiple properties, for example by how it is calculated, or by its length. 
 
 \subsection*{Digit sum}
-A simple algorithm for producing a checksum is to use the digit sum and store it in a byte. For example, the digit sum of $1337$ is $1+3+3+7=14$.  This algorithm is efficient, but has several flaws, therein the uniqueness of the checksum of only 256 values and that two bit flips could cancel each other out and cause the same checksum. The error detection level is regarded as too small, and the this algorithm will not be used in the protocol.
-
+A simple algorithm for producing a checksum is to use the digit sum and store it in a byte. For example, the digit sum of $1337$ is $1+3+3+7=14$.  This algorithm is efficient, but has several flaws, therein the uniqueness of the checksum of only 256 values and that two bit flips could cancel each other out and cause the same checksum. The error detection level is regarded as too small, and this algorithm will not be used in the protocol.
 
 
 \subsection*{MD5}
-MD5 is a widespread checksum algorithm. It produces a 128 bit checksum, which is 16 bytes. MD5 is designed to run efficiently on 32 bit processors, which is a disadvantage on the Arduino boards used in the solution, since these posses an 8 bit processor. The 16 byte checksum uses half of the possible payload of the nRF24L01, which is to much. The MD5 algorithm is therefore discarded as the checksum generator for this project. \cite[p.~308]{boyles2010ccna}.
+MD5 is a widespread checksum algorithm. It produces a 128 bit checksum, which is 16 bytes. MD5 is designed to run efficiently on 32 bit processors, which is a disadvantage on the Arduino boards used in the solution, since these posses an 8 bit processor. The 16 byte checksum uses half of the possible payload of the nRF24L01, which is too much. The MD5 algorithm is therefore discarded as the checksum generator for this project \cite[p.~308]{boyles2010ccna}.
 
 \subsection*{Cyclic redundancy check}
-Cyclic redundancy check/code is a checksum algorithm, hereafter referenced to as \textit{CRC}. This exists in several forms, based on the parameters. The checksum size is variable as well as internal algorithm parameters. CRC can be used to detect a 'single bit error', more than one 'single bit error' and burst errors \cite[p.~31]{elahi2001network}. The CRC meets the criteria for the solution, hence the selected checksum generator is CRC.
+Cyclic redundancy check is a checksum algorithm, hereafter referenced to as \textit{CRC}. CRC exists in several forms, based on the parameters, such as the checksum size and internal algorithm parameters. CRC can be used to detect either one or more 'single bit error' and burst errors \cite[p.~31]{elahi2001network}. Due to the small checksum size and the error detection properties, CRC is chosen as the checksum generator.
 
-\subsection{Computation of a checksum}\label{cha:crcComp}
-%Calculation of a checksum
-The algorithm for generating a CRC checksum is described in this subsection.
+\subsection{Computation of a CRC checksum}\label{cha:crcComp}
 In short, the CRC executes a division of the message on a polynomial, and the remainder is used as the checksum. 
 The CRC algorithm requires both sender and receiver to agree upon a generator polynomial in advance.
 
-A message $M$ is viewed as a polynomial with binary coefficients, by treating each character in $M$ bit-wise. This makes for a relatively large number, but the decimal equivalent is irrelevant for the computation. M's length in bits is called $m$, which in example in \tabref{string} is 24.
+A message $M$ is viewed as a polynomial with binary coefficients, by treating each character in $M$ bit-wise. This makes for a relatively large number, but the decimal equivalent is irrelevant for the computation. The length of M in bits is called $m$, which as exemplified in table \ref{tab:string} is 24.
 
 \begin{table}[h!]
 	\centering
@@ -34,13 +32,13 @@ A message $M$ is viewed as a polynomial with binary coefficients, by treating ea
 		Decimal & 4,411,971                  \\
 		Polynomial & $x^{22} + x^{17} + x^{16} + x^{14} + x^{12} + x^{10} + x^{6} + x^{1} + x^{0}$
 	\end{tabular}
-	\caption{String equivalents.}
+	\caption{String equivalents example.}
 	\label{tab:string}
 \end{table}
 
-A generator polynomial of degree $r$ generates an $r$ bit checksum. The generator polynomial is the dividend which generates a quotient and a remainder for the message. Some polynomials are prone to creating multiple similar remainders, while others generate mostly unique remainders and it is therefore advantageous to use already developed, tested and implemented polynomials.
+A generator polynomial of degree $r$, generates an $r$ bit checksum. The generator polynomial is the dividend which generates a quotient and a remainder for the message. Some polynomials are prone to creating multiple similar remainders, while others generate mostly unique remainders and it is therefore advantageous to use already developed, tested and implemented polynomials \cite{warren2012hacker}.
 
-The execution of the division itself is done by binary long division of the polynomial representation of the message by the generator polynomial. This is done without carries and means that any bit $x^k$ is not affected by the bits $x^{k+1}$ or $x^{k-1}$. This kind of division propagates to be an \textit{exclusive or} function, as seen in \tabref{binaryxor}, applied from left to right on all bits within the length of the polynomial through the message and only when the leftmost bit in the message is 1. To illustrate the algorithm, an example of the division can be seen in \figref{crccalc}.
+The execution of the division itself is done by binary long division of the polynomial representation of the message by the generator polynomial. This is done without carries and means, that any bit $x^k$ is not affected by the bits $x^{k+1}$ or $x^{k-1}$. This kind of division propagates to be an \textit{exclusive or} function, as seen in \tabref{binaryxor}, applied from left to right on all bits within the length of the polynomial through the message and only when the leftmost bit in the message is 1. To illustrate the algorithm, an example of the division can be seen in \figref{crccalc}.
 
 \begin{table}[h!]
 	\centering
