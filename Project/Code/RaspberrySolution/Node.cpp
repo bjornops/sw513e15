@@ -312,7 +312,7 @@ bool Node::receivedFromAllNodes()
 
 void Node::sendRequest()
 {
-    int attemptsToDo = 6;
+    int attemptsToDo = 12;
 
     //sæt flag
     _requested = true;

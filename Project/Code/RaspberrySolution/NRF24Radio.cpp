@@ -11,13 +11,14 @@ NRF24Radio::NRF24Radio()
     _radio->setCRCLength(RF24_CRC_DISABLED);
     _radio->setChannel(_channel);
     _radio->openReadingPipe(_readingPipe, _rxAddr);
+    _radio->openWritingPipe(_rxAddr);    
     _radio->startListening();
 }
 
 // Sender pakke ud som string.
 void NRF24Radio::broadcast(char *packetAsString)
 {
-    memset(lastMessage, 0, 16*sizeof(char));
+	memset(lastMessage, 0, 16*sizeof(char));
     memcpy(lastMessage, packetAsString, 16*sizeof(char));
 
     _radio->stopListening();
