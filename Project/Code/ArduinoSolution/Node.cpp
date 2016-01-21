@@ -160,13 +160,10 @@ void Node::handleDataRequest(Packet packet)
     parentID = packet.addresser;
 
     //Prøver at sende data fra sensor. Hvis der modtages acknowledgement returneres true
-    int sensorData = -1;
-    while(sensorData == -1)
-    {
-        sensorData = _sensor->read();
-    }
+    int sensorData = _sensor->read(); // Read
+    Packet dataPacket(Data, nodeID, parentID, nodeID, sensorData, 0, 0);
 
-    //if(beginBroadcasting(dataPacket))
+    if(beginBroadcasting(dataPacket))
     {
         //Videresender request, men med mindre lifespan end modtaget. Dette umuliggør uendelig videresending af request
         broadcastNewDataRequest((packet.value1 - 1));
