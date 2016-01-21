@@ -3,6 +3,32 @@
 
 MoistureSensor::MoistureSensor(int aPin)
 {
+    switch(aPin)
+    {
+        case 0:
+        pinMode(A0, INPUT);
+        break;
+        
+        case 1:
+        pinMode(A1, INPUT);
+        break;
+        
+        case 2:
+        pinMode(A2, INPUT);
+        break;
+        
+        case 3:
+        pinMode(A3, INPUT);
+        break;
+        
+        case 4:
+        pinMode(A4, INPUT);
+        break;
+        
+        case 5:
+        pinMode(A5, INPUT);
+        break;
+    }
     _myPin = aPin;
 }
 
