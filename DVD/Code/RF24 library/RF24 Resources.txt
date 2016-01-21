@@ -1,0 +1,8 @@
+Libary:
+https://github.com/TMRh20/RF24
+
+Libary documentation:
+http://tmrh20.github.io/RF24/classRF24.html
+
+Datasheet:
+http://yourduino.com/docs/nRF24L01_Product_Specification_v2_0%20.pdf

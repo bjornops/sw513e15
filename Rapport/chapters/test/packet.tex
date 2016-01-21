@@ -1,5 +1,4 @@
-%\subsection{Packet}
-\texttt{Packet} has been tested during development to ensure correct behavior in the class. As some of the functions in the class performs low-level memory operations, it is important to confirm that everything performs as expected. As the \texttt{Packet} class is the same on the main node and sensor nodes, only one testing is needed to determine the functionality.
+The \texttt{Packet} class has been tested during development to ensure correct behavior in the class. As some of the functions in the class performs low-level memory operations, it is important to confirm that everything performs as expected. As the \texttt{Packet} class is the same on the main node and sensor nodes, only one test is needed.
 
 Before testing this class, the methods \texttt{bool checksumMatches()} and \\ \texttt{bool compare(Packet)} were defined, to aid in testing the class.
 
@@ -23,39 +22,16 @@ else
 {
     std::cout << "Packets are NOT the same!" << std::endl;
 }
-
-// Multiple tests
-Packet loopPacket1(Data, 1, 2, 3, 4, 5, 6);
-Packet loopPacket2(Data, 6, 5, 4, 3, 2, 1);
-
-for(int n = 0; n < 10; n++)
-{
-    loopPacket2 = Packet(loopPacket1.encode());
-    
-    if(loopPacket1.compare(loopPacket2))
-    {
-        std::cout << "Test " << n << " is correct." << std::endl;
-        loopPacket1 = Packet(loopPacket2.encode());
-    }
-    else
-    {
-        std::cout << "Test " << n << " failed!" << std::endl;
-    }
-}
 \end{lstlisting}
 The code in Listing \ref{lst:packetcode} starts out by encoding and decoding a single \texttt{Packet}, to do a simple test. The variable \texttt{packet2} is created from the encoding of \texttt{packet1}. 
 
-After the initial test, a test using loops was performed. First, the variable  \texttt{loopPacket1} was initialized to some values. The loop iterates ten times, and each time the following occurs: \texttt{loopPacket2} is initialized with the encoding of \texttt{loopPacket1}. If the two packets are equal, then \texttt{loopPacket1} is initialized from the encoding of \texttt{loopPacket2}. 
-
-The tests showed that all cases succeeded, and that packet encoding and decoding works on both devices.
+The tests showed that packet encoding and decoding works in the solution.
 
 \subsubsection*{Valid and invalid packets}
 The solution uses a checksum to validate packets received, as explained in chapter \ref{cha:crcDesign}. Testing whether the implementation of checksums work is done by using the code found in Appendix \ref{cha:checksumtest}.
 
 
-The code initializes a \texttt{Packet} object and verifies that the checksum matches the content of the packet. The values in the packet is then changed, one by one, and the checksum is tested again. After each test, the result is printed and the value is set to the initial value. After testing each changing each value, the packet is tested again with all the default values.
+The code initializes a \texttt{Packet} object and verifies that the checksum matches the content of the packet. The values in the packet is then changed, one by one, and the checksum is tested again. After each test, the result is printed and the value is set to the initial value. After testing changing each value, the packet is verified again with all the default values.
 
-The tests showed that any value being changed will make the packet invalid. When all values are set to the initial value again, the packet is now valid.
-This proves that should a packet be changed while transferring data, some part of the packet would not be correct and the packet will be rejected.
-
-\todo{results}
+The tests showed that any value being changed will make the packet invalid. When all values are set to the initial value again, the packet is valid again.
+This proves that if a packet is changed while transferring data, some part of the packet would not be correct and the packet will be rejected.

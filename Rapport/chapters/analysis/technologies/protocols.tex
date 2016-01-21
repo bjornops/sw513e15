@@ -153,7 +153,7 @@ TDMA\cite{TDMATable}        & Yes    & \begin{tabular}[c]{@{}c@{}}Routes ensurin
 DSR\cite{ProtocolTable}\cite{DSR}         & Yes    & Source routing                                                                   & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Decreases as more\\  nodes are added\end{tabular} \\
 \rowcolor[HTML]{EFEFEF} 
 AOVD\cite{ProtocolTable}        & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shortest path\end{tabular}               & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Poor for more\\  than 20 nodes\end{tabular}       \\
-B.A.T.M.A.N\cite{BATMAN} & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shortest path\end{tabular}               & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Good - scales\\ well with more nodes\end{tabular} \\ \hline
+B.A.T.M.A.N\cite{BATMAN} & Yes    & \begin{tabular}[c]{@{}c@{}}Fastest \&\\ shortest path\end{tabular}               & Yes                                                  & No                                                        & High        & \begin{tabular}[c]{@{}c@{}}Good - scales\\ well with more nodes\end{tabular} \\
 \end{tabular}}
 \caption{Protocol comparison.}
 \label{tab:protComparisonTable}
@@ -163,6 +163,6 @@ Table \ref{tab:protComparisonTable} shows comparisons between the protocols disc
 
 One big difference to notice in table \ref{tab:protComparisonTable} is that TDMA is the only protocol with load balancing. None of the other protocols have no such feature, which can result in some nodes in the network handling a heavy load, ultimately creating a bottleneck.
 
-B.A.T.M.A.N is the protocol which scales the best, the other have troubles keeping up as more nodes are added. In addition is B.A.T.M.A.N together with AOVD the two protocols with the fastest routing algorithm as they always utilize the shortest path.
+B.A.T.M.A.N is the protocol which scales the best. The other have troubles keeping up as more nodes are added. In addition B.A.T.M.A.N and AOVD are the two protocols with the fastest routing algorithm as they always utilize the shortest path.
 
-The information gathered in this section will ensure a good foundation when designing a protocol for a network specified to work on a golf course.
+The information gathered in this section will ensure a good foundation for designing a protocol for a network specified to work on a golf course.

@@ -40,10 +40,9 @@ void Node::initializeNode(iSensor *sensor, iRadio *radio)
 void Node::begin()
 {
     // Resetting ID
-    //saveID(1);
+    //saveID(4);
     //return;
-    
-    
+
     // Find dit ID her
     bool shouldSendPairRequest = false;
     int ID = loadID();
@@ -71,8 +70,9 @@ void Node::begin()
         int attempt = 1;
         while (true)
         {
+            
             long remainingTimeToClear = (long)((_lastPacketTime + TIMEOUT) - millis());
-
+            
             // Laeser fra radio i maksimum tiden til timeout. Kommer der en pakke afbrydes listenfor og pakken haandteres
             char *res = _radio->listenFor((remainingTimeToClear > 0) ? remainingTimeToClear : 0);
             Packet packet(res);
@@ -146,6 +146,7 @@ void Node::handlePacket(Packet packet)
         //Hvis pakken er Error, DataAcknowledgement, PairRequest. Primær funktion er at levere nulstilling efter ydre listenFor() har kørt den fulde tid uden at modtage en brugbar pakke.
         default:
         {
+            printf("Default hndtering");
             handleDefault();
         }
         break;
@@ -159,7 +160,7 @@ void Node::handleDataRequest(Packet packet)
     parentID = packet.addresser;
 
     //Prøver at sende data fra sensor. Hvis der modtages acknowledgement returneres true
-    int sensorData = random(10, 1000); // _sensor->read(); // Read
+    int sensorData = _sensor->read(); // Read
     Packet dataPacket(Data, nodeID, parentID, nodeID, sensorData, 0, 0);
 
     if(beginBroadcasting(dataPacket))
